@@ -1,5 +1,6 @@
 package com.petopia.petopia.models.entity_models;
 
+import com.petopia.petopia.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "account")
+@Table(name = "accounts")
 public class Account implements UserDetails {
 
     @Id
@@ -32,11 +33,15 @@ public class Account implements UserDetails {
     @ToString.Exclude
     private List<Token> tokenList;
 
+    @OneToOne(mappedBy = "account")
+    @ToString.Exclude
+    private User user;
+
     private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return role.getAuthorities();
     }
 
     @Override
