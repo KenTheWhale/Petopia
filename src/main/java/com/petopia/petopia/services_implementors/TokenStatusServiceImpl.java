@@ -6,6 +6,7 @@ import com.petopia.petopia.repositories.TokenRepo;
 import com.petopia.petopia.repositories.TokenStatusRepo;
 import com.petopia.petopia.services.TokenStatusService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Service;
 
 @Service
