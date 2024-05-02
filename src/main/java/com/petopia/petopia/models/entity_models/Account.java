@@ -45,6 +45,7 @@ public class Account implements UserDetails {
     @ToString.Exclude
     private Shop shop;
 
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @Override
