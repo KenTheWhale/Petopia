@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "accounts")
+@Table(name = "`account`")
 public class Account implements UserDetails {
 
     @Id
@@ -26,7 +26,7 @@ public class Account implements UserDetails {
     private String password;
 
     @ManyToOne
-    @JoinColumn(name = "status_id")
+    @JoinColumn(name = "`status_id`")
     private AccountStatus accountStatus;
 
     @OneToMany(mappedBy = "account")
@@ -36,6 +36,14 @@ public class Account implements UserDetails {
     @OneToOne(mappedBy = "account")
     @ToString.Exclude
     private User user;
+
+    @OneToMany(mappedBy = "account")
+    @ToString.Exclude
+    private List<Appointment> appointmentList;
+
+    @OneToOne(mappedBy = "account")
+    @ToString.Exclude
+    private Shop shop;
 
     private Role role;
 

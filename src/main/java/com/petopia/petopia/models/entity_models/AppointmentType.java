@@ -10,16 +10,16 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "`post_status`")
-public class PostStatus {
+@Table(name = "`appointment_type`")
+public class AppointmentType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String status;
+    private String type;
 
-    @OneToMany(mappedBy = "postStatus")
+    @OneToMany(mappedBy = "appointmentType")
     @ToString.Exclude
-    private List<Post> postList;
+    private List<Appointment> appointmentList;
 }

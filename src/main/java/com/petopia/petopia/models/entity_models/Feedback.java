@@ -11,22 +11,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "`token`")
-public class Token {
+@Table(name = "`feedback`")
+public class Feedback {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "`account_id`")
-    private Account account;
+    @JoinColumn(name = "`user_id`")
+    private User user;
 
     @ManyToOne
-    @JoinColumn(name = "`status_id`")
-    private TokenStatus tokenStatus;
+    @JoinColumn(name = "`product_id`")
+    private Product product;
 
-    private String value;
+    private boolean isReported;
 
-    private String type;
+    private String content;
+
+    private int rating;
 }

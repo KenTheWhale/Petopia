@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "comments")
+@Table(name = "`comment`")
 public class Comment {
 
     @Id
@@ -19,11 +19,11 @@ public class Comment {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "`post_id`")
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "`user_id`")
     private User user;
 
     private String content;

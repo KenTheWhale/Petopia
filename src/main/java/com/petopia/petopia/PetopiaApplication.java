@@ -23,7 +23,6 @@ public class PetopiaApplication {
 		SpringApplication.run(PetopiaApplication.class, args);
 	}
 
-
 	@Bean
 	public CommandLineRunner initDate(){
 		return new CommandLineRunner() {

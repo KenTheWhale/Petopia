@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "posts")
+@Table(name = "`post`")
 public class Post {
 
     @Id
@@ -20,18 +20,18 @@ public class Post {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "`user_id`")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "status_id")
+    @JoinColumn(name = "`status_id`")
     private PostStatus postStatus;
 
     private boolean canComment;
 
     private String content;
 
-    @Column(name = "post_date")
+    @Column(name = "`post_date`")
     //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date postDate;
 

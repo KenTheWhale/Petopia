@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "users")
+@Table(name = "`user`")
 public class User {
 
     @Id
@@ -18,7 +18,7 @@ public class User {
     private Integer id;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "`account_id`")
     private Account account;
 
     private String name;
@@ -47,5 +47,13 @@ public class User {
     @OneToMany(mappedBy = "user")
     @ToString.Exclude
     private List<Pet> petList;
+
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    private List<Order> orderList;
+
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    private List<Feedback> feedbackList;
 
 }
