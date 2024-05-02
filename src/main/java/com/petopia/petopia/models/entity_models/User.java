@@ -44,4 +44,8 @@ public class User {
     @ToString.Exclude
     private List<Comment> commentList;
 
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    private List<Pet> petList;
+
 }
