@@ -10,8 +10,8 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "`post_status`")
-public class PostStatus {
+@Table(name = "`shop_status`")
+public class ShopStatus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,7 @@ public class PostStatus {
 
     private String status;
 
-    @OneToMany(mappedBy = "postStatus")
+    @OneToMany(mappedBy = "shopStatus")
     @ToString.Exclude
-    private List<Post> postList;
+    private List<Shop> shopList;
 }

@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "group_status")
+@Table(name = "`group_status`")
 public class GroupStatus {
 
     @Id
