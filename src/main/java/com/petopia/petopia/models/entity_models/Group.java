@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "groups")
+@Table(name = "social_group")
 public class Group {
 
     @Id
@@ -25,7 +25,7 @@ public class Group {
     private GroupStatus groupStatus;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     private String name;
