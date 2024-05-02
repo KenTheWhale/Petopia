@@ -4,7 +4,7 @@ import com.petopia.petopia.models.entity_models.Token;
 
 public interface TokenStatusService {
 
-    void applyActiveStatus(Token token);
+    Token applyActiveStatus(Token token);
 
-    void applyExpiredStatus(Token token);
+    Token applyExpiredStatus(Token token);
 }

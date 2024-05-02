@@ -67,7 +67,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             //check if refresh token is expired to disable it
             if(!jwtService.checkTokenIsValid(refreshToken.getValue())){
                 tokenStatusService.applyExpiredStatus(refreshToken);
-                tokenRepo.save(refreshToken);
             }
 
             //refresh if access token is expired
@@ -75,7 +74,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 //but refresh is still active
                 if(jwtService.checkTokenIsValid(refreshToken.getValue())){
                     tokenStatusService.applyExpiredStatus(accessToken);
-                    tokenRepo.save(accessToken);
 
                     TokenStatus active = tokenStatusRepo.findByStatus("active").orElse(null);
                     assert active != null;

@@ -38,8 +38,4 @@ public class Appointment {
     @OneToOne(mappedBy = "appointment")
     @ToString.Exclude
     private HealthReport healthReport;
-
-    @ManyToOne
-    @JoinColumn(name = "`type_id`")
-    private AppointmentType appointmentType;
 }
