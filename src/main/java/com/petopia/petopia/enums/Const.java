@@ -29,7 +29,7 @@ public class Const {
     public final static String APPOINTMENT_STATUS_CANCELLED = "cancelled";
     public final static String APPOINTMENT_STATUS_PENDING_VIETNAMESE = "đang chờ";
     public final static String APPOINTMENT_STATUS_CONFIRMED_VIETNAMESE = "đã xác nhận";
-    public final static String APPOINTMENT_STATUS_COMPLETED_VIETNAMESE = "đã hoàn thành";
+    public final static String APPOINTMENT_STATUS_SUCCESSFUL_VIETNAMESE = "đã hoàn thành";
     public final static String APPOINTMENT_STATUS_CANCELLED_VIETNAMESE = "đã hủy";
     public final static String APPOINTMENT_TYPE_HEALTH = "health";
     public final static String APPOINTMENT_TYPE_SERVICE = "service";
@@ -59,6 +59,8 @@ public class Const {
     public final static String PRODUCT_STATUS_DELETED = "deleted";
     public final static String PRODUCT_STATUS_AVAILABLE_VIETNAMESE = "còn hàng";
     public final static String PRODUCT_STATUS_OUT_OF_STOCK_VIETNAMESE = "hết hàng";
+
+    public final static int PAGE_SIZE = 50;
 
 
 }
