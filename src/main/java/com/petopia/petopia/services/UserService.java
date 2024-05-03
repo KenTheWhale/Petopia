@@ -3,6 +3,7 @@ package com.petopia.petopia.services;
 import com.petopia.petopia.models.request_models.HealthHistoryRequest;
 import com.petopia.petopia.models.request_models.UserRequest;
 import com.petopia.petopia.models.response_models.HealthHistoryResponse;
+import com.petopia.petopia.models.response_models.PetListResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface UserService {
@@ -12,4 +13,6 @@ public interface UserService {
     ResponseEntity<?> viewBlackList(UserRequest userRequest);
 
     HealthHistoryResponse getHealthHistoryList(HealthHistoryRequest request);
+
+    PetListResponse getPetList();
 }

@@ -3,14 +3,11 @@ package com.petopia.petopia.services_implementors;
 import com.petopia.petopia.enums.Const;
 import com.petopia.petopia.models.entity_models.Account;
 import com.petopia.petopia.models.entity_models.Token;
-import com.petopia.petopia.models.entity_models.TokenStatus;
 import com.petopia.petopia.models.request_models.LoginRequest;
-import com.petopia.petopia.models.response_models.BasicResponse;
 import com.petopia.petopia.models.response_models.LoginResponse;
 import com.petopia.petopia.models.response_models.RefreshResponse;
 import com.petopia.petopia.repositories.AccountRepo;
 import com.petopia.petopia.repositories.TokenRepo;
-import com.petopia.petopia.repositories.TokenStatusRepo;
 import com.petopia.petopia.services.AuthenticationService;
 import com.petopia.petopia.services.JWTService;
 import com.petopia.petopia.services.TokenService;
@@ -79,43 +76,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     tokenService.createNewRefreshToken(account, refreshToken);
 
                     return LoginResponse.builder()
-                            .basicResponse(
-                                    BasicResponse.builder()
-                                            .status("200")
-                                            .message("Login successfully")
-                                            .build()
-                            )
+                            .status("200")
+                            .message("Login successfully")
                             .accessToken(accessToken)
                             .build();
                 }
                 return LoginResponse.builder()
-                        .basicResponse(
-                                BasicResponse.builder()
-                                        .status("400")
-                                        .message("This account has been banned")
-                                        .build()
-                        )
+                        .status("400")
+                        .message("This account has been banned")
                         .accessToken("")
                         .build();
             }
 
             return LoginResponse.builder()
-                    .basicResponse(
-                            BasicResponse.builder()
-                                    .status("400")
-                                    .message("Username or password is incorrect")
-                                    .build()
-                    )
+                    .status("400")
+                    .message("Username or password is incorrect")
                     .accessToken("")
                     .build();
         }
         return LoginResponse.builder()
-                .basicResponse(
-                        BasicResponse.builder()
-                                .status("400")
-                                .message("Username or password is empty")
-                                .build()
-                )
+                .status("400")
+                .message("Username or password is empty")
                 .accessToken("")
                 .build();
     }
