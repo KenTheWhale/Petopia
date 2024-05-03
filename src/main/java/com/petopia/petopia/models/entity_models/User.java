@@ -54,4 +54,8 @@ public class User {
     @ToString.Exclude
     private List<Feedback> feedbackList;
 
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    private List<BlackList> blackList;
+
 }
