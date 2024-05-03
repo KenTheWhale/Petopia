@@ -34,7 +34,7 @@ public class JWTServiceImpl implements JWTService {
     private final TokenRepo tokenRepo;
 
     @Override
-    public String extractUsername(String token) {
+    public String extractEmail(String token) {
         return extractRequiredClaim(token, Claims::getSubject);
     }
 

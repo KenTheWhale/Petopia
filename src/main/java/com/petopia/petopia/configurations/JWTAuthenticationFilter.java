@@ -1,5 +1,6 @@
 package com.petopia.petopia.configurations;
 
+import com.petopia.petopia.enums.Const;
 import com.petopia.petopia.models.entity_models.Account;
 import com.petopia.petopia.models.entity_models.Token;
 import com.petopia.petopia.models.entity_models.TokenStatus;
@@ -51,10 +52,10 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         jwt = authHeader.substring(7);
-        String accountUsername = jwtService.extractUsername(jwt);
-        if(accountUsername != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(accountUsername);
-            Account account = accountRepo.findByUsername(userDetails.getUsername()).orElse(null);
+        String accountEmail = jwtService.extractEmail(jwt);
+        if(accountEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(accountEmail);
+            Account account = accountRepo.findByEmail(userDetails.getUsername()).orElse(null);
             assert account != null;
             if(!account.getAccountStatus().getStatus().equals("active")) {
                 filterChain.doFilter(request, response);
@@ -75,11 +76,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 if(jwtService.checkTokenIsValid(refreshToken.getValue())){
                     tokenStatusService.applyExpiredStatus(accessToken);
 
-                    TokenStatus active = tokenStatusRepo.findByStatus("active").orElse(null);
+                    TokenStatus active = tokenStatusRepo.findByStatus(Const.TOKEN_STATUS_ACTIVE).orElse(null);
                     assert active != null;
                     tokenRepo.save(Token.builder()
                             .value(jwtService.generateAccessToken(account))
-                            .type("access")
+                            .type(Const.TOKEN_TYPE_ACCESS)
                             .tokenStatus(active)
                             .account(account)
                             .build());

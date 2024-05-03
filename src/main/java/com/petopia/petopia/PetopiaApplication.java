@@ -200,7 +200,7 @@ public class PetopiaApplication {
 				List<Account> accountList = new ArrayList<>();
 
 				Account adminAcc = Account.builder()
-						.username("admin")
+						.email("admin@peto.com")
 						.password(passwordEncoder.encode("admin"))
 						.accountStatus(activeAccount)
 						.role(Role.ADMIN)
@@ -208,7 +208,7 @@ public class PetopiaApplication {
 				accountList.add(adminAcc);
 
 				Account shopAcc = Account.builder()
-						.username("shop")
+						.email("shop@peto.com")
 						.password(passwordEncoder.encode("shop"))
 						.accountStatus(activeAccount)
 						.role(Role.SHOP_OWNER)
@@ -216,7 +216,7 @@ public class PetopiaApplication {
 				accountList.add(shopAcc);
 
 				Account gpAdminAcc = Account.builder()
-						.username("gpad")
+						.email("gpad@peto.com")
 						.password(passwordEncoder.encode("gpad"))
 						.accountStatus(activeAccount)
 						.role(Role.GROUP_ADMIN)
@@ -224,7 +224,7 @@ public class PetopiaApplication {
 				accountList.add(gpAdminAcc);
 
 				Account gpManagerAcc = Account.builder()
-						.username("gpma")
+						.email("gpma@peto.com")
 						.password(passwordEncoder.encode("gpma"))
 						.accountStatus(activeAccount)
 						.role(Role.GROUP_MANAGER)
@@ -232,7 +232,7 @@ public class PetopiaApplication {
 				accountList.add(gpManagerAcc);
 
 				Account vetAcc = Account.builder()
-						.username("vet")
+						.email("vet@peto.com")
 						.password(passwordEncoder.encode("vet"))
 						.accountStatus(activeAccount)
 						.role(Role.VET)
@@ -240,7 +240,7 @@ public class PetopiaApplication {
 				accountList.add(vetAcc);
 
 				Account userAcc = Account.builder()
-						.username("user")
+						.email("user@peto.com")
 						.password(passwordEncoder.encode("user"))
 						.accountStatus(activeAccount)
 						.role(Role.USER)

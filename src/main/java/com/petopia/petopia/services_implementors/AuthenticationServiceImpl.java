@@ -57,13 +57,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public Account getCurrentLoggedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return accountRepo.findByUsername(authentication.getName()).orElse(null);
+        return accountRepo.findByEmail(authentication.getName()).orElse(null);
     }
 
     @Override
     public LoginResponse login(LoginRequest request) {
         if(checkIfStringIsValid(request.getUsername()) && checkIfStringIsValid(request.getPassword())){
-            Account account = accountRepo.findByUsername(request.getUsername()).orElse(null);
+            Account account = accountRepo.findByEmail(request.getUsername()).orElse(null);
             if(account != null && passwordEncoder.matches(request.getPassword(), account.getPassword())){
                 if(account.getAccountStatus().getStatus().equals(Const.ACCOUNT_STATUS_ACTIVE)){
                     Token oldAccess = tokenRepo.findByAccount_IdAndTokenStatusStatusAndType(account.getId(), Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_ACCESS).orElse(null);
@@ -98,6 +98,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         .accessToken("")
                         .build();
             }
+
             return LoginResponse.builder()
                     .basicResponse(
                             BasicResponse.builder()
