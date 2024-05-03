@@ -21,9 +21,9 @@ public class Account implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String username;
-
     private String password;
+
+    private String email;
 
     @ManyToOne
     @JoinColumn(name = "`status_id`")
@@ -60,7 +60,7 @@ public class Account implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.petopia.petopia.services;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public interface JWTService {
-    String extractUsername(String token);
+    String extractEmail(String token);
 
     String generateAccessToken(UserDetails user);
 
