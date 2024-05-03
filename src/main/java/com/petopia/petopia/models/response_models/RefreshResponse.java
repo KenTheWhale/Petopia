@@ -10,5 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class RefreshResponse {
-    private BasicResponse basicResponse;
+
+    private String status;
+
+    private String message;
 }

@@ -49,7 +49,9 @@ public class HealthHistoryResponse {
         private DoctorResponse doctor;
     }
 
-    private BasicResponse basicResponse;
+    private String status;
+
+    private String message;
 
     private int totalPage;
 

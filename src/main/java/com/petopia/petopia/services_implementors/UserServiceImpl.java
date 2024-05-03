@@ -1,18 +1,17 @@
 package com.petopia.petopia.services_implementors;
 
 import com.petopia.petopia.enums.Const;
+import com.petopia.petopia.models.entity_models.Account;
 import com.petopia.petopia.models.entity_models.Pet;
 import com.petopia.petopia.models.entity_models.ServiceReport;
 import com.petopia.petopia.models.entity_models.User;
 import com.petopia.petopia.models.request_models.HealthHistoryRequest;
 import com.petopia.petopia.models.request_models.UserRequest;
-import com.petopia.petopia.models.response_models.BasicResponse;
-import com.petopia.petopia.models.response_models.BlackListResponse;
-import com.petopia.petopia.models.response_models.HealthHistoryResponse;
-import com.petopia.petopia.models.response_models.UserProfileResponse;
+import com.petopia.petopia.models.response_models.*;
 import com.petopia.petopia.repositories.PetRepo;
 import com.petopia.petopia.repositories.ServiceReportRepo;
 import com.petopia.petopia.repositories.UserRepo;
+import com.petopia.petopia.services.AuthenticationService;
 import com.petopia.petopia.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
     private final ServiceReportRepo serviceReportRepo;
     private final PetRepo petRepo;
+    private final AuthenticationService authenticationService;
 
     @Override
     public ResponseEntity<?> getUserProfile(UserRequest userRequest) {
@@ -143,12 +144,8 @@ public class UserServiceImpl implements UserService {
             }
 
             return HealthHistoryResponse.builder()
-                    .basicResponse(
-                            BasicResponse.builder()
-                                    .status("200")
-                                    .message("Get list successfully")
-                                    .build()
-                    )
+                    .status("200")
+                    .message("Get list successfully")
                     .totalPage(serviceReports.getTotalPages())
                     .petId(pet.getId())
                     .petName(pet.getName())
@@ -162,12 +159,8 @@ public class UserServiceImpl implements UserService {
                     .build();
         }
         return HealthHistoryResponse.builder()
-                .basicResponse(
-                        BasicResponse.builder()
-                                .status("400")
-                                .message("Fail to get list")
-                                .build()
-                )
+                .status("400")
+                .message("Fail to get list")
                 .totalPage(0)
                 .petId(0)
                 .petName("")
@@ -178,6 +171,20 @@ public class UserServiceImpl implements UserService {
                 .petDescription("")
                 .imgLinkList(Collections.emptyList())
                 .appointments(Collections.emptyList())
+                .build();
+    }
+
+    @Override
+    public PetListResponse getPetList() {
+        Account currentAcc = authenticationService.getCurrentLoggedUser();
+        assert currentAcc != null;
+        List<Pet> pets = petRepo.findAllByUser_Account_IdOrderById(currentAcc.getId());
+        return PetListResponse.builder()
+                .status("200")
+                .message("Get list successfully")
+                .petList(pets.stream()
+                                .map(pet -> new PetListResponse.PetResponse(pet.getId(), pet.getName(), pet.getGender(), pet.getAge(), pet.getType(), pet.getNecklaceId(), pet.getDescription(), pet.getImgLinkList()))
+                                .collect(Collectors.toList()))
                 .build();
     }
 
