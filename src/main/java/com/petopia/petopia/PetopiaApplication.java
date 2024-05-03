@@ -11,10 +11,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @SpringBootApplication
@@ -48,6 +51,14 @@ public class PetopiaApplication {
 	private final JWTService jwtService;
 
 	private final AccountRepo accountRepo;
+
+	private final UserRepo userRepo;
+
+	private final PetRepo petRepo;
+
+	private final AppointmentRepo appointmentRepo;
+
+	private final ServiceReportRepo serviceReportRepo;
 
 	private final TokenRepo tokenRepo;
 
@@ -201,6 +212,8 @@ public class PetopiaApplication {
 
 				Account adminAcc = Account.builder()
 						.email("admin@peto.com")
+						.name("admin")
+						.avatarLink("")
 						.password(passwordEncoder.encode("admin"))
 						.accountStatus(activeAccount)
 						.role(Role.ADMIN)
@@ -209,6 +222,8 @@ public class PetopiaApplication {
 
 				Account shopAcc = Account.builder()
 						.email("shop@peto.com")
+						.name("shop")
+						.avatarLink("")
 						.password(passwordEncoder.encode("shop"))
 						.accountStatus(activeAccount)
 						.role(Role.SHOP_OWNER)
@@ -217,6 +232,8 @@ public class PetopiaApplication {
 
 				Account gpAdminAcc = Account.builder()
 						.email("gpad@peto.com")
+						.name("group admin")
+						.avatarLink("")
 						.password(passwordEncoder.encode("gpad"))
 						.accountStatus(activeAccount)
 						.role(Role.GROUP_ADMIN)
@@ -225,6 +242,8 @@ public class PetopiaApplication {
 
 				Account gpManagerAcc = Account.builder()
 						.email("gpma@peto.com")
+						.name("group manager")
+						.avatarLink("")
 						.password(passwordEncoder.encode("gpma"))
 						.accountStatus(activeAccount)
 						.role(Role.GROUP_MANAGER)
@@ -233,6 +252,8 @@ public class PetopiaApplication {
 
 				Account vetAcc = Account.builder()
 						.email("vet@peto.com")
+						.name("vet")
+						.avatarLink("")
 						.password(passwordEncoder.encode("vet"))
 						.accountStatus(activeAccount)
 						.role(Role.VET)
@@ -241,12 +262,25 @@ public class PetopiaApplication {
 
 				Account userAcc = Account.builder()
 						.email("user@peto.com")
+						.name("user")
+						.avatarLink("")
 						.password(passwordEncoder.encode("user"))
 						.accountStatus(activeAccount)
 						.role(Role.USER)
 						.build();
 				accountList.add(userAcc);
 				accountRepo.saveAll(accountList);
+
+				userRepo.save(
+						User.builder()
+								.account(userAcc)
+								.gender("Male")
+								.address("")
+								.phone("")
+								.imgLinkList(Collections.emptyList())
+								.build()
+				);
+
 
 				// init token
 				List<Token> tokenList = new ArrayList<>();
@@ -262,6 +296,147 @@ public class PetopiaApplication {
 				System.out.println("# VET TOKEN: " + tokenList.get(8).getValue());
 				System.out.println("# USER TOKEN: " + tokenList.get(10).getValue());
 
+
+				// init 10 health report
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+				String[] dateList = {
+						"2020-06-02 12:00:00", "2020-05-10 09:30:00",
+						"2021-03-15 14:45:00", "2021-06-20 10:15:00",
+						"2021-09-05 16:30:00","2021-12-10 11:45:00",
+						"2022-02-25 09:00:00","2022-05-15 15:30:00",
+						"2022-08-20 13:15:00","2022-11-30 16:45:00"
+				};
+
+				String[] reportList = {
+						"Tiêm vắc-xin bạch cầu","Tiêm vắc-xin hạt nhân",
+						"Tiêm vắc-xin cúm","Tiêm vắc-xin dại",
+						"Tiêm vắc-xin tụ huyết trùng","Tiêm vắc-xin viêm gan B",
+						"Tiêm vắc-xin bệnh cảm cúm","Tiêm vắc-xin viêm gan C",
+						"Tiêm vắc-xin bạch hầu","Tiêm vắc-xin viêm gan A"
+				};
+
+				String[] extraContentList = {
+						"Sức khỏe yếu, cần khám lại","Không có vấn đề đáng ngại",
+						"Không có vấn đề đáng ngại","Không có vấn đề đáng ngại",
+						"Không có vấn đề đáng ngại","Không có vấn đề đáng ngại",
+						"Không có vấn đề đáng ngại","Không có vấn đề đáng ngại",
+						"Không có vấn đề đáng ngại","Không có vấn đề đáng ngại"
+				};
+
+				String[] placeList = {
+						"Tại nhà","Tại phòng khám",
+						"Tại phòng khám","Tại phòng khám",
+						"Tại phòng khám","Tại phòng khám",
+						"Tại phòng khám","Tại phòng khám",
+						"Tại phòng khám","Tại phòng khám"
+				};
+
+				String[] doctorNameList = {
+						"Nguyễn Văn A","Trần Thị B",
+						"Lê Thị C","Phạm Văn D",
+						"Hoàng Thị E","Nguyễn Văn F",
+						"Trần Văn G","Lê Thị H",
+						"Phạm Thị I","Hoàng Văn J"
+				};
+
+				String[] avatarList = {
+						"https://via.placeholder.com/150","https://via.placeholder.com/150",
+						"https://via.placeholder.com/150","https://via.placeholder.com/150",
+						"https://via.placeholder.com/150","https://via.placeholder.com/150",
+						"https://via.placeholder.com/150","https://via.placeholder.com/150",
+						"https://via.placeholder.com/150","https://via.placeholder.com/150"
+				};
+
+				Account hoang_anh_account = accountRepo.save(
+						Account.builder()
+								.accountStatus(activeAccount)
+								.name("Lương Hoàng Anh")
+								.email("anhlhse170179@fpt.edu.vn")
+								.password(passwordEncoder.encode("Iamnothoanganh"))
+								.role(Role.USER)
+								.avatarLink("https://avatars.githubusercontent.com/u/131256206?v=4")
+								.build()
+				);
+
+				tokenRepo.save(Token.builder().account(hoang_anh_account).tokenStatus(activeToken).value(jwtService.generateAccessToken(hoang_anh_account)).type(Const.TOKEN_TYPE_ACCESS).build());
+				tokenRepo.save(Token.builder().account(hoang_anh_account).tokenStatus(activeToken).value(jwtService.generateRefreshToken(hoang_anh_account)).type(Const.TOKEN_TYPE_REFRESH).build());
+
+				List<Account> accounts = new ArrayList<>();
+
+				for(int i = 0; i < 10; i++){
+					accounts.add(
+							Account.builder()
+									.accountStatus(activeAccount)
+									.name(doctorNameList[i])
+									.email(doctorNameList[i].replace(" ", "") + "@gmail.com")
+									.password(passwordEncoder.encode("pass" + i))
+									.role(Role.VET)
+									.avatarLink("https://via.placeholder.com/150")
+									.build()
+					);
+				}
+
+				accountRepo.saveAll(accounts);
+
+				for(int i = 0; i < 10; i++){
+					tokenRepo.save(Token.builder().account(accounts.get(i)).tokenStatus(activeToken).value(jwtService.generateAccessToken(accounts.get(i))).type(Const.TOKEN_TYPE_ACCESS).build());
+					tokenRepo.save(Token.builder().account(accounts.get(i)).tokenStatus(activeToken).value(jwtService.generateRefreshToken(accounts.get(i))).type(Const.TOKEN_TYPE_REFRESH).build());
+				}
+
+				User hoang_anh_user = userRepo.save(
+						User.builder()
+								.account(hoang_anh_account)
+								.gender("Male")
+								.address("Nhà Trắng")
+								.phone("0977545450")
+								.imgLinkList(Collections.emptyList())
+								.build()
+				);
+
+				Pet tran_dan = petRepo.save(
+						Pet.builder()
+								.user(hoang_anh_user)
+								.name("Trần Dần")
+								.gender("Female")
+								.age(69)
+								.type("Tiger")
+								.necklaceId("BLOCK3W")
+								.description("Pet tiên tri vũ trụ")
+								.imgLinkList(Collections.emptyList())
+								.build()
+				);
+
+				List<Appointment> appointments = new ArrayList<>();
+				for(int i = 0; i < 10; i++){
+					appointments.add(
+							Appointment.builder()
+									.pet(tran_dan)
+									.account(accounts.get(i))
+									.appointmentStatus(successfulAppointment)
+									.type(Const.APPOINTMENT_TYPE_HEALTH)
+									.date(LocalDateTime.parse(dateList[i], formatter))
+									.location(placeList[i])
+									.fee((i + 10) * 1000 + 20000)
+									.build()
+					);
+				}
+
+				appointmentRepo.saveAll(appointments);
+
+				List<ServiceReport> serviceReports = new ArrayList<>();
+				for(int i = 0; i < 10; i++){
+					serviceReports.add(
+							ServiceReport.builder()
+									.appointment(appointments.get(i))
+									.report(reportList[i])
+									.date(appointments.get(i).getDate())
+									.extraContent(extraContentList[i])
+									.build()
+					);
+				}
+
+				serviceReportRepo.saveAll(serviceReports);
 			}
 		};
 	}

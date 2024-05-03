@@ -21,9 +21,13 @@ public class Account implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private String name;
+
     private String password;
 
     private String email;
+
+    private String avatarLink;
 
     @ManyToOne
     @JoinColumn(name = "`status_id`")
@@ -33,7 +37,7 @@ public class Account implements UserDetails {
     @ToString.Exclude
     private List<Token> tokenList;
 
-    @OneToOne(mappedBy = "account")
+    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
     private User user;
 

@@ -38,7 +38,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     @Override
     public String getAccessToken(Integer accountID) {
-        Token accessToken = tokenRepo.findByAccount_IdAndTokenStatusStatusAndType(accountID, Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_ACCESS).orElse(null);
+        Token accessToken = tokenRepo.findByAccount_IdAndTokenStatus_StatusAndType(accountID, Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_ACCESS).orElse(null);
         if(accessToken != null){
             return accessToken.getValue();
         }
@@ -47,7 +47,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public String getRefreshToken(Integer accountID) {
-        Token refreshToken = tokenRepo.findByAccount_IdAndTokenStatusStatusAndType(accountID, Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_REFRESH).orElse(null);
+        Token refreshToken = tokenRepo.findByAccount_IdAndTokenStatus_StatusAndType(accountID, Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_REFRESH).orElse(null);
         if(refreshToken != null){
             return refreshToken.getValue();
         }
@@ -66,8 +66,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             Account account = accountRepo.findByEmail(request.getUsername()).orElse(null);
             if(account != null && passwordEncoder.matches(request.getPassword(), account.getPassword())){
                 if(account.getAccountStatus().getStatus().equals(Const.ACCOUNT_STATUS_ACTIVE)){
-                    Token oldAccess = tokenRepo.findByAccount_IdAndTokenStatusStatusAndType(account.getId(), Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_ACCESS).orElse(null);
-                    Token oldRefresh = tokenRepo.findByAccount_IdAndTokenStatusStatusAndType(account.getId(), Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_REFRESH).orElse(null);
+                    Token oldAccess = tokenRepo.findByAccount_IdAndTokenStatus_StatusAndType(account.getId(), Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_ACCESS).orElse(null);
+                    Token oldRefresh = tokenRepo.findByAccount_IdAndTokenStatus_StatusAndType(account.getId(), Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_REFRESH).orElse(null);
 
                     if(oldAccess != null) tokenStatusService.applyExpiredStatus(oldAccess);
                     if(oldRefresh != null) tokenStatusService.applyExpiredStatus(oldRefresh);
@@ -81,7 +81,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     return LoginResponse.builder()
                             .basicResponse(
                                     BasicResponse.builder()
-                                            .status("Successful")
+                                            .status("200")
                                             .message("Login successfully")
                                             .build()
                             )
@@ -91,7 +91,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 return LoginResponse.builder()
                         .basicResponse(
                                 BasicResponse.builder()
-                                        .status("Fail")
+                                        .status("400")
                                         .message("This account has been banned")
                                         .build()
                         )
@@ -102,7 +102,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return LoginResponse.builder()
                     .basicResponse(
                             BasicResponse.builder()
-                                    .status("Fail")
+                                    .status("400")
                                     .message("Username or password is incorrect")
                                     .build()
                     )
@@ -112,7 +112,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return LoginResponse.builder()
                 .basicResponse(
                         BasicResponse.builder()
-                                .status("Fail")
+                                .status("400")
                                 .message("Username or password is empty")
                                 .build()
                 )

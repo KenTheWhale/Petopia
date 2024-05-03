@@ -6,19 +6,27 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "`health_report`")
-public class HealthReport {
+@Table(name = "`service_report`")
+public class ServiceReport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "`appointment_id`")
     private Appointment appointment;
+
+    private LocalDateTime date;
+
+    private String report;
+
+    private String extraContent;
 }
