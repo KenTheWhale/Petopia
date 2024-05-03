@@ -400,6 +400,8 @@ public class PetopiaApplication {
 								.name("Trần Dần")
 								.gender("Female")
 								.age(69)
+								.createdAt(LocalDateTime.parse("2013-12-31 21:30:00", formatter))
+								.updateAt(LocalDateTime.parse("2020-01-01 09:40:03", formatter))
 								.type("Tiger")
 								.necklaceId("BLOCK3W")
 								.description("Pet tiên tri vũ trụ")
@@ -407,11 +409,40 @@ public class PetopiaApplication {
 								.build()
 				);
 
+				Pet johnny_dang = petRepo.save(
+						Pet.builder()
+								.user(hoang_anh_user)
+								.name("Johnny Đặng")
+								.gender("Male")
+								.age(21)
+								.createdAt(LocalDateTime.parse("2015-05-15 10:12:07", formatter))
+								.updateAt(LocalDateTime.parse("2024-02-29 23:59:59", formatter))
+								.type("Poppy")
+								.necklaceId("BLOCK100W")
+								.description("Pet vô tri vũ trụ")
+								.imgLinkList(Collections.emptyList())
+								.build()
+				);
+
 				List<Appointment> appointments = new ArrayList<>();
-				for(int i = 0; i < 10; i++){
+				for(int i = 0; i < 5; i++){
 					appointments.add(
 							Appointment.builder()
 									.pet(tran_dan)
+									.account(accounts.get(i))
+									.appointmentStatus(successfulAppointment)
+									.type(Const.APPOINTMENT_TYPE_HEALTH)
+									.date(LocalDateTime.parse(dateList[i], formatter))
+									.location(placeList[i])
+									.fee((i + 10) * 1000 + 20000)
+									.build()
+					);
+				}
+
+				for(int i = 5; i < 10; i++){
+					appointments.add(
+							Appointment.builder()
+									.pet(johnny_dang)
 									.account(accounts.get(i))
 									.appointmentStatus(successfulAppointment)
 									.type(Const.APPOINTMENT_TYPE_HEALTH)
