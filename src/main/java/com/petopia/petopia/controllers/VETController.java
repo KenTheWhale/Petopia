@@ -7,4 +7,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/vet")
 public class VETController {
+
+    @GetMapping("/getVetProfile")
+    public String getVetProfile(){
+        return "Vet Profile";
+    }
+
 }
