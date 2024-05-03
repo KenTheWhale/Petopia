@@ -3,10 +3,17 @@ package com.petopia.petopia.controllers;
 import com.petopia.petopia.models.request_models.UserRequest;
 import com.petopia.petopia.models.response_models.UserProfileResponse;
 import com.petopia.petopia.services.UserService;
+import com.petopia.petopia.models.request_models.HealthHistoryRequest;
+import com.petopia.petopia.models.response_models.HealthHistoryResponse;
+import com.petopia.petopia.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,5 +32,12 @@ public class UserController {
     @PreAuthorize("hasAuthority('user:read')")
     public ResponseEntity<?> viewBlackList(@RequestBody UserRequest userRequest){
         return userService.viewBlackList(userRequest);
+    }
+
+
+    @GetMapping("/health-history")
+    @PreAuthorize("hasAuthority('user:read')")
+    public HealthHistoryResponse getHealthHistoryList(@RequestBody HealthHistoryRequest request){
+        return userService.getHealthHistoryList(request);
     }
 }

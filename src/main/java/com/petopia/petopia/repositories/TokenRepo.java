@@ -9,7 +9,7 @@ import java.util.Optional;
 @Repository
 public interface TokenRepo extends JpaRepository<Token, Integer> {
 
-    Optional<Token> findByAccount_IdAndTokenStatusStatusAndType(Integer accountId, String tokenStatus, String type);
+    Optional<Token> findByAccount_IdAndTokenStatus_StatusAndType(Integer accountId, String tokenStatus, String type);
 
     Optional<Token> findByValue(String value);
 

@@ -3,7 +3,7 @@ package com.petopia.petopia.models.entity_models;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -29,13 +29,15 @@ public class Appointment {
     @JoinColumn(name = "`status_id`")
     private AppointmentStatus appointmentStatus;
 
-    private Date date;
+    private LocalDateTime date;
 
     private String location;
 
     private double fee;
 
-    @OneToOne(mappedBy = "appointment")
+    private String type;
+
+    @OneToOne(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
-    private HealthReport healthReport;
+    private ServiceReport serviceReport;
 }

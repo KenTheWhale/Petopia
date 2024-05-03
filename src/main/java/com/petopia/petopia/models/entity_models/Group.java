@@ -30,10 +30,6 @@ public class Group {
 
     private String name;
 
-    private String avatarLink;
-
-    private String backgroundLink;
-
     @Transient
     private List<String> imgLinkList;
 
