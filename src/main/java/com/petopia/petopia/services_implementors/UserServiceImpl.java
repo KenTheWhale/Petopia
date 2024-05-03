@@ -1,46 +1,40 @@
 package com.petopia.petopia.services_implementors;
 
-import com.petopia.petopia.models.entity_models.User;
-import com.petopia.petopia.models.request_models.UserRequest;
-import com.petopia.petopia.models.response_models.BlackListResponse;
-import com.petopia.petopia.models.response_models.UserProfileResponse;
-import com.petopia.petopia.repositories.UserRepo;
-import com.petopia.petopia.services.UserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Optional;
 import com.petopia.petopia.enums.Const;
-import com.petopia.petopia.models.entity_models.Account;
 import com.petopia.petopia.models.entity_models.Pet;
 import com.petopia.petopia.models.entity_models.ServiceReport;
+import com.petopia.petopia.models.entity_models.User;
 import com.petopia.petopia.models.request_models.HealthHistoryRequest;
+import com.petopia.petopia.models.request_models.UserRequest;
 import com.petopia.petopia.models.response_models.BasicResponse;
+import com.petopia.petopia.models.response_models.BlackListResponse;
 import com.petopia.petopia.models.response_models.HealthHistoryResponse;
+import com.petopia.petopia.models.response_models.UserProfileResponse;
 import com.petopia.petopia.repositories.PetRepo;
 import com.petopia.petopia.repositories.ServiceReportRepo;
-import com.petopia.petopia.services.AuthenticationService;
+import com.petopia.petopia.repositories.UserRepo;
 import com.petopia.petopia.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
+    private final ServiceReportRepo serviceReportRepo;
+    private final PetRepo petRepo;
 
     @Override
     public ResponseEntity<?> getUserProfile(UserRequest userRequest) {
@@ -57,7 +51,7 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.status(HttpStatus.OK).body(UserProfileResponse
                     .builder()
                     .id(user.getId())
-                    .name(user.getName())
+                    .name(user.getAccount().getName())
                     .gender(user.getGender())
                     .address(user.getAddress())
                     .phone(user.getPhone())
@@ -73,6 +67,10 @@ public class UserServiceImpl implements UserService {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + userRequest.getId() + " not found.");
         }
+    }
+
+    public void hello(){
+        System.out.println("Hello");
     }
 
     public String getImgLink(int id) {
@@ -108,7 +106,7 @@ public class UserServiceImpl implements UserService {
                     .builder()
                     .id(user.getId())
                     .imgLink(getImgLink(user.getId()))
-                    .name(user.getName())
+                    .name(user.getAccount().getName())
                     .build()
             );
         } else {
@@ -116,9 +114,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private final ServiceReportRepo serviceReportRepo;
 
-    private final PetRepo petRepo;
 
     @Override
     public HealthHistoryResponse getHealthHistoryList(HealthHistoryRequest request) {
