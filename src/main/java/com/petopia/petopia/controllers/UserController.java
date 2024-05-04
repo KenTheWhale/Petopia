@@ -5,6 +5,7 @@ import com.petopia.petopia.models.request_models.UserRequest;
 import com.petopia.petopia.models.response_models.HealthHistoryResponse;
 import com.petopia.petopia.models.response_models.PetListResponse;
 import com.petopia.petopia.services.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
+@Tag(name = "User")
 public class UserController {
 
     private final UserService userService;
