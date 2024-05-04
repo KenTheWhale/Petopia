@@ -10,9 +10,4 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "VET")
 public class VETController {
 
-    @GetMapping("/getVetProfile")
-    public String getVetProfile(){
-        return "Vet Profile";
-    }
-
 }

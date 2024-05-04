@@ -31,6 +31,12 @@ public class UserController {
         return userService.viewBlackList(userRequest);
     }
 
+    @PostMapping("/notification")
+    @PreAuthorize("hasAuthority('user:read')")
+    public ResponseEntity<?> viewNotification(@RequestBody UserRequest userRequest){
+        return userService.viewNotification(userRequest);
+    }
+
     @PostMapping("/health-history")
     @PreAuthorize("hasAuthority('user:read')")
     public HealthHistoryResponse getHealthHistoryList(@RequestBody HealthHistoryRequest request){
