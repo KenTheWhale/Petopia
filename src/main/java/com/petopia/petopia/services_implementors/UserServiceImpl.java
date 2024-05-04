@@ -5,6 +5,7 @@ import com.petopia.petopia.models.entity_models.Account;
 import com.petopia.petopia.models.entity_models.Pet;
 import com.petopia.petopia.models.entity_models.ServiceReport;
 import com.petopia.petopia.models.entity_models.User;
+import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
 import com.petopia.petopia.models.request_models.HealthHistoryRequest;
 import com.petopia.petopia.models.request_models.UserRequest;
 import com.petopia.petopia.models.response_models.*;
@@ -146,7 +147,7 @@ public class UserServiceImpl implements UserService {
                                 .id(report.getId())
                                 .date(report.getDate())
                                 .report(report.getReport())
-                                .status(Const.APPOINTMENT_STATUS_SUCCESSFUL_VIETNAMESE)
+                                .status(Const.APPOINTMENT_STATUS_SUCCESSFUL)
                                 .extraContent(report.getExtraContent())
                                 .place(report.getAppointment().getLocation())
                                 .doctor(
@@ -203,6 +204,11 @@ public class UserServiceImpl implements UserService {
                         .map(pet -> new PetListResponse.PetResponse(pet.getId(), pet.getName(), pet.getGender(), pet.getAge(), pet.getType(), pet.getNecklaceId(), pet.getDescription(), pet.getImgLinkList()))
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    @Override
+    public CreateAppointmentResponse createAppointment(CreateAppointmentRequest request) {
+        return null;
     }
 
     private Page<ServiceReport> getPaginationHealthReportListByUserId(int pageNo, Integer petID, String sort) {

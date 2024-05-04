@@ -1,7 +1,9 @@
 package com.petopia.petopia.controllers;
 
+import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
 import com.petopia.petopia.models.request_models.HealthHistoryRequest;
 import com.petopia.petopia.models.request_models.UserRequest;
+import com.petopia.petopia.models.response_models.CreateAppointmentResponse;
 import com.petopia.petopia.models.response_models.HealthHistoryResponse;
 import com.petopia.petopia.models.response_models.PetListResponse;
 import com.petopia.petopia.services.UserService;
@@ -41,5 +43,11 @@ public class UserController {
     @PreAuthorize("hasAuthority('user:read')")
     public PetListResponse getPetListByUserId(){
         return userService.getPetList();
+    }
+
+    @PostMapping("/appointment-creation")
+    @PreAuthorize("hasAuthority('user:create')")
+    public CreateAppointmentResponse createAppointment(@RequestBody CreateAppointmentRequest request){
+        return userService.createAppointment(request);
     }
 }

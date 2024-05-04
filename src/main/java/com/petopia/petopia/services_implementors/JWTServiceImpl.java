@@ -1,5 +1,6 @@
 package com.petopia.petopia.services_implementors;
 
+import com.petopia.petopia.enums.Const;
 import com.petopia.petopia.models.entity_models.Token;
 import com.petopia.petopia.repositories.TokenRepo;
 import com.petopia.petopia.services.JWTService;
@@ -52,7 +53,7 @@ public class JWTServiceImpl implements JWTService {
     public boolean checkTokenIsValid(String token) {
         Token t = tokenRepo.findByValue(token).orElse(null);
         if(t == null) return false;
-        if(t.getTokenStatus().getStatus().equals("expired")) return false;
+        if(t.getTokenStatus().getStatus().equals(Const.TOKEN_STATUS_EXPIRED)) return false;
         return !extractRequiredClaim(token, Claims::getExpiration).before(new Date());
     }
 
