@@ -12,6 +12,8 @@ public interface UserService {
 
     ResponseEntity<?> viewBlackList(UserRequest userRequest);
 
+//    ResponseEntity<?> viewNotification(UserRequest userRequest);
+
     HealthHistoryResponse getHealthHistoryList(HealthHistoryRequest request);
 
     PetListResponse getPetList();
