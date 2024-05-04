@@ -111,28 +111,25 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-//    @Override
-//    public ResponseEntity<?> viewNotification(UserRequest userRequest) {
-//        if (userRequest.getId() <= 0) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user ID.");
-//        }
-//        Optional<User> optionalUser = userRepo.findById(userRequest.getId());
-//        if (optionalUser.isPresent()) {
-//            User user = optionalUser.get();
-//            if (user.getNotificationList() == null) {
-//                user.setNotificationList(new ArrayList<>());
-//            }
-//
-//            return ResponseEntity.status(HttpStatus.OK).body(NotificationResponse
-//                    .builder()
-//                            .id(user.getId())
-//                    //sua toi khuc nay
-//                    .build()
-//            );
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + userRequest.getId() + " not found.");
-//        }
-//    }
+    @Override
+    public ResponseEntity<?> viewNotification(UserRequest userRequest) {
+        if (userRequest.getId() <= 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user ID.");
+        }
+        Optional<User> optionalUser = userRepo.findById(userRequest.getId());
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            if (user.getNotificationList() == null) {
+                user.setNotificationList(new ArrayList<>());
+            }
+            List<NotificationResponse> notificationResponses = user.getNotificationList().stream()
+                    .map(notification -> new NotificationResponse(notification.getId(), notification.getContent(), notification.getStatus()))
+                    .toList();
+            return ResponseEntity.status(HttpStatus.OK).body(notificationResponses);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + userRequest.getId() + " not found.");
+        }
+    }
 
 
     @Override
