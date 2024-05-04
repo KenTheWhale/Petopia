@@ -9,10 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,13 +31,13 @@ public class UserController {
         return userService.viewBlackList(userRequest);
     }
 
-    @GetMapping("/health-history")
+    @PostMapping("/health-history")
     @PreAuthorize("hasAuthority('user:read')")
     public HealthHistoryResponse getHealthHistoryList(@RequestBody HealthHistoryRequest request){
         return userService.getHealthHistoryList(request);
     }
 
-    @GetMapping("/pet-list")
+    @PostMapping("/pet-list")
     @PreAuthorize("hasAuthority('user:read')")
     public PetListResponse getPetListByUserId(){
         return userService.getPetList();
