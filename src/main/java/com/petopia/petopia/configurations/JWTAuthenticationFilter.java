@@ -57,11 +57,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(accountEmail);
             Account account = accountRepo.findByEmail(userDetails.getUsername()).orElse(null);
             assert account != null;
-            if(!account.getAccountStatus().getStatus().equals("active")) {
+            if(!account.getAccountStatus().getStatus().equals(Const.ACCOUNT_STATUS_ACTIVE)) {
                 filterChain.doFilter(request, response);
                 return;
             }
-            Token refreshToken = tokenRepo.findByAccount_IdAndTokenStatus_StatusAndType(account.getId(), "active", "refresh").orElse(null);
+            Token refreshToken = tokenRepo.findByAccount_IdAndTokenStatus_StatusAndType(account.getId(), Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_REFRESH).orElse(null);
             Token accessToken = tokenRepo.findByValue(jwt).orElse(null);
             assert refreshToken != null;
             assert accessToken != null;

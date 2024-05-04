@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -22,7 +23,7 @@ public class Appointment {
     private Pet pet;
 
     @ManyToOne
-    @JoinColumn(name = "`doctor_id`")
+    @JoinColumn(name = "`provider_id`")
     private Account account;
 
     @ManyToOne
@@ -40,4 +41,8 @@ public class Appointment {
     @OneToOne(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
     private ServiceReport serviceReport;
+
+    @OneToMany(mappedBy = "appointment")
+    @ToString.Exclude
+    private List<Appointment_Service> appointmentServiceList;
 }
