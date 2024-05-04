@@ -11,9 +11,27 @@ import lombok.NoArgsConstructor;
 @Builder
 public class LoginResponse {
 
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class AccountResponse{
+        private String status;
+
+        private String name;
+
+        private String email;
+
+        private String role;
+
+        private String avatar;
+
+        private String accessToken;
+    }
+
     private String status;
 
     private String message;
 
-    private String accessToken;
+    private AccountResponse account;
 }

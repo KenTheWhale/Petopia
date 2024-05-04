@@ -18,6 +18,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.regex.Pattern;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -59,45 +61,96 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public LoginResponse login(LoginRequest request) {
-        if(checkIfStringIsValid(request.getUsername()) && checkIfStringIsValid(request.getPassword())){
-            Account account = accountRepo.findByEmail(request.getUsername()).orElse(null);
-            if(account != null && passwordEncoder.matches(request.getPassword(), account.getPassword())){
-                if(account.getAccountStatus().getStatus().equals(Const.ACCOUNT_STATUS_ACTIVE)){
-                    Token oldAccess = tokenRepo.findByAccount_IdAndTokenStatus_StatusAndType(account.getId(), Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_ACCESS).orElse(null);
-                    Token oldRefresh = tokenRepo.findByAccount_IdAndTokenStatus_StatusAndType(account.getId(), Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_REFRESH).orElse(null);
+        if(checkIfStringIsValid(request.getEmail()) && checkIfStringIsValid(request.getPassword())){
+            if(checkIfMailIsValid(request.getEmail())){
+                Account account = accountRepo.findByEmail(request.getEmail()).orElse(null);
+                if(account != null && passwordEncoder.matches(request.getPassword(), account.getPassword())){
+                    if(account.getAccountStatus().getStatus().equals(Const.ACCOUNT_STATUS_ACTIVE)){
+                        Token oldAccess = tokenRepo.findByAccount_IdAndTokenStatus_StatusAndType(account.getId(), Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_ACCESS).orElse(null);
+                        Token oldRefresh = tokenRepo.findByAccount_IdAndTokenStatus_StatusAndType(account.getId(), Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_REFRESH).orElse(null);
 
-                    if(oldAccess != null) tokenStatusService.applyExpiredStatus(oldAccess);
-                    if(oldRefresh != null) tokenStatusService.applyExpiredStatus(oldRefresh);
+                        if(oldAccess != null) tokenStatusService.applyExpiredStatus(oldAccess);
+                        if(oldRefresh != null) tokenStatusService.applyExpiredStatus(oldRefresh);
 
-                    String accessToken = jwtService.generateAccessToken(account);
-                    String refreshToken = jwtService.generateRefreshToken(account);
+                        String accessToken = jwtService.generateAccessToken(account);
+                        String refreshToken = jwtService.generateRefreshToken(account);
 
-                    tokenService.createNewAccessToken(account, accessToken);
-                    tokenService.createNewRefreshToken(account, refreshToken);
+                        tokenService.createNewAccessToken(account, accessToken);
+                        tokenService.createNewRefreshToken(account, refreshToken);
 
+                        return LoginResponse.builder()
+                                .status("200")
+                                .message("Login successfully")
+                                .account(
+                                        LoginResponse.AccountResponse.builder()
+                                                .status(account.getAccountStatus().getStatus())
+                                                .name(account.getName())
+                                                .email(account.getEmail())
+                                                .role(account.getRole().name())
+                                                .avatar(account.getAvatarLink())
+                                                .accessToken(accessToken)
+                                                .build()
+                                )
+                                .build();
+                    }
                     return LoginResponse.builder()
-                            .status("200")
-                            .message("Login successfully")
-                            .accessToken(accessToken)
+                            .status("400")
+                            .message("This account has been banned")
+                            .account(
+                                    LoginResponse.AccountResponse.builder()
+                                            .status("")
+                                            .name("")
+                                            .email("")
+                                            .role("")
+                                            .avatar("")
+                                            .accessToken("")
+                                            .build()
+                            )
                             .build();
                 }
                 return LoginResponse.builder()
                         .status("400")
-                        .message("This account has been banned")
-                        .accessToken("")
+                        .message("Username or password is incorrect")
+                        .account(
+                                LoginResponse.AccountResponse.builder()
+                                        .status("")
+                                        .name("")
+                                        .email("")
+                                        .role("")
+                                        .avatar("")
+                                        .accessToken("")
+                                        .build()
+                        )
                         .build();
             }
-
             return LoginResponse.builder()
                     .status("400")
-                    .message("Username or password is incorrect")
-                    .accessToken("")
+                    .message("Email is wrong formatted")
+                    .account(
+                            LoginResponse.AccountResponse.builder()
+                                    .status("")
+                                    .name("")
+                                    .email("")
+                                    .role("")
+                                    .avatar("")
+                                    .accessToken("")
+                                    .build()
+                    )
                     .build();
         }
         return LoginResponse.builder()
                 .status("400")
-                .message("Username or password is empty")
-                .accessToken("")
+                .message("Email or password is empty")
+                .account(
+                        LoginResponse.AccountResponse.builder()
+                                .status("")
+                                .name("")
+                                .email("")
+                                .role("")
+                                .avatar("")
+                                .accessToken("")
+                                .build()
+                )
                 .build();
     }
 
@@ -108,5 +161,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private boolean checkIfStringIsValid(String value){
         return value != null && !value.trim().isEmpty();
+    }
+
+    private boolean checkIfMailIsValid(String mail) {
+        String regex1 = "^[a-zA-Z][a-zA-Z0-9]*@[a-zA-Z0-9]+\\.[a-z]+\\.[a-z]+$";
+        String regex2 = "^[a-zA-Z][a-zA-Z0-9]*@[a-zA-Z0-9]+\\.[a-z]+$";
+        return Pattern.compile(regex1).matcher(mail).matches() || Pattern.compile(regex2).matcher(mail).matches();
     }
 }
