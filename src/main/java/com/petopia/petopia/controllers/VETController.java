@@ -10,4 +10,8 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "VET")
 public class VETController {
 
+//    @PostMapping("/draft-report-creation")
+//    @PreAuthorize("hasAuthority('vet:create')")
+//    public DraftReportResponse createDraftReport(@RequestBody DraftReportRequest)
+
 }
