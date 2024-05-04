@@ -24,6 +24,6 @@ public class Notification {
 
     private String content;
 
-    private boolean status;
+    private String status;
 
 }

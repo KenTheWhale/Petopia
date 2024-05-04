@@ -39,25 +39,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<?> getUserProfile(UserRequest userRequest) {
-
         // Validate the userId
         if (userRequest.getId() <= 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user ID.");
         }
-
         Optional<User> optionalUser = userRepo.findById(userRequest.getId());
-
-        List<UserProfileResponse.imgLinkResponse> imgLinkList = new ArrayList<>();
-        List<UserProfileResponse.groupListResponse> groupList = new ArrayList<>();
-        List<UserProfileResponse.postListResponse> postList = new ArrayList<>();
-        List<UserProfileResponse.commentListResponse> commentList = new ArrayList<>();
-        List<UserProfileResponse.petListResponse> petList = new ArrayList<>();
-        List<UserProfileResponse.orderListResponse> orderList = new ArrayList<>();
-        List<UserProfileResponse.feedbackListResponse> feedbackList = new ArrayList<>();
-
+        List<UserResponse.imgLinkResponse> imgLinkList = new ArrayList<>();
+        List<UserResponse.groupListResponse> groupList = new ArrayList<>();
+        List<UserResponse.postListResponse> postList = new ArrayList<>();
+        List<UserResponse.commentListResponse> commentList = new ArrayList<>();
+        List<UserResponse.petListResponse> petList = new ArrayList<>();
+        List<UserResponse.orderListResponse> orderList = new ArrayList<>();
+        List<UserResponse.feedbackListResponse> feedbackList = new ArrayList<>();
+        List<UserResponse.blackListResponse> blackList = new ArrayList<>();
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            return ResponseEntity.status(HttpStatus.OK).body(UserProfileResponse
+            return ResponseEntity.status(HttpStatus.OK).body(UserResponse
                     .builder()
                     .id(user.getId())
                     .name(user.getAccount().getName())
@@ -71,7 +68,7 @@ public class UserServiceImpl implements UserService {
                     .petList(petList)
                     .orderList(orderList)
                     .feedbackList(feedbackList)
-                    .blackList(user.getBlackList())
+                    .blackList(blackList)
                     .build());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + userRequest.getId() + " not found.");
@@ -89,24 +86,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<?> viewBlackList(UserRequest userRequest) {
-
         if (userRequest.getId() <= 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user ID.");
         }
-
         Optional<User> optionalUser = userRepo.findById(userRequest.getId());
-
-
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-
             if (user.getImgLinkList() == null) {
                 user.setImgLinkList(new ArrayList<>());
             }
             // Add a string to imgLinkList
             String newImgLink = "Avatar Link";
             user.getImgLinkList().add(newImgLink);
-
             return ResponseEntity.status(HttpStatus.OK).body(BlackListResponse
                     .builder()
                     .id(user.getId())
@@ -119,15 +110,37 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+//    @Override
+//    public ResponseEntity<?> viewNotification(UserRequest userRequest) {
+//        if (userRequest.getId() <= 0) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user ID.");
+//        }
+//        Optional<User> optionalUser = userRepo.findById(userRequest.getId());
+//        if (optionalUser.isPresent()) {
+//            User user = optionalUser.get();
+//            if (user.getNotificationList() == null) {
+//                user.setNotificationList(new ArrayList<>());
+//            }
+//
+//            return ResponseEntity.status(HttpStatus.OK).body(NotificationResponse
+//                    .builder()
+//                            .id(user.getId())
+//                    //sua toi khuc nay
+//                    .build()
+//            );
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + userRequest.getId() + " not found.");
+//        }
+//    }
 
 
     @Override
     public HealthHistoryResponse getHealthHistoryList(HealthHistoryRequest request) {
         Pet pet = petRepo.findById(request.getPetId()).orElse(null);
-        if(pet != null){
+        if (pet != null) {
             Page<ServiceReport> serviceReports = getPaginationHealthReportListByUserId(request.getPage(), request.getPetId(), request.getSort());
             List<HealthHistoryResponse.HealthReportResponse> list = new ArrayList<>();
-            for(ServiceReport report: serviceReports){
+            for (ServiceReport report : serviceReports) {
                 list.add(
                         HealthHistoryResponse.HealthReportResponse.builder()
                                 .id(report.getId())
@@ -187,8 +200,8 @@ public class UserServiceImpl implements UserService {
                 .status("200")
                 .message("Get list successfully")
                 .petList(pets.stream()
-                                .map(pet -> new PetListResponse.PetResponse(pet.getId(), pet.getName(), pet.getGender(), pet.getAge(), pet.getType(), pet.getNecklaceId(), pet.getDescription(), pet.getImgLinkList()))
-                                .collect(Collectors.toList()))
+                        .map(pet -> new PetListResponse.PetResponse(pet.getId(), pet.getName(), pet.getGender(), pet.getAge(), pet.getType(), pet.getNecklaceId(), pet.getDescription(), pet.getImgLinkList()))
+                        .collect(Collectors.toList()))
                 .build();
     }
 

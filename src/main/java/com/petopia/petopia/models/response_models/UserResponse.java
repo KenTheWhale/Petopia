@@ -1,6 +1,5 @@
 package com.petopia.petopia.models.response_models;
 
-import com.petopia.petopia.models.entity_models.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserProfileResponse {
+public class UserResponse {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
@@ -70,6 +69,16 @@ public class UserProfileResponse {
         private String id;
     }
 
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class blackListResponse {
+        private String id;
+        private String name;
+        private String imgLink;
+    }
+
     private Integer id;
     private String name;
     private String gender;
@@ -82,5 +91,5 @@ public class UserProfileResponse {
     private List<petListResponse> petList;
     private List<orderListResponse> orderList;
     private List<feedbackListResponse> feedbackList;
-    private List<BlackList> blackList;
+    private List<blackListResponse> blackList;
 }
