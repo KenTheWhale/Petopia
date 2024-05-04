@@ -58,4 +58,8 @@ public class User {
     @ToString.Exclude
     private List<BlackList> blackList;
 
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    private List<Notification> notificationList;
+
 }

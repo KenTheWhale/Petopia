@@ -47,6 +47,14 @@ public class UserServiceImpl implements UserService {
 
         Optional<User> optionalUser = userRepo.findById(userRequest.getId());
 
+        List<UserProfileResponse.imgLinkResponse> imgLinkList = new ArrayList<>();
+        List<UserProfileResponse.groupListResponse> groupList = new ArrayList<>();
+        List<UserProfileResponse.postListResponse> postList = new ArrayList<>();
+        List<UserProfileResponse.commentListResponse> commentList = new ArrayList<>();
+        List<UserProfileResponse.petListResponse> petList = new ArrayList<>();
+        List<UserProfileResponse.orderListResponse> orderList = new ArrayList<>();
+        List<UserProfileResponse.feedbackListResponse> feedbackList = new ArrayList<>();
+
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             return ResponseEntity.status(HttpStatus.OK).body(UserProfileResponse
@@ -56,22 +64,18 @@ public class UserServiceImpl implements UserService {
                     .gender(user.getGender())
                     .address(user.getAddress())
                     .phone(user.getPhone())
-                    .imgLinkList(user.getImgLinkList())
-                    .groupList(user.getGroupList())
-                    .postList(user.getPostList())
-                    .commentList(user.getCommentList())
-                    .petList(user.getPetList())
-                    .orderList(user.getOrderList())
-                    .feedbackList(user.getFeedbackList())
+                    .imgLinkList(imgLinkList)
+                    .groupList(groupList)
+                    .postList(postList)
+                    .commentList(commentList)
+                    .petList(petList)
+                    .orderList(orderList)
+                    .feedbackList(feedbackList)
                     .blackList(user.getBlackList())
                     .build());
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + userRequest.getId() + " not found.");
         }
-    }
-
-    public void hello(){
-        System.out.println("Hello");
     }
 
     public String getImgLink(int id) {

@@ -22,13 +22,13 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/getUserProfile")
+    @GetMapping("/userProfile")
     @PreAuthorize("hasAuthority('user:read')")
     public ResponseEntity<?> getUserProfile(@RequestBody UserRequest userRequest){
         return userService.getUserProfile(userRequest);
     }
 
-    @GetMapping("/viewBlackList")
+    @GetMapping("/blackList")
     @PreAuthorize("hasAuthority('user:read')")
     public ResponseEntity<?> viewBlackList(@RequestBody UserRequest userRequest){
         return userService.viewBlackList(userRequest);
