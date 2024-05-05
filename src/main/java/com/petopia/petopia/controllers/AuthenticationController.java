@@ -15,6 +15,10 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
+
+    @GetMapping("/awake")
+    public String awake() {return  "Sever still alive";}
+
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request){
         return authenticationService.login(request);
