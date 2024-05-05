@@ -3,9 +3,7 @@ package com.petopia.petopia.controllers;
 import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
 import com.petopia.petopia.models.request_models.HealthHistoryRequest;
 import com.petopia.petopia.models.request_models.UserRequest;
-import com.petopia.petopia.models.response_models.CreateAppointmentResponse;
-import com.petopia.petopia.models.response_models.HealthHistoryResponse;
-import com.petopia.petopia.models.response_models.PetListResponse;
+import com.petopia.petopia.models.response_models.*;
 import com.petopia.petopia.services.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,16 +19,16 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/userProfile")
+    @GetMapping("/userProfile")
     @PreAuthorize("hasAuthority('user:read')")
-    public ResponseEntity<?> getUserProfile(@RequestBody UserRequest userRequest){
-        return userService.getUserProfile(userRequest);
+    public CurrentUserResponse getCurrentUserProfile(){
+        return userService.getCurrentUserProfile();
     }
 
-    @PostMapping("/blackList")
+    @GetMapping("/blackList")
     @PreAuthorize("hasAuthority('user:read')")
-    public ResponseEntity<?> viewBlackList(@RequestBody UserRequest userRequest){
-        return userService.viewBlackList(userRequest);
+    public BlackListResponse viewBlackList(){
+        return userService.viewBlackList();
     }
 
     @PostMapping("/notification")

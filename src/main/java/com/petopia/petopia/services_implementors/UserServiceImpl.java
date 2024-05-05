@@ -39,41 +39,53 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationService authenticationService;
 
     @Override
-    public ResponseEntity<?> getUserProfile(UserRequest userRequest) {
-        // Validate the userId
-        if (userRequest.getId() <= 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user ID.");
-        }
-        Optional<User> optionalUser = userRepo.findById(userRequest.getId());
-        List<UserResponse.imgLinkResponse> imgLinkList = new ArrayList<>();
-        List<UserResponse.groupListResponse> groupList = new ArrayList<>();
-        List<UserResponse.postListResponse> postList = new ArrayList<>();
-        List<UserResponse.commentListResponse> commentList = new ArrayList<>();
-        List<UserResponse.petListResponse> petList = new ArrayList<>();
-        List<UserResponse.orderListResponse> orderList = new ArrayList<>();
-        List<UserResponse.feedbackListResponse> feedbackList = new ArrayList<>();
-        List<UserResponse.blackListResponse> blackList = new ArrayList<>();
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            return ResponseEntity.status(HttpStatus.OK).body(UserResponse
-                    .builder()
-                    .id(user.getId())
-                    .name(user.getAccount().getName())
-                    .gender(user.getGender())
-                    .address(user.getAddress())
-                    .phone(user.getPhone())
-                    .imgLinkList(imgLinkList)
-                    .groupList(groupList)
-                    .postList(postList)
-                    .commentList(commentList)
-                    .petList(petList)
-                    .orderList(orderList)
-                    .feedbackList(feedbackList)
-                    .blackList(blackList)
-                    .build());
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + userRequest.getId() + " not found.");
-        }
+    public CurrentUserResponse getCurrentUserProfile() {
+        Account currentAcc = authenticationService.getCurrentLoggedUser();
+        assert currentAcc != null;
+        return CurrentUserResponse.builder()
+                .status("200")
+                .message("Get current user profile successfully")
+                .user(
+                        CurrentUserResponse.userResponse.builder()
+                                .id(currentAcc.getId())
+                                .name(currentAcc.getName())
+//                                .password(currentAcc.getPassword())
+                                .email(currentAcc.getEmail())
+                                .avatarLink(currentAcc.getAvatarLink())
+                                .accountStatus(CurrentUserResponse.userResponse.accountStatusResponse.builder()
+                                        .status(currentAcc.getAccountStatus().getStatus())
+                                        .build())
+                                .tokenList(currentAcc.getTokenList().stream()
+                                        .map(token -> CurrentUserResponse.userResponse.tokenListResponse.builder()
+                                                .id(token.getId())
+                                                .tokenStatus(CurrentUserResponse.userResponse.tokenListResponse.tokenStatusResponse.builder()
+                                                        .status(token.getTokenStatus().getStatus())
+                                                        .build())
+                                                .value(token.getValue())
+                                                .type(token.getType())
+                                                .build())
+                                        .collect(Collectors.toList()))
+                                .appointmentList(currentAcc.getAppointmentList().stream()
+                                        .map(appointment -> CurrentUserResponse.userResponse.appointmentResponse.builder()
+                                                .id(appointment.getId())
+                                                .pet(appointment.getPet())
+                                                .appointmentStatus(CurrentUserResponse.userResponse.appointmentResponse.appointmentStatusResponse.builder()
+                                                        .status(appointment.getAppointmentStatus().getStatus())
+                                                        .build())
+                                                .date(appointment.getDate())
+                                                .location(appointment.getLocation())
+                                                .build())
+                                        .collect(Collectors.toList()))
+                                .shop(currentAcc.getShop() != null ?
+                                        CurrentUserResponse.userResponse.shopResponse.builder()
+                                                .id(currentAcc.getShop().getId())
+                                                .name(currentAcc.getShop().getName())
+                                                .address(currentAcc.getShop().getAddress())
+                                                .build() : null
+                                )
+                                .role(currentAcc.getRole())
+                                .build())
+                .build();
     }
 
     public String getImgLink(int id) {
@@ -86,29 +98,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<?> viewBlackList(UserRequest userRequest) {
-        if (userRequest.getId() <= 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user ID.");
-        }
-        Optional<User> optionalUser = userRepo.findById(userRequest.getId());
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            if (user.getImgLinkList() == null) {
-                user.setImgLinkList(new ArrayList<>());
-            }
-            // Add a string to imgLinkList
-            String newImgLink = "Avatar Link";
-            user.getImgLinkList().add(newImgLink);
-            return ResponseEntity.status(HttpStatus.OK).body(BlackListResponse
-                    .builder()
-                    .id(user.getId())
-                    .imgLink(getImgLink(user.getId()))
-                    .name(user.getAccount().getName())
-                    .build()
-            );
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id " + userRequest.getId() + " not found.");
-        }
+    public BlackListResponse viewBlackList() {
+        Account currentAcc = authenticationService.getCurrentLoggedUser();
+        assert currentAcc != null;
+        return BlackListResponse.builder()
+                .status("200")
+                .message("Get black list successfully")
+                .blackList(currentAcc.getUser().getBlackList().stream()
+                        .map(blackList -> BlackListResponse.blackList.builder()
+                                .id(blackList.getId())
+                                .userData(BlackListResponse.blackList.userResponse.builder()
+                                        .id(blackList.getUser().getId())
+                                        .account(blackList.getUser().getAccount() != null ?
+                                                BlackListResponse.blackList.userResponse.accountResponse.builder()
+                                                        .name(blackList.getUser().getAccount().getName())
+                                                        .build() : null)
+                                        .avatarLink(getImgLink(blackList.getUser().getId()))
+                                        .build())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
     }
 
     @Override

@@ -3,16 +3,14 @@ package com.petopia.petopia.services;
 import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
 import com.petopia.petopia.models.request_models.HealthHistoryRequest;
 import com.petopia.petopia.models.request_models.UserRequest;
-import com.petopia.petopia.models.response_models.CreateAppointmentResponse;
-import com.petopia.petopia.models.response_models.HealthHistoryResponse;
-import com.petopia.petopia.models.response_models.PetListResponse;
+import com.petopia.petopia.models.response_models.*;
 import org.springframework.http.ResponseEntity;
 
 public interface UserService {
 
-    ResponseEntity<?> getUserProfile(UserRequest userRequest);
+    CurrentUserResponse getCurrentUserProfile();
 
-    ResponseEntity<?> viewBlackList(UserRequest userRequest);
+    BlackListResponse viewBlackList();
 
     ResponseEntity<?> viewNotification(UserRequest userRequest);
 
