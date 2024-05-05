@@ -35,8 +35,11 @@ public class Const {
     public final static String PRODUCT_STATUS_AVAILABLE = "còn hàng";
     public final static String PRODUCT_STATUS_OUT_OF_STOCK = "hết hàng";
     public final static String PRODUCT_STATUS_DELETED = "bị xóa";
-
     public final static int PAGE_SIZE = 50;
+    public final static String PET_GENDER_MALE = "đực";
+    public final static String PET_GENDER_FEMALE = "cái";
+    public final static String HUMAN_GENDER_MALE = "nam";
+    public final static String HUMAN_GENDER_FEMALE = "nữ";
 
 
 }
