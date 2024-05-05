@@ -21,12 +21,12 @@ import io.swagger.v3.oas.annotations.servers.Server;
         ),
         servers = {
                 @Server(
-                        description = "localhost",
-                        url = "http://localhost:8080"
-                ),
-                @Server(
                         description = "live server",
                         url = "https://petopia-4mv2.onrender.com"
+                ),
+                @Server(
+                        description = "localhost",
+                        url = "http://localhost:8080"
                 )
         },
         security = {

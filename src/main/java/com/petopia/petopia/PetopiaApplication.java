@@ -66,12 +66,12 @@ public class PetopiaApplication {
 		SpringApplication.run(PetopiaApplication.class, args);
 	}
 
-	@Bean
-	public CommandLineRunner initDate(){
-		return new CommandLineRunner() {
-			@Override
-			public void run(String... args) throws Exception {
-
+//	@Bean
+//	public CommandLineRunner initDate(){
+//		return new CommandLineRunner() {
+//			@Override
+//			public void run(String... args) throws Exception {
+//
 //				// init token status
 //				TokenStatus activeToken = tokenStatusRepo.save(
 //						TokenStatus.builder().status(Const.TOKEN_STATUS_ACTIVE).build()
@@ -468,8 +468,8 @@ public class PetopiaApplication {
 //				}
 //
 //				serviceReportRepo.saveAll(serviceReports);
-			}
-		};
-	}
+//			}
+//		};
+//	}
 
 }
