@@ -184,7 +184,7 @@ public class UserServiceImpl implements UserService {
         }
         return HealthHistoryResponse.builder()
                 .status("400")
-                .message("Fail to get list")
+                .message("Can not find pet")
                 .totalPage(0)
                 .petId(0)
                 .petName("")
@@ -221,6 +221,4 @@ public class UserServiceImpl implements UserService {
         Pageable pageable = PageRequest.of(pageNo, Const.PAGE_SIZE, Sort.by(sort));
         return serviceReportRepo.findAllByAppointment_Pet_IdAndAppointment_TypeAndAppointment_AppointmentStatus_Status(petID, Const.APPOINTMENT_TYPE_HEALTH, Const.APPOINTMENT_STATUS_SUCCESSFUL, pageable);
     }
-
-
 }
