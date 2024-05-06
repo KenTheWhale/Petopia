@@ -13,7 +13,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -61,6 +60,14 @@ public class PetopiaApplication {
 	private final ServiceReportRepo serviceReportRepo;
 
 	private final TokenRepo tokenRepo;
+
+	private final ServiceProviderRepo serviceProviderRepo;
+
+	private final ProviderStatusRepo providerStatusRepo;
+
+	private final ServiceStatusRepo serviceStatusRepo;
+
+	private final ServiceCenterStatusRepo serviceCenterStatusRepo;
 
 	public static void main(String[] args) {
 		SpringApplication.run(PetopiaApplication.class, args);
@@ -205,6 +212,45 @@ public class PetopiaApplication {
 //				// init payment method
 //				PaymentMethod VNPayMethod = paymentMethodRepo.save(
 //						PaymentMethod.builder().method("VNPay").build()
+//				);
+//
+//				// init provider status
+//				ProviderStatus availableProvider = providerStatusRepo.save(
+//						ProviderStatus.builder().status(Const.PROVIDER_STATUS_AVAILABLE).build()
+//				);
+//
+//				ProviderStatus busyProvider = providerStatusRepo.save(
+//						ProviderStatus.builder().status(Const.PROVIDER_STATUS_BUSY).build()
+//				);
+//
+//				// Init service status
+//				ServiceStatus activeService = serviceStatusRepo.save(
+//						ServiceStatus.builder().status(Const.SERVICE_STATUS_ACTIVE).build()
+//				);
+//
+//				ServiceStatus closedService = serviceStatusRepo.save(
+//						ServiceStatus.builder().status(Const.SERVICE_STATUS_CLOSED).build()
+//				);
+//
+//				ServiceStatus deletedService = serviceStatusRepo.save(
+//						ServiceStatus.builder().status(Const.SERVICE_STATUS_DELETED).build()
+//				);
+//
+//				// init service center status
+//				ServiceCenterStatus activeServiceCenter = serviceCenterStatusRepo.save(
+//						ServiceCenterStatus.builder().status(Const.SERVICE_CENTER_STATUS_ACTIVE).build()
+//				);
+//
+//				ServiceCenterStatus closedServiceCenter = serviceCenterStatusRepo.save(
+//						ServiceCenterStatus.builder().status(Const.SERVICE_CENTER_STATUS_CLOSED).build()
+//				);
+//
+//				ServiceCenterStatus bannedServiceCenter = serviceCenterStatusRepo.save(
+//						ServiceCenterStatus.builder().status(Const.SERVICE_CENTER_STATUS_BANNED).build()
+//				);
+//
+//				ServiceCenterStatus deletedServiceCenter = serviceCenterStatusRepo.save(
+//						ServiceCenterStatus.builder().status(Const.SERVICE_CENTER_STATUS_DELETED).build()
 //				);
 //
 //				// init account
@@ -424,16 +470,27 @@ public class PetopiaApplication {
 //								.build()
 //				);
 //
+//				List<ServiceProvider> serviceProviders = new ArrayList<>();
+//				for(int i = 0; i < 10; i++){
+//					serviceProviders.add(
+//							serviceProviderRepo.save(
+//									ServiceProvider.builder()
+//											.account(accounts.get(i))
+//											.providerStatus(availableProvider)
+//											.build()
+//							)
+//					);
+//				}
+//
 //				List<Appointment> appointments = new ArrayList<>();
 //				for(int i = 0; i < 5; i++){
 //					appointments.add(
 //							Appointment.builder()
 //									.pet(tran_dan)
-//									.account(accounts.get(i))
+//									.serviceProvider(serviceProviders.get(i))
 //									.appointmentStatus(successfulAppointment)
 //									.type(Const.APPOINTMENT_TYPE_HEALTH)
 //									.date(LocalDateTime.parse(dateList[i], formatter))
-//									.location(placeList[i])
 //									.fee((i + 10) * 1000 + 20000)
 //									.build()
 //					);
@@ -443,11 +500,10 @@ public class PetopiaApplication {
 //					appointments.add(
 //							Appointment.builder()
 //									.pet(johnny_dang)
-//									.account(accounts.get(i))
+//									.serviceProvider(serviceProviders.get(i))
 //									.appointmentStatus(successfulAppointment)
 //									.type(Const.APPOINTMENT_TYPE_HEALTH)
 //									.date(LocalDateTime.parse(dateList[i], formatter))
-//									.location(placeList[i])
 //									.fee((i + 10) * 1000 + 20000)
 //									.build()
 //					);

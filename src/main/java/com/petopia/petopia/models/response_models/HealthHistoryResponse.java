@@ -44,7 +44,7 @@ public class HealthHistoryResponse {
 
         private String extraContent;
 
-        private String place;
+       // private String place;
 
         private DoctorResponse doctor;
     }

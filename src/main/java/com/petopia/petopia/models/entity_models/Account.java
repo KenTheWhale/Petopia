@@ -41,13 +41,17 @@ public class Account implements UserDetails {
     @ToString.Exclude
     private User user;
 
-    @OneToMany(mappedBy = "account")
+    @OneToOne(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
-    private List<Appointment> appointmentList;
+    private ServiceProvider serviceProvider;
 
     @OneToOne(mappedBy = "account")
     @ToString.Exclude
     private Shop shop;
+
+    @OneToOne(mappedBy = "account")
+    @ToString.Exclude
+    private ServiceCenter serviceCenter;
 
     @Enumerated(EnumType.STRING)
     private Role role;

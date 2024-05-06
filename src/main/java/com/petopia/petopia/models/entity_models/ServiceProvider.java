@@ -3,7 +3,6 @@ package com.petopia.petopia.models.entity_models;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Date;
 import java.util.List;
 
 @Data
@@ -11,35 +10,22 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "`shop`")
-public class Shop {
+@Table(name = "`service_provider`")
+public class ServiceProvider {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "`owner_id`")
+    @JoinColumn(name = "`account_id`")
     private Account account;
 
     @ManyToOne
-    @JoinColumn(name = "`planId`")
-    private ShopPlan shopPlan;
-
-    @ManyToOne
     @JoinColumn(name = "`status_id`")
-    private ShopStatus shopStatus;
+    private ProviderStatus providerStatus;
 
-    @OneToMany(mappedBy = "shop")
+    @OneToMany(mappedBy = "serviceProvider")
     @ToString.Exclude
-    private List<Product> productList;
-
-
-    private Date planExpiredDate;
-
-    private String name;
-
-    private String address;
-
-    private int rating;
+    private List<Appointment> appointmentList;
 }
