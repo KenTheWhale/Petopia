@@ -40,52 +40,54 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CurrentUserResponse getCurrentUserProfile() {
-        Account currentAcc = authenticationService.getCurrentLoggedUser();
-        assert currentAcc != null;
-        return CurrentUserResponse.builder()
-                .status("200")
-                .message("Get current user profile successfully")
-                .user(
-                        CurrentUserResponse.userResponse.builder()
-                                .id(currentAcc.getId())
-                                .name(currentAcc.getName())
-//                                .password(currentAcc.getPassword())
-                                .email(currentAcc.getEmail())
-                                .avatarLink(currentAcc.getAvatarLink())
-                                .accountStatus(CurrentUserResponse.userResponse.accountStatusResponse.builder()
-                                        .status(currentAcc.getAccountStatus().getStatus())
-                                        .build())
-                                .tokenList(currentAcc.getTokenList().stream()
-                                        .map(token -> CurrentUserResponse.userResponse.tokenListResponse.builder()
-                                                .id(token.getId())
-                                                .tokenStatus(CurrentUserResponse.userResponse.tokenListResponse.tokenStatusResponse.builder()
-                                                        .status(token.getTokenStatus().getStatus())
-                                                        .build())
-                                                .value(token.getValue())
-                                                .type(token.getType())
-                                                .build())
-                                        .collect(Collectors.toList()))
-                                .appointmentList(currentAcc.getAppointmentList().stream()
-                                        .map(appointment -> CurrentUserResponse.userResponse.appointmentResponse.builder()
-                                                .id(appointment.getId())
-                                                .pet(appointment.getPet())
-                                                .appointmentStatus(CurrentUserResponse.userResponse.appointmentResponse.appointmentStatusResponse.builder()
-                                                        .status(appointment.getAppointmentStatus().getStatus())
-                                                        .build())
-                                                .date(appointment.getDate())
-                                                .location(appointment.getLocation())
-                                                .build())
-                                        .collect(Collectors.toList()))
-                                .shop(currentAcc.getShop() != null ?
-                                        CurrentUserResponse.userResponse.shopResponse.builder()
-                                                .id(currentAcc.getShop().getId())
-                                                .name(currentAcc.getShop().getName())
-                                                .address(currentAcc.getShop().getAddress())
-                                                .build() : null
-                                )
-                                .role(currentAcc.getRole())
-                                .build())
-                .build();
+//        Account currentAcc = authenticationService.getCurrentLoggedUser();
+//        assert currentAcc != null;
+//        return CurrentUserResponse.builder()
+//                .status("200")
+//                .message("Get current user profile successfully")
+//                .user(
+//                        CurrentUserResponse.userResponse.builder()
+//                                .id(currentAcc.getId())
+//                                .name(currentAcc.getName())
+////                                .password(currentAcc.getPassword())
+//                                .email(currentAcc.getEmail())
+//                                .avatarLink(currentAcc.getAvatarLink())
+//                                .accountStatus(CurrentUserResponse.userResponse.accountStatusResponse.builder()
+//                                        .status(currentAcc.getAccountStatus().getStatus())
+//                                        .build())
+//                                .tokenList(currentAcc.getTokenList().stream()
+//                                        .map(token -> CurrentUserResponse.userResponse.tokenListResponse.builder()
+//                                                .id(token.getId())
+//                                                .tokenStatus(CurrentUserResponse.userResponse.tokenListResponse.tokenStatusResponse.builder()
+//                                                        .status(token.getTokenStatus().getStatus())
+//                                                        .build())
+//                                                .value(token.getValue())
+//                                                .type(token.getType())
+//                                                .build())
+//                                        .collect(Collectors.toList()))
+//                                .appointmentList(currentAcc.getAppointmentList().stream()
+//                                        .map(appointment -> CurrentUserResponse.userResponse.appointmentResponse.builder()
+//                                                .id(appointment.getId())
+//                                                .pet(appointment.getPet())
+//                                                .appointmentStatus(CurrentUserResponse.userResponse.appointmentResponse.appointmentStatusResponse.builder()
+//                                                        .status(appointment.getAppointmentStatus().getStatus())
+//                                                        .build())
+//                                                .date(appointment.getDate())
+//                                                .location(appointment.getLocation())
+//                                                .build())
+//                                        .collect(Collectors.toList()))
+//                                .shop(currentAcc.getShop() != null ?
+//                                        CurrentUserResponse.userResponse.shopResponse.builder()
+//                                                .id(currentAcc.getShop().getId())
+//                                                .name(currentAcc.getShop().getName())
+//                                                .address(currentAcc.getShop().getAddress())
+//                                                .build() : null
+//                                )
+//                                .role(currentAcc.getRole())
+//                                .build())
+//                .build();
+
+        return null;
     }
 
     public String getImgLink(int id) {
@@ -99,25 +101,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public BlackListResponse viewBlackList() {
-        Account currentAcc = authenticationService.getCurrentLoggedUser();
-        assert currentAcc != null;
-        return BlackListResponse.builder()
-                .status("200")
-                .message("Get black list successfully")
-                .blackList(currentAcc.getUser().getBlackList().stream()
-                        .map(blackList -> BlackListResponse.blackList.builder()
-                                .id(blackList.getId())
-                                .userData(BlackListResponse.blackList.userResponse.builder()
-                                        .id(blackList.getUser().getId())
-                                        .account(blackList.getUser().getAccount() != null ?
-                                                BlackListResponse.blackList.userResponse.accountResponse.builder()
-                                                        .name(blackList.getUser().getAccount().getName())
-                                                        .build() : null)
-                                        .avatarLink(getImgLink(blackList.getUser().getId()))
-                                        .build())
-                                .build())
-                        .collect(Collectors.toList()))
-                .build();
+//        Account currentAcc = authenticationService.getCurrentLoggedUser();
+//        assert currentAcc != null;
+//        return BlackListResponse.builder()
+//                .status("200")
+//                .message("Get black list successfully")
+//                .blackList(currentAcc.getUser().getBlackList().stream()
+//                        .map(blackList -> BlackListResponse.blackList.builder()
+//                                .id(blackList.getId())
+//                                .userData(BlackListResponse.blackList.userResponse.builder()
+//                                        .id(blackList.getUser().getId())
+//                                        .account(blackList.getUser().getAccount() != null ?
+//                                                BlackListResponse.blackList.userResponse.accountResponse.builder()
+//                                                        .name(blackList.getUser().getAccount().getName())
+//                                                        .build() : null)
+//                                        .avatarLink(getImgLink(blackList.getUser().getId()))
+//                                        .build())
+//                                .build())
+//                        .collect(Collectors.toList()))
+//                .build();
+        return null;
     }
 
     @Override
@@ -155,12 +158,11 @@ public class UserServiceImpl implements UserService {
                                 .report(report.getReport())
                                 .status(Const.APPOINTMENT_STATUS_SUCCESSFUL)
                                 .extraContent(report.getExtraContent())
-                                .place(report.getAppointment().getLocation())
                                 .doctor(
                                         HealthHistoryResponse.DoctorResponse.builder()
-                                                .id(report.getAppointment().getAccount().getId())
-                                                .name(report.getAppointment().getAccount().getName())
-                                                .avatarLink(report.getAppointment().getAccount().getAvatarLink())
+                                                .id(report.getAppointment().getServiceProvider().getAccount().getId())
+                                                .name(report.getAppointment().getServiceProvider().getAccount().getName())
+                                                .avatarLink(report.getAppointment().getServiceProvider().getAccount().getAvatarLink())
                                                 .build()
                                 )
                                 .build()

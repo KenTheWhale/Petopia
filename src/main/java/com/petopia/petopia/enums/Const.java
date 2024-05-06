@@ -32,6 +32,13 @@ public class Const {
     public final static String SHOP_STATUS_CLOSED = "ngừng hoạt động";
     public final static String SHOP_STATUS_BANNED = "bị cấm";
     public final static String SHOP_STATUS_DELETED = "bị xóa";
+    public final static String SERVICE_CENTER_STATUS_ACTIVE = "hoạt động";
+    public final static String SERVICE_CENTER_STATUS_CLOSED = "ngừng hoạt động";
+    public final static String SERVICE_CENTER_STATUS_BANNED = "bị cấm";
+    public final static String SERVICE_CENTER_STATUS_DELETED = "bị xóa";
+    public final static String SERVICE_STATUS_ACTIVE = "hoạt động";
+    public final static String SERVICE_STATUS_CLOSED = "ngừng cung cấp";
+    public final static String SERVICE_STATUS_DELETED = "bị xóa";
     public final static String PRODUCT_STATUS_AVAILABLE = "còn hàng";
     public final static String PRODUCT_STATUS_OUT_OF_STOCK = "hết hàng";
     public final static String PRODUCT_STATUS_DELETED = "bị xóa";
@@ -40,6 +47,6 @@ public class Const {
     public final static String PET_GENDER_FEMALE = "cái";
     public final static String HUMAN_GENDER_MALE = "nam";
     public final static String HUMAN_GENDER_FEMALE = "nữ";
-
-
+    public final static String PROVIDER_STATUS_AVAILABLE = "sẵn sàng";
+    public final static String PROVIDER_STATUS_BUSY = "đã bận";
 }

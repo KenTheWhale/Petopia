@@ -4,7 +4,9 @@ import com.petopia.petopia.models.entity_models.Account;
 import com.petopia.petopia.models.entity_models.Appointment;
 import com.petopia.petopia.models.entity_models.Pet;
 import com.petopia.petopia.models.entity_models.User;
+import com.petopia.petopia.models.request_models.AppointmentProcessingRequest;
 import com.petopia.petopia.models.request_models.DraftReportRequest;
+import com.petopia.petopia.models.response_models.AppointmentProcessingResponse;
 import com.petopia.petopia.models.response_models.DraftReportResponse;
 import com.petopia.petopia.repositories.AppointmentRepo;
 import com.petopia.petopia.repositories.PetRepo;
@@ -71,12 +73,21 @@ public class VetServiceImpl implements VetService {
                                 .petType(pet.getType())
                                 .doctorName(doctor.getName())
                                 .date(LocalDateTime.now())
-                                .location(appointment.getLocation())
                                 .report(request.getReport())
                                 .extraDetail(request.getExtraContent())
                                 .fee(appointment.getFee())
                                 .build()
                 )
                 .build();
+    }
+
+    @Override
+    public AppointmentProcessingResponse processAppointment(AppointmentProcessingRequest request) {
+        Appointment appointment = appointmentRepo.findById(request.getAppointmentId()).orElse(null);
+        if(appointment == null){
+            return AppointmentProcessingResponse.builder().status("400").message("No existed appointment with id " + request.getAppointmentId()).build();
+        }
+
+        return null;
     }
 }

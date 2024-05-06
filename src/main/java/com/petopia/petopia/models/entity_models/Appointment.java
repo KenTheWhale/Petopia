@@ -24,15 +24,13 @@ public class Appointment {
 
     @ManyToOne
     @JoinColumn(name = "`provider_id`")
-    private Account account;
+    private ServiceProvider serviceProvider;
 
     @ManyToOne
     @JoinColumn(name = "`status_id`")
     private AppointmentStatus appointmentStatus;
 
     private LocalDateTime date;
-
-    private String location;
 
     private double fee;
 
@@ -41,8 +39,4 @@ public class Appointment {
     @OneToOne(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
     private ServiceReport serviceReport;
-
-    @OneToMany(mappedBy = "appointment")
-    @ToString.Exclude
-    private List<Appointment_Service> appointmentServiceList;
 }

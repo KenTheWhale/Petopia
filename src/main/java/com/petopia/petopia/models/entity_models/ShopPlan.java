@@ -10,18 +10,26 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "`service`")
-public class Service {
+@Table(name = "`shop_plan`")
+public class ShopPlan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "status_id")
-    private ServiceStatus serviceStatus;
+    @JoinColumn(name = "`status_id`")
+    private PlanStatus planStatus;
 
     private String name;
 
     private double fee;
+
+    private int duration;
+
+    private String description;
+
+    @OneToMany(mappedBy = "shopPlan")
+    @ToString.Exclude
+    private List<Shop> shopList;
 }

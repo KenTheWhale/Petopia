@@ -10,15 +10,16 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "`black_list`")
-public class BlackList {
+@Table(name = "`provider_status`")
+public class ProviderStatus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "`user_id`")
-    private User user;
+    private String status;
 
+    @OneToMany(mappedBy = "providerStatus")
+    @ToString.Exclude
+    private List<ServiceProvider> serviceProviderList;
 }

@@ -1,6 +1,8 @@
 package com.petopia.petopia.controllers;
 
+import com.petopia.petopia.models.request_models.AppointmentProcessingRequest;
 import com.petopia.petopia.models.request_models.DraftReportRequest;
+import com.petopia.petopia.models.response_models.AppointmentProcessingResponse;
 import com.petopia.petopia.models.response_models.DraftReportResponse;
 import com.petopia.petopia.services.VetService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,6 +22,12 @@ public class VETController {
     @PreAuthorize("hasAuthority('vet:create')")
     public DraftReportResponse createDraftReport(@RequestBody DraftReportRequest request){
         return vetService.createDraftReport(request);
+    }
+
+    @PostMapping("/appointment-processing")
+    @PreAuthorize("hasAuthority('vet:update')")
+    public AppointmentProcessingResponse processAppointment(@RequestBody AppointmentProcessingRequest request){
+        return vetService.processAppointment(request);
     }
 
 }
