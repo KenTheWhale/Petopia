@@ -14,9 +14,4 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Admin")
 public class AdminController {
 
-    @GetMapping("/hello")
-    @PreAuthorize("hasAuthority('admin:read')")
-    public String sayHello(){
-        return "Hello admin";
-    }
 }

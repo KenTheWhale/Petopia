@@ -26,10 +26,10 @@ public class JWTServiceImpl implements JWTService {
     @Value("f5aa9f96034f1b8baab27eab35a7b76cf7120f8330be3e257d6104fc9ba4ce0e")
     private String secretKey;
 
-    @Value("10800000") // 3 hours
+    @Value("1209600000") // 2 weeks
     private long accessTokenExpiration;
 
-    @Value("432000000") // 5 days
+    @Value("12096000000") // 5 months
     private long refreshTokenExpiration;
 
     private final TokenRepo tokenRepo;
