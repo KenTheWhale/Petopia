@@ -6,27 +6,23 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "`notification`")
-public class Notification {
+@Table(name = "`appointment_service`")
+public class AppointmentService {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "`user_id`")
-    private User user;
+    @JoinColumn(name = "`appointment_id`")
+    private Appointment appointment;
 
-    @Transient
-    private List<String> imgListLink;
-
-    private String content;
-
+    @ManyToOne
+    @JoinColumn(name = "`service_id`")
+    private Service service;
 }

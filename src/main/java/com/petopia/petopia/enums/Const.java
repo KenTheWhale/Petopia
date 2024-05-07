@@ -48,5 +48,5 @@ public class Const {
     public final static String HUMAN_GENDER_MALE = "nam";
     public final static String HUMAN_GENDER_FEMALE = "nữ";
     public final static String PROVIDER_STATUS_AVAILABLE = "sẵn sàng";
-    public final static String PROVIDER_STATUS_BUSY = "đã bận";
+    public final static String PROVIDER_STATUS_BUSY = "đang bận";
 }

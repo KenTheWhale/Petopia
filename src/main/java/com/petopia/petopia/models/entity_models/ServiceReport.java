@@ -29,4 +29,6 @@ public class ServiceReport {
     private String report;
 
     private String extraContent;
+
+    private String location;
 }

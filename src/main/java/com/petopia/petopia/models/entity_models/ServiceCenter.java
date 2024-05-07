@@ -1,12 +1,10 @@
 package com.petopia.petopia.models.entity_models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -32,7 +30,15 @@ public class ServiceCenter {
     @JoinColumn(name = "status_id")
     private ServiceCenterStatus serviceCenterStatus;
 
-    private LocalDateTime planExpiredDate;
+    @OneToMany(mappedBy = "serviceCenter")
+    @ToString.Exclude
+    private List<ServiceProvider> serviceProviderList;
+
+    @OneToMany(mappedBy = "serviceCenter")
+    @ToString.Exclude
+    private List<Service> serviceList;
+
+    private LocalDateTime planPurchasedDate;
 
     private String name;
 
