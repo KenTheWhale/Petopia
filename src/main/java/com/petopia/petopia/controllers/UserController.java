@@ -1,9 +1,8 @@
 package com.petopia.petopia.controllers;
 
-import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
-import com.petopia.petopia.models.request_models.HealthHistoryRequest;
-import com.petopia.petopia.models.request_models.UserRequest;
+import com.petopia.petopia.models.request_models.*;
 import com.petopia.petopia.models.response_models.*;
+import com.petopia.petopia.services.AccountService;
 import com.petopia.petopia.services.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final AccountService accountService;
 
     @GetMapping("/userProfile")
     @PreAuthorize("hasAuthority('user:read')")
@@ -53,5 +53,15 @@ public class UserController {
     @PreAuthorize("hasAuthority('user:create')")
     public CreateAppointmentResponse createAppointment(@RequestBody CreateAppointmentRequest request){
         return userService.createAppointment(request);
+    }
+    @PostMapping("/create-user-profile")
+    public CreateUserProfileResponse createUserProfile(
+            @RequestParam("accountId") int accountId,
+            @RequestBody CreateUserProfileRequest request) {
+         return userService.createUserProfile(accountId, request);
+    }
+    @PostMapping("/create-Account")
+    public CreateAccountResponse createAccount(@RequestBody CreateAccountRequest request){
+        return  accountService.createAccount(request);
     }
 }

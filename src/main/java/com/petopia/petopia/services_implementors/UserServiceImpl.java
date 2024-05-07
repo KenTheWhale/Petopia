@@ -6,9 +6,11 @@ import com.petopia.petopia.models.entity_models.Pet;
 import com.petopia.petopia.models.entity_models.ServiceReport;
 import com.petopia.petopia.models.entity_models.User;
 import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
+import com.petopia.petopia.models.request_models.CreateUserProfileRequest;
 import com.petopia.petopia.models.request_models.HealthHistoryRequest;
 import com.petopia.petopia.models.request_models.UserRequest;
 import com.petopia.petopia.models.response_models.*;
+import com.petopia.petopia.repositories.AccountRepo;
 import com.petopia.petopia.repositories.PetRepo;
 import com.petopia.petopia.repositories.ServiceReportRepo;
 import com.petopia.petopia.repositories.UserRepo;
@@ -37,6 +39,7 @@ public class UserServiceImpl implements UserService {
     private final ServiceReportRepo serviceReportRepo;
     private final PetRepo petRepo;
     private final AuthenticationService authenticationService;
+    private final AccountRepo accountRepo;
 
     @Override
     public CurrentUserResponse getCurrentUserProfile() {
@@ -218,6 +221,45 @@ public class UserServiceImpl implements UserService {
     public CreateAppointmentResponse createAppointment(CreateAppointmentRequest request) {
         return null;
     }
+
+    @Override
+    public CreateUserProfileResponse createUserProfile(int id, CreateUserProfileRequest request) {
+        // Kiểm tra xem accountId đã tồn tại trong bảng User hay chưa
+        Optional<User> existingUser = userRepo.findByAccountId(id);
+        if (existingUser.isPresent()) {
+            // Nếu đã tồn tại, trả về thông báo lỗi
+            return CreateUserProfileResponse.builder()
+                    .status("409")
+                    .message("User profile for this account already exists")
+                    .build();
+        }
+
+        Optional<Account> optionalAccount = accountRepo.findById(id);
+        if (optionalAccount.isEmpty()) {
+            return CreateUserProfileResponse.builder()
+                    .status("404")
+                    .message("User does not exist")
+                    .build();
+        }
+
+        Account account = optionalAccount.get();
+        User user = User.builder()
+                .account(account)
+                .gender(request.getGender())
+                .address(request.getAddress())
+                .phone(request.getPhone())
+                .build();
+        userRepo.save(user);
+
+        return CreateUserProfileResponse.builder()
+                .address(user.getAddress())
+                .gender(user.getGender())
+                .phone(user.getPhone())
+                .status("200")
+                .message("User profile created successfully")
+                .build();
+    }
+
 
     private Page<ServiceReport> getPaginationHealthReportListByUserId(int pageNo, Integer petID, String sort) {
         Pageable pageable = PageRequest.of(pageNo, Const.PAGE_SIZE, Sort.by(sort));
