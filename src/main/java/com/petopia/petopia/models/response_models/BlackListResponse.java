@@ -24,7 +24,10 @@ public class BlackListResponse {
     @NoArgsConstructor
     @Builder
     public static class blackList {
-        private int id;
+
+        private String status;
+
+        private String message;
 
         @Data
         @AllArgsConstructor
@@ -33,14 +36,7 @@ public class BlackListResponse {
         public static class userResponse{
             private int id;
 
-            @Data
-            @AllArgsConstructor
-            @NoArgsConstructor
-            @Builder
-            public static class accountResponse {
-                private String name;
-            }
-            private accountResponse account;
+            private String name;
 
             private String avatarLink;
 

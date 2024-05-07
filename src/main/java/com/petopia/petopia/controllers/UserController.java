@@ -31,10 +31,10 @@ public class UserController {
         return userService.viewBlackList();
     }
 
-    @PostMapping("/notification")
+    @GetMapping("/notification")
     @PreAuthorize("hasAuthority('user:read')")
-    public ResponseEntity<?> viewNotification(@RequestBody UserRequest userRequest){
-        return userService.viewNotification(userRequest);
+    public NotificationResponse viewNotification(){
+        return userService.viewNotification();
     }
 
     @PostMapping("/health-history")
@@ -49,9 +49,15 @@ public class UserController {
         return userService.getPetList();
     }
 
-    @PostMapping("/appointment-creation")
+    @PostMapping("/health-appointment-creation")
     @PreAuthorize("hasAuthority('user:create')")
-    public CreateAppointmentResponse createAppointment(@RequestBody CreateAppointmentRequest request){
-        return userService.createAppointment(request);
+    public CreateAppointmentResponse createHealthAppointment(@RequestBody CreateAppointmentRequest request){
+        return userService.createAppointment(request, "health");
+    }
+
+    @PostMapping("/service-appointment-creation")
+    @PreAuthorize("hasAuthority('user:create')")
+    public CreateAppointmentResponse createServiceAppointment(@RequestBody CreateAppointmentRequest request){
+        return userService.createAppointment(request, "service");
     }
 }
