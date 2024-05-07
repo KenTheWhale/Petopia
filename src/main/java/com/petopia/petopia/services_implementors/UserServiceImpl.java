@@ -135,7 +135,7 @@ public class UserServiceImpl implements UserService {
                 user.setNotificationList(new ArrayList<>());
             }
             List<NotificationResponse> notificationResponses = user.getNotificationList().stream()
-                    .map(notification -> new NotificationResponse(notification.getId(), notification.getContent(), notification.getStatus()))
+                    .map(notification -> new NotificationResponse(notification.getId(), notification.getContent()))
                     .toList();
             return ResponseEntity.status(HttpStatus.OK).body(notificationResponses);
         } else {

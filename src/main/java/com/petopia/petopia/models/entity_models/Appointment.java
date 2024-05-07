@@ -39,4 +39,8 @@ public class Appointment {
     @OneToOne(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
     private ServiceReport serviceReport;
+
+    @OneToMany(mappedBy = "appointment")
+    @ToString.Exclude
+    private List<AppointmentService> appointmentServiceList;
 }

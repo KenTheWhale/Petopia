@@ -14,20 +14,20 @@ import static com.petopia.petopia.enums.Permission.*;
 public enum Role {
 
     USER(
-        Set.of(
-                USER_CREATE,
-                USER_READ,
-                USER_UPDATE,
-                USER_DELETE
-        )
+            Set.of(
+                    USER_CREATE,
+                    USER_READ,
+                    USER_UPDATE,
+                    USER_DELETE
+            )
     ),
     GROUP_MANAGER(
-        Set.of(
-                GROUP_MANAGER_CREATE,
-                GROUP_MANAGER_READ,
-                GROUP_MANAGER_UPDATE,
-                GROUP_MANAGER_DELETE
-        )
+            Set.of(
+                    GROUP_MANAGER_CREATE,
+                    GROUP_MANAGER_READ,
+                    GROUP_MANAGER_UPDATE,
+                    GROUP_MANAGER_DELETE
+            )
     ),
     GROUP_ADMIN(
             Set.of(
@@ -49,12 +49,20 @@ public enum Role {
                     OWNER_DELETE
             )
     ),
-    VET(
+    SERVICE_CENTER_MANAGER(
             Set.of(
-                    VET_CREATE,
-                    VET_READ,
-                    VET_UPDATE,
-                    VET_DELETE
+                    SERVICE_CENTER_MANAGER_CREATE,
+                    SERVICE_CENTER_MANAGER_READ,
+                    SERVICE_CENTER_MANAGER_UPDATE,
+                    SERVICE_CENTER_MANAGER_DELETE
+            )
+    ),
+    SERVICE_PROVIDER(
+            Set.of(
+                    SERVICE_PROVIDER_CREATE,
+                    SERVICE_PROVIDER_READ,
+                    SERVICE_PROVIDER_UPDATE,
+                    SERVICE_PROVIDER_DELETE
             )
     ),
     ADMIN(
@@ -68,7 +76,7 @@ public enum Role {
 
     private final Set<Permission> permissions;
 
-    public List<SimpleGrantedAuthority> getAuthorities(){
+    public List<SimpleGrantedAuthority> getAuthorities() {
         var author = new java.util.ArrayList<>(getPermissions()
                 .stream()
                 .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))

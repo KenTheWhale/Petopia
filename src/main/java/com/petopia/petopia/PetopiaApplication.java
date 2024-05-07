@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,12 +54,6 @@ public class PetopiaApplication {
 
 	private final PetRepo petRepo;
 
-	private final AppointmentRepo appointmentRepo;
-
-	private final ServiceReportRepo serviceReportRepo;
-
-	private final TokenRepo tokenRepo;
-
 	private final ServiceProviderRepo serviceProviderRepo;
 
 	private final ProviderStatusRepo providerStatusRepo;
@@ -68,6 +61,40 @@ public class PetopiaApplication {
 	private final ServiceStatusRepo serviceStatusRepo;
 
 	private final ServiceCenterStatusRepo serviceCenterStatusRepo;
+
+	private final GroupRepo groupRepo;
+
+	private final CommentRepo commentRepo;
+
+	private final PostRepo postRepo;
+
+	private final ServiceCenterRepo serviceCenterRepo;
+
+	private final ServiceCenterPlanRepo serviceCenterPlanRepo;
+
+	private final AppointmentRepo appointmentRepo;
+
+	private final ServiceReportRepo serviceReportRepo;
+
+	private final OrderRepo orderRepo;
+
+	private final FeedBackRepo feedBackRepo;
+
+	private final OrderDetailRepo orderDetailRepo;
+
+	private final ShopRepo shopRepo;
+
+	private final ProductRepo productRepo;
+
+	private final ServiceRepo serviceRepo;
+
+	private final ShopPlanRepo shopPlanRepo;
+
+	private final ProductCategoryRepo productCategoryRepo;
+
+	private final AppointmentServiceRepo appointmentServiceRepo;
+
+	private final NotificationRepo notificationRepo;
 
 	public static void main(String[] args) {
 		SpringApplication.run(PetopiaApplication.class, args);
@@ -79,6 +106,7 @@ public class PetopiaApplication {
 //			@Override
 //			public void run(String... args) throws Exception {
 //
+//				// init status-------------------------------------------------------------------//
 //				// init token status
 //				TokenStatus activeToken = tokenStatusRepo.save(
 //						TokenStatus.builder().status(Const.TOKEN_STATUS_ACTIVE).build()
@@ -147,7 +175,6 @@ public class PetopiaApplication {
 //				AppointmentStatus successfulAppointment = appointmentStatusRepo.save(
 //						AppointmentStatus.builder().status(Const.APPOINTMENT_STATUS_SUCCESSFUL).build()
 //				);;
-//
 //
 //				// init order status
 //				OrderStatus processingOrder = orderStatusRepo.save(
@@ -253,277 +280,1029 @@ public class PetopiaApplication {
 //						ServiceCenterStatus.builder().status(Const.SERVICE_CENTER_STATUS_DELETED).build()
 //				);
 //
-//				// init account
+//				// init account-------------------------------------------------------------------------//
 //				List<Account> accountList = new ArrayList<>();
-//
+//				// Admin
 //				Account adminAcc = Account.builder()
-//						.email("admin@peto.com")
-//						.name("admin")
+//						.email("petopia@peto.com")
+//						.name("Petopia")
 //						.avatarLink("")
-//						.password(passwordEncoder.encode("admin"))
+//						.password(passwordEncoder.encode("Petopia"))
 //						.accountStatus(activeAccount)
 //						.role(Role.ADMIN)
 //						.build();
 //				accountList.add(adminAcc);
 //
-//				Account shopAcc = Account.builder()
-//						.email("shop@peto.com")
-//						.name("shop")
+//				// Shop owner
+//				Account shopAcc1 = Account.builder()
+//						.email("Toto@peto.com")
+//						.name("Toto shop")
 //						.avatarLink("")
-//						.password(passwordEncoder.encode("shop"))
+//						.password(passwordEncoder.encode("toto"))
 //						.accountStatus(activeAccount)
 //						.role(Role.SHOP_OWNER)
 //						.build();
-//				accountList.add(shopAcc);
+//				accountList.add(shopAcc1);
 //
-//				Account gpAdminAcc = Account.builder()
-//						.email("gpad@peto.com")
-//						.name("group admin")
+//				Account shopAcc2 = Account.builder()
+//						.email("Haiconmeo@peto.com")
+//						.name("Hai con mèo")
 //						.avatarLink("")
-//						.password(passwordEncoder.encode("gpad"))
+//						.password(passwordEncoder.encode("Haiconmeo"))
+//						.accountStatus(activeAccount)
+//						.role(Role.SHOP_OWNER)
+//						.build();
+//				accountList.add(shopAcc2);
+//
+//				// Group admin
+//				Account gpAdminAcc1 = Account.builder()
+//						.email("kienquoc@peto.com")
+//						.name("kien quoc")
+//						.avatarLink("")
+//						.password(passwordEncoder.encode("quoc"))
 //						.accountStatus(activeAccount)
 //						.role(Role.GROUP_ADMIN)
 //						.build();
-//				accountList.add(gpAdminAcc);
+//				accountList.add(gpAdminAcc1);
 //
-//				Account gpManagerAcc = Account.builder()
-//						.email("gpma@peto.com")
-//						.name("group manager")
+//				Account gpAdminAcc2 = Account.builder()
+//						.email("trieunguyen@peto.com")
+//						.name("trieu nguyen")
 //						.avatarLink("")
-//						.password(passwordEncoder.encode("gpma"))
+//						.password(passwordEncoder.encode("trieu"))
+//						.accountStatus(activeAccount)
+//						.role(Role.GROUP_ADMIN)
+//						.build();
+//				accountList.add(gpAdminAcc2);
+//
+//				// Group manager
+//				Account gpManagerAcc1 = Account.builder()
+//						.email("huytran@peto.com")
+//						.name("huy tran")
+//						.avatarLink("")
+//						.password(passwordEncoder.encode("huy"))
 //						.accountStatus(activeAccount)
 //						.role(Role.GROUP_MANAGER)
 //						.build();
-//				accountList.add(gpManagerAcc);
+//				accountList.add(gpManagerAcc1);
 //
-//				Account vetAcc = Account.builder()
-//						.email("vet@peto.com")
-//						.name("vet")
+//				Account gpManagerAcc2 = Account.builder()
+//						.email("phuonganh@peto.com")
+//						.name("phuong anh")
 //						.avatarLink("")
-//						.password(passwordEncoder.encode("vet"))
+//						.password(passwordEncoder.encode("pa"))
 //						.accountStatus(activeAccount)
-//						.role(Role.VET)
+//						.role(Role.GROUP_MANAGER)
 //						.build();
-//				accountList.add(vetAcc);
+//				accountList.add(gpManagerAcc2);
 //
-//				Account userAcc = Account.builder()
-//						.email("user@peto.com")
-//						.name("user")
+//				Account gpManagerAcc3 = Account.builder()
+//						.email("thuytien@peto.com")
+//						.name("nguyen thuc thuy tien")
 //						.avatarLink("")
-//						.password(passwordEncoder.encode("user"))
+//						.password(passwordEncoder.encode("tien"))
+//						.accountStatus(activeAccount)
+//						.role(Role.GROUP_MANAGER)
+//						.build();
+//				accountList.add(gpManagerAcc3);
+//
+//				Account gpManagerAcc4 = Account.builder()
+//						.email("pamela@peto.com")
+//						.name("palmela Hai Duong")
+//						.avatarLink("")
+//						.password(passwordEncoder.encode("palm"))
+//						.accountStatus(activeAccount)
+//						.role(Role.GROUP_MANAGER)
+//						.build();
+//				accountList.add(gpManagerAcc4);
+//
+//				// Service center manager
+//				Account scmAcc1 = Account.builder()
+//						.email("vitaminmeo@peto.com")
+//						.name("vitamin C")
+//						.avatarLink("")
+//						.password(passwordEncoder.encode("meo"))
+//						.accountStatus(activeAccount)
+//						.role(Role.SERVICE_CENTER_MANAGER)
+//						.build();
+//				accountList.add(scmAcc1);
+//
+//				Account scmAcc2 = Account.builder()
+//						.email("supabase@peto.com")
+//						.name("supabase")
+//						.avatarLink("")
+//						.password(passwordEncoder.encode("supa"))
+//						.accountStatus(activeAccount)
+//						.role(Role.SERVICE_CENTER_MANAGER)
+//						.build();
+//				accountList.add(scmAcc2);
+//
+//				// Service provider
+//				Account spAcc1 = Account.builder()
+//						.email("chichushop@peto.com")
+//						.name("chi chu")
+//						.avatarLink("")
+//						.password(passwordEncoder.encode("shop"))
+//						.accountStatus(activeAccount)
+//						.role(Role.SERVICE_PROVIDER)
+//						.build();
+//				accountList.add(spAcc1);
+//
+//				Account spAcc2 = Account.builder()
+//						.email("quanlishop@peto.com")
+//						.name("quan li")
+//						.avatarLink("")
+//						.password(passwordEncoder.encode("quanli"))
+//						.accountStatus(activeAccount)
+//						.role(Role.SERVICE_PROVIDER)
+//						.build();
+//				accountList.add(spAcc2);
+//
+//				Account spAcc3 = Account.builder()
+//						.email("nhanvienhotro@peto.com")
+//						.name("nhan vien ho tro")
+//						.avatarLink("")
+//						.password(passwordEncoder.encode("hotro"))
+//						.accountStatus(activeAccount)
+//						.role(Role.SERVICE_PROVIDER)
+//						.build();
+//				accountList.add(spAcc3);
+//
+//				Account spAcc4 = Account.builder()
+//						.email("nhanvienbanhang@peto.com")
+//						.name("nhan vien ban hang")
+//						.avatarLink("")
+//						.password(passwordEncoder.encode("banhang"))
+//						.accountStatus(activeAccount)
+//						.role(Role.SERVICE_PROVIDER)
+//						.build();
+//				accountList.add(spAcc4);
+//
+//				// User
+//				Account userAcc1 = Account.builder()
+//						.email("peppa@peto.com")
+//						.name("Peppa")
+//						.avatarLink("")
+//						.password(passwordEncoder.encode("peppa"))
 //						.accountStatus(activeAccount)
 //						.role(Role.USER)
 //						.build();
-//				accountList.add(userAcc);
+//				accountList.add(userAcc1);
 //				accountRepo.saveAll(accountList);
 //
-//				userRepo.save(
+//				Account userAcc2 = Account.builder()
+//						.email("harrystyle@peto.com")
+//						.name("Harry Style")
+//						.avatarLink("")
+//						.password(passwordEncoder.encode("harry"))
+//						.accountStatus(activeAccount)
+//						.role(Role.USER)
+//						.build();
+//				accountList.add(userAcc2);
+//				accountRepo.saveAll(accountList);
+//
+//				// Save user from account--------------------------------------------------------//
+//				User user1 = userRepo.save(
 //						User.builder()
-//								.account(userAcc)
+//								.account(userAcc1)
 //								.gender(Const.HUMAN_GENDER_MALE)
-//								.address("")
-//								.phone("")
+//								.address("43 Ông Ích Khiêm, quận 10, tp Hồ Chí Minh")
+//								.phone("0913253221")
 //								.imgLinkList(Collections.emptyList())
 //								.build()
 //				);
 //
+//				User user2 = userRepo.save(
+//						User.builder()
+//								.account(userAcc2)
+//								.gender(Const.HUMAN_GENDER_FEMALE)
+//								.address("11/12 Vĩnh Viễn, quận 10, tp Hồ Chí Minh")
+//								.phone("0833552464")
+//								.imgLinkList(Collections.emptyList())
+//								.build()
+//				);
 //
-//				// init token
+//				// Save group admin user from account------------------------------------------------------//
+//				User gauser1 = userRepo.save(
+//						User.builder()
+//								.account(gpAdminAcc1)
+//								.gender(Const.HUMAN_GENDER_MALE)
+//								.address("406 Tran Van Kieu, quận 6, tp Hồ Chí Minh")
+//								.phone("0123268894")
+//								.imgLinkList(Collections.emptyList())
+//								.build()
+//				);
+//
+//				User gauser2 = userRepo.save(
+//						User.builder()
+//								.account(gpAdminAcc2)
+//								.gender(Const.HUMAN_GENDER_FEMALE)
+//								.address("C16/60 Võ Văn Vân, quận Bình Tân, tp Hồ Chí Minh")
+//								.phone("0343748912")
+//								.imgLinkList(Collections.emptyList())
+//								.build()
+//				);
+//
+//				// Save group manager user from account-----------------------------------------------//
+//				User gmuser1 = userRepo.save(
+//						User.builder()
+//								.account(gpManagerAcc1)
+//								.gender(Const.HUMAN_GENDER_MALE)
+//								.address("16 đường 12, quận 2, tp Hồ Chí Minh")
+//								.phone("0837400952")
+//								.imgLinkList(Collections.emptyList())
+//								.build()
+//				);
+//
+//				User gmuser2 = userRepo.save(
+//						User.builder()
+//								.account(gpManagerAcc2)
+//								.gender(Const.HUMAN_GENDER_MALE)
+//								.address("167 Nguyễn Văn Cừ, quận 5, tp Hồ Chí Minh")
+//								.phone("0838357347")
+//								.imgLinkList(Collections.emptyList())
+//								.build()
+//				);
+//
+//				User gmuser3 = userRepo.save(
+//						User.builder()
+//								.account(gpManagerAcc3)
+//								.gender(Const.HUMAN_GENDER_FEMALE)
+//								.address("148 Hai Bà Trưng, quận 1, tp Hồ Chí Minh	")
+//								.phone("0838227648")
+//								.imgLinkList(Collections.emptyList())
+//								.build()
+//				);
+//
+//				User gmuser4 = userRepo.save(
+//						User.builder()
+//								.account(gpManagerAcc4)
+//								.gender(Const.HUMAN_GENDER_FEMALE)
+//								.address("12/B24 Phan Huy ich, Gò Vấp, tp Hồ Chí Minh")
+//								.phone("0854272338")
+//								.imgLinkList(Collections.emptyList())
+//								.build()
+//				);
+//
+//				// init service center plan-----------------------------------------------------------//
+//
+//				ServiceCenterPlan scPlan1 = serviceCenterPlanRepo.save(
+//						ServiceCenterPlan.builder()
+//								.planStatus(activePlan)
+//								.name("PetVip1")
+//								.fee(3000000)
+//								.duration(150)
+//								.description("Gói VIP thú cưng")
+//								.build()
+//				);
+//
+//				ServiceCenterPlan scPlan2 = serviceCenterPlanRepo.save(
+//						ServiceCenterPlan.builder()
+//								.planStatus(activePlan)
+//								.name("PetVip2")
+//								.fee(5000000)
+//								.duration(300)
+//								.description("Gói VIP thú cưng")
+//								.build()
+//				);
+//
+//				// init service center----------------------------------------------------------------//
+//
+//				ServiceCenter sc1 = serviceCenterRepo.save(
+//						ServiceCenter.builder()
+//								.account(scmAcc1)
+//								.serviceCenterPlan(scPlan1)
+//								.serviceCenterStatus(activeServiceCenter)
+//								.planPurchasedDate(LocalDateTime.now().minusWeeks(2))
+//								.name("Mèo Spa")
+//								.address(" 38/1/95 Trường Chinh, quận Tân Bình, tp Hồ Chí Minh")
+//								.rating(4)
+//								.build()
+//				);
+//
+//				ServiceCenter sc2 = serviceCenterRepo.save(
+//						ServiceCenter.builder()
+//								.account(scmAcc2)
+//								.serviceCenterPlan(scPlan2)
+//								.serviceCenterStatus(activeServiceCenter)
+//								.planPurchasedDate(LocalDateTime.now().minusDays(28))
+//								.name("Puppy Mart")
+//								.address("244 Khánh Hội, quận 4, tp Hồ Chí Minh")
+//								.rating(5)
+//								.build()
+//				);
+//
+//				// Save service provider from account-------------------------------------------------//
+//				ServiceProvider sp1 = serviceProviderRepo.save(
+//						ServiceProvider.builder()
+//								.account(spAcc1)
+//								.providerStatus(availableProvider)
+//								.serviceCenter(sc1)
+//								.build()
+//				);
+//
+//				ServiceProvider sp2 = serviceProviderRepo.save(
+//						ServiceProvider.builder()
+//								.account(spAcc2)
+//								.providerStatus(availableProvider)
+//								.serviceCenter(sc1)
+//								.build()
+//				);
+//
+//				ServiceProvider sp3 = serviceProviderRepo.save(
+//						ServiceProvider.builder()
+//								.account(spAcc3)
+//								.providerStatus(availableProvider)
+//								.serviceCenter(sc2)
+//								.build()
+//				);
+//
+//				ServiceProvider sp4 = serviceProviderRepo.save(
+//						ServiceProvider.builder()
+//								.account(spAcc4)
+//								.providerStatus(availableProvider)
+//								.serviceCenter(sc2)
+//								.build()
+//				);
+//
+//				// init and print token for all accounts----------------------------------------------------//
 //				List<Token> tokenList = new ArrayList<>();
+//				System.out.println("TOKEN LIST:\n");
 //				for(Account account: accountList){
 //					tokenList.add(tokenService.createNewAccessToken(account, jwtService.generateAccessToken(account)));
+//					Token lastToken = tokenList.get(tokenList.size() - 1);
 //					tokenList.add(tokenService.createNewRefreshToken(account, jwtService.generateRefreshToken(account)));
+//					System.out.println(
+//							(accountList.indexOf(account) + 1)
+//									+ ". (" + account.getRole().name().toUpperCase()
+//									+ ") " + account.getName() + ": "
+//									+ lastToken.getValue());
 //				}
 //
-//				System.out.println("# ADMIN TOKEN: " + tokenList.get(0).getValue());
-//				System.out.println("# SHOP OWNER TOKEN: " + tokenList.get(2).getValue());
-//				System.out.println("# GROUP ADMIN TOKEN: " + tokenList.get(4).getValue());
-//				System.out.println("# GROUP MANAGER TOKEN: " + tokenList.get(6).getValue());
-//				System.out.println("# VET TOKEN: " + tokenList.get(8).getValue());
-//				System.out.println("# USER TOKEN: " + tokenList.get(10).getValue());
-//
-//
-//				// init 10 health report
-//				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//
-//				String[] dateList = {
-//						"2020-06-02 12:00:00", "2020-05-10 09:30:00",
-//						"2021-03-15 14:45:00", "2021-06-20 10:15:00",
-//						"2021-09-05 16:30:00","2021-12-10 11:45:00",
-//						"2022-02-25 09:00:00","2022-05-15 15:30:00",
-//						"2022-08-20 13:15:00","2022-11-30 16:45:00"
-//				};
-//
-//				String[] reportList = {
-//						"Tiêm vắc-xin bạch cầu","Tiêm vắc-xin hạt nhân",
-//						"Tiêm vắc-xin cúm","Tiêm vắc-xin dại",
-//						"Tiêm vắc-xin tụ huyết trùng","Tiêm vắc-xin viêm gan B",
-//						"Tiêm vắc-xin bệnh cảm cúm","Tiêm vắc-xin viêm gan C",
-//						"Tiêm vắc-xin bạch hầu","Tiêm vắc-xin viêm gan A"
-//				};
-//
-//				String[] extraContentList = {
-//						"Sức khỏe yếu, cần khám lại","Không có vấn đề đáng ngại",
-//						"Không có vấn đề đáng ngại","Không có vấn đề đáng ngại",
-//						"Không có vấn đề đáng ngại","Không có vấn đề đáng ngại",
-//						"Không có vấn đề đáng ngại","Không có vấn đề đáng ngại",
-//						"Không có vấn đề đáng ngại","Không có vấn đề đáng ngại"
-//				};
-//
-//				String[] placeList = {
-//						"Tại nhà","Tại phòng khám",
-//						"Tại phòng khám","Tại phòng khám",
-//						"Tại phòng khám","Tại phòng khám",
-//						"Tại phòng khám","Tại phòng khám",
-//						"Tại phòng khám","Tại phòng khám"
-//				};
-//
-//				String[] doctorNameList = {
-//						"Nguyễn Văn A","Trần Thị B",
-//						"Lê Thị C","Phạm Văn D",
-//						"Hoàng Thị E","Nguyễn Văn F",
-//						"Trần Văn G","Lê Thị H",
-//						"Phạm Thị I","Hoàng Văn J"
-//				};
-//
-//				String[] avatarList = {
-//						"https://via.placeholder.com/150","https://via.placeholder.com/150",
-//						"https://via.placeholder.com/150","https://via.placeholder.com/150",
-//						"https://via.placeholder.com/150","https://via.placeholder.com/150",
-//						"https://via.placeholder.com/150","https://via.placeholder.com/150",
-//						"https://via.placeholder.com/150","https://via.placeholder.com/150"
-//				};
-//
-//				Account hoang_anh_account = accountRepo.save(
-//						Account.builder()
-//								.accountStatus(activeAccount)
-//								.name("Lương Hoàng Anh")
-//								.email("anhlhse170179@fpt.edu.vn")
-//								.password(passwordEncoder.encode("Iamnothoanganh"))
-//								.role(Role.USER)
-//								.avatarLink("https://avatars.githubusercontent.com/u/131256206?v=4")
+//				// init notification---------------------------------------------------------------------//
+//				Notification notification1 = notificationRepo.save(
+//						Notification.builder()
+//								.user(user1)
+//								.imgListLink(Collections.emptyList())
+//								.content("Phương Anh đã block bạn")
 //								.build()
 //				);
 //
-//				tokenRepo.save(Token.builder().account(hoang_anh_account).tokenStatus(activeToken).value(jwtService.generateAccessToken(hoang_anh_account)).type(Const.TOKEN_TYPE_ACCESS).build());
-//				tokenRepo.save(Token.builder().account(hoang_anh_account).tokenStatus(activeToken).value(jwtService.generateRefreshToken(hoang_anh_account)).type(Const.TOKEN_TYPE_REFRESH).build());
+//				Notification notification2 = notificationRepo.save(
+//						Notification.builder()
+//								.user(user1)
+//								.imgListLink(Collections.emptyList())
+//								.content("Phương Anh đã phẫn nộ bài post của bạn")
+//								.build()
+//				);
 //
-//				List<Account> accounts = new ArrayList<>();
+//				Notification notification3 = notificationRepo.save(
+//						Notification.builder()
+//								.user(user2)
+//								.imgListLink(Collections.emptyList())
+//								.content("Phương Anh đã theo dõi bạn")
+//								.build()
+//				);
 //
-//				for(int i = 0; i < 10; i++){
-//					accounts.add(
-//							Account.builder()
-//									.accountStatus(activeAccount)
-//									.name(doctorNameList[i])
-//									.email(doctorNameList[i].replace(" ", "") + "@gmail.com")
-//									.password(passwordEncoder.encode("pass" + i))
-//									.role(Role.VET)
-//									.avatarLink("https://via.placeholder.com/150")
-//									.build()
-//					);
-//				}
+//				Notification notification4 = notificationRepo.save(
+//						Notification.builder()
+//								.user(user2)
+//								.imgListLink(Collections.emptyList())
+//								.content("Phương Anh đã mời bạn thích trang \"1001 cách chửi thề khiến đối phương xón ra quần\" ")
+//								.build()
+//				);
 //
-//				accountRepo.saveAll(accounts);
+//				// init group----------------------------------------------------------------------------//
+//				List<Integer> group1ManagerIdList = new ArrayList<>();
+//				List<Integer> group1MemberIdList = new ArrayList<>();
+//				List<Integer> group2ManagerIdList = new ArrayList<>();
+//				List<Integer> group2MemberIdList = new ArrayList<>();
 //
-//				for(int i = 0; i < 10; i++){
-//					tokenRepo.save(Token.builder().account(accounts.get(i)).tokenStatus(activeToken).value(jwtService.generateAccessToken(accounts.get(i))).type(Const.TOKEN_TYPE_ACCESS).build());
-//					tokenRepo.save(Token.builder().account(accounts.get(i)).tokenStatus(activeToken).value(jwtService.generateRefreshToken(accounts.get(i))).type(Const.TOKEN_TYPE_REFRESH).build());
-//				}
+//				group1ManagerIdList.add(gmuser1.getId());
+//				group1ManagerIdList.add(gmuser2.getId());
+//				group2ManagerIdList.add(gmuser3.getId());
+//				group2ManagerIdList.add(gmuser4.getId());
 //
-//				User hoang_anh_user = userRepo.save(
-//						User.builder()
-//								.account(hoang_anh_account)
-//								.gender(Const.HUMAN_GENDER_MALE)
-//								.address("Nhà Trắng")
-//								.phone("0977545450")
+//				group1MemberIdList.add(user1.getId());
+//				group2MemberIdList.add(user2.getId());
+//
+//				Group group1 = groupRepo.save(
+//						Group.builder()
+//								.groupStatus(activeGroup)
+//								.user(gauser1)
+//								.name("Đảo Mèow")
 //								.imgLinkList(Collections.emptyList())
+//								.managerIdList(group1ManagerIdList)
+//								.memberIdList(group1MemberIdList)
 //								.build()
 //				);
 //
-//				Pet tran_dan = petRepo.save(
-//						Pet.builder()
-//								.user(hoang_anh_user)
-//								.name("Trần Dần")
-//								.gender(Const.PET_GENDER_FEMALE)
-//								.age(69)
-//								.createdAt(LocalDateTime.parse("2013-12-31 21:30:00", formatter))
-//								.updateAt(LocalDateTime.parse("2020-01-01 09:40:03", formatter))
-//								.type("Hổ")
-//								.necklaceId("BLOCK3W")
-//								.description("Pet tiên tri vũ trụ")
+//				Group group2 = groupRepo.save(
+//						Group.builder()
+//								.groupStatus(activeGroup)
+//								.user(gauser2)
+//								.name("Đảo Chó")
 //								.imgLinkList(Collections.emptyList())
+//								.managerIdList(group2ManagerIdList)
+//								.memberIdList(group2MemberIdList)
 //								.build()
 //				);
 //
-//				Pet johnny_dang = petRepo.save(
+//				// init post-------------------------------------------------------------------------//
+//				List<Integer> post1likedUserIdList = new ArrayList<>();
+//				List<Integer> post2likedUserIdList = new ArrayList<>();
+//
+//				post1likedUserIdList.add(user2.getId());
+//				post2likedUserIdList.add(user1.getId());
+//
+//				Post post1 = postRepo.save(
+//						Post.builder()
+//								.user(user1)
+//								.postStatus(publicPost)
+//								.canComment(true)
+//								.content("Người chơi hệ Meow")
+//								.postDate(LocalDateTime.now().minusHours(2))
+//								.imgLinkList(Collections.emptyList())
+//								.likedUserIdList(post1likedUserIdList)
+//								.build()
+//				);
+//
+//				Post post2 = postRepo.save(
+//						Post.builder()
+//								.user(user1)
+//								.postStatus(publicPost)
+//								.canComment(false)
+//								.content("Người chơi hệ Choá")
+//								.postDate(LocalDateTime.now())
+//								.imgLinkList(Collections.emptyList())
+//								.likedUserIdList(post1likedUserIdList)
+//								.build()
+//				);
+//
+//				Post post3 = postRepo.save(
+//						Post.builder()
+//								.user(user2)
+//								.postStatus(publicPost)
+//								.canComment(true)
+//								.content("Người chơi hệ DuaPet, ko bao giờ nói phét")
+//								.postDate(LocalDateTime.now().minusHours(20))
+//								.imgLinkList(Collections.emptyList())
+//								.likedUserIdList(post2likedUserIdList)
+//								.build()
+//				);
+//
+//				Post post4 = postRepo.save(
+//						Post.builder()
+//								.user(user2)
+//								.postStatus(publicPost)
+//								.canComment(false)
+//								.content("Người Dơi ko sợ mưa rơi. Hahaha")
+//								.postDate(LocalDateTime.now().minusYears(1))
+//								.imgLinkList(Collections.emptyList())
+//								.likedUserIdList(post2likedUserIdList)
+//								.build()
+//				);
+//
+//				// init comment--------------------------------------------------------------------------//
+//				Comment comment1 = commentRepo.save(
+//						Comment.builder()
+//								.post(post1)
+//								.user(user2)
+//								.content("Mèo này giống nào vậy bạn iu")
+//								.build()
+//				);
+//
+//				Comment comment2 = commentRepo.save(
+//						Comment.builder()
+//								.post(post1)
+//								.user(user1)
+//								.content("Chó mèo nuôi chung đuợc shao?")
+//								.build()
+//				);
+//
+//				Comment comment3 = commentRepo.save(
+//						Comment.builder()
+//								.post(post3)
+//								.user(user1)
+//								.content("Mèo của bạn múp quá")
+//								.build()
+//				);
+//
+//				Comment comment4 = commentRepo.save(
+//						Comment.builder()
+//								.post(post3)
+//								.user(user2)
+//								.content("Bạn nên tỉa lông cho bạn chó đi, mùa này nguy cơ sốc nhiệt ấo lắm ^_^!")
+//								.build()
+//				);
+//
+//				// init pet------------------------------------------------------------------------//
+//				Pet pet1 = petRepo.save(
 //						Pet.builder()
-//								.user(hoang_anh_user)
-//								.name("Johnny Đặng")
+//								.user(user1)
+//								.name("Sofia")
 //								.gender(Const.PET_GENDER_MALE)
-//								.age(21)
-//								.createdAt(LocalDateTime.parse("2015-05-15 10:12:07", formatter))
-//								.updateAt(LocalDateTime.parse("2024-02-29 23:59:59", formatter))
-//								.type("Poppy")
-//								.necklaceId("BLOCK100W")
-//								.description("Pet vô tri vũ trụ")
+//								.age(3)
+//								.type("Mèo Mau Ai Cập")
+//								.necklaceId("A001")
+//								.description("Tui là chó, hum pải mèo. Mowf Mowf....!")
+//								.imgLinkList(Collections.emptyList())
+//								.createdAt(LocalDateTime.now().minusWeeks(3))
+//								.updateAt(LocalDateTime.now().minusWeeks(3))
+//								.build()
+//				);
+//
+//				Pet pet2 = petRepo.save(
+//						Pet.builder()
+//								.user(user1)
+//								.name("Ngúi")
+//								.gender(Const.PET_GENDER_FEMALE)
+//								.age(18)
+//								.type("Mèo Tam Thể")
+//								.necklaceId("A002")
+//								.description("Tui tên Ngúi, họ tên đầy đủ là Ngusi")
+//								.imgLinkList(Collections.emptyList())
+//								.createdAt(LocalDateTime.now().minusWeeks(1))
+//								.updateAt(LocalDateTime.now().minusWeeks(1))
+//								.build()
+//				);
+//
+//				Pet pet3 = petRepo.save(
+//						Pet.builder()
+//								.user(user2)
+//								.name("Đum")
+//								.gender(Const.PET_GENDER_MALE)
+//								.age(10)
+//								.type("Mèo Anh Lông Ngắn")
+//								.necklaceId("A003")
+//								.description("Tuy chân tui ngắn nhưng mà tui xinh")
+//								.imgLinkList(Collections.emptyList())
+//								.createdAt(LocalDateTime.now().minusWeeks(2))
+//								.updateAt(LocalDateTime.now().minusWeeks(1))
+//								.build()
+//				);
+//
+//				Pet pet4 = petRepo.save(
+//						Pet.builder()
+//								.user(user2)
+//								.name("Sol")
+//								.gender(Const.PET_GENDER_FEMALE)
+//								.age(19)
+//								.type("Mèo Ba Tư")
+//								.necklaceId("A004")
+//								.description("Tui xinh, tui đẹp nung ninh")
+//								.imgLinkList(Collections.emptyList())
+//								.createdAt(LocalDateTime.now().minusWeeks(6))
+//								.updateAt(LocalDateTime.now().minusWeeks(2))
+//								.build()
+//				);
+//
+//				// init service------------------------------------------------------------//
+//				Service service1 = serviceRepo.save(
+//						Service.builder()
+//								.serviceCenter(sc1)
+//								.serviceStatus(activeService)
+//								.fee(250000)
+//								.name("Combo Siêu Sạch")
+//								.build()
+//				);
+//
+//				Service service2 = serviceRepo.save(
+//						Service.builder()
+//								.serviceCenter(sc1)
+//								.serviceStatus(activeService)
+//								.fee(350000)
+//								.name("Combo Siêu Đẹp")
+//								.build()
+//				);
+//
+//				Service service3 = serviceRepo.save(
+//						Service.builder()
+//								.serviceCenter(sc1)
+//								.serviceStatus(activeService)
+//								.fee(350000)
+//								.name("Combo nhuộm tai đuôi, 4 chân")
+//								.build()
+//				);
+//
+//				Service service4 = serviceRepo.save(
+//						Service.builder()
+//								.serviceCenter(sc1)
+//								.serviceStatus(activeService)
+//								.fee(400000)
+//								.name("Combo Siêu Thư Giãn")
+//								.build()
+//				);
+//
+//				Service service5 = serviceRepo.save(
+//						Service.builder()
+//								.serviceCenter(sc2)
+//								.serviceStatus(activeService)
+//								.fee(110000)
+//								.name("Vacxin 7 bệnh cho chó - VANGUARD ZOETIS ")
+//								.build()
+//				);
+//
+//				Service service6 = serviceRepo.save(
+//						Service.builder()
+//								.serviceCenter(sc2)
+//								.serviceStatus(activeService)
+//								.fee(350000)
+//								.name("Vacxin 7 bệnh cho Mèo - Vaccine Nga")
+//								.build()
+//				);
+//
+//				Service service7 = serviceRepo.save(
+//						Service.builder()
+//								.serviceCenter(sc2)
+//								.serviceStatus(activeService)
+//								.fee(550000)
+//								.name("Triệt sản Mèo")
+//								.build()
+//				);
+//
+//				Service service8 = serviceRepo.save(
+//						Service.builder()
+//								.serviceCenter(sc2)
+//								.serviceStatus(activeService)
+//								.fee(700000)
+//								.name("Triệt sản chó")
+//								.build()
+//				);
+//
+//				// init appointment--------------------------------------------------------//
+//				Appointment appointment1 = appointmentRepo.save(
+//						Appointment.builder()
+//								.pet(pet1)
+//								.serviceProvider(sp1)
+//								.appointmentStatus(successfulAppointment)
+//								.type(Const.APPOINTMENT_TYPE_SERVICE)
+//								.date(LocalDateTime.now().minusDays(3))
+//								.fee(600000)
+//								.build()
+//				);
+//
+//				Appointment appointment2 = appointmentRepo.save(
+//						Appointment.builder()
+//								.pet(pet2)
+//								.serviceProvider(sp2)
+//								.appointmentStatus(successfulAppointment)
+//								.type(Const.APPOINTMENT_TYPE_SERVICE)
+//								.date(LocalDateTime.now().minusDays(12))
+//								.fee(750000)
+//								.build()
+//				);
+//
+//				Appointment appointment3 = appointmentRepo.save(
+//						Appointment.builder()
+//								.pet(pet3)
+//								.serviceProvider(sp3)
+//								.appointmentStatus(successfulAppointment)
+//								.type(Const.APPOINTMENT_TYPE_HEALTH)
+//								.date(LocalDateTime.now().minusDays(30))
+//								.fee(460000)
+//								.build()
+//				);
+//
+//				Appointment appointment4 = appointmentRepo.save(
+//						Appointment.builder()
+//								.pet(pet4)
+//								.serviceProvider(sp4)
+//								.appointmentStatus(successfulAppointment)
+//								.type(Const.APPOINTMENT_TYPE_HEALTH)
+//								.date(LocalDateTime.now().minusDays(9))
+//								.fee(1250000)
+//								.build()
+//				);
+//
+//				// init appointment service------------------------------------------------//
+//				AppointmentService appointmentService1 = appointmentServiceRepo.save(
+//						AppointmentService.builder()
+//								.appointment(appointment1)
+//								.service(service1)
+//								.build()
+//				);
+//
+//				AppointmentService appointmentService2 = appointmentServiceRepo.save(
+//						AppointmentService.builder()
+//								.appointment(appointment1)
+//								.service(service2)
+//								.build()
+//				);
+//
+//				AppointmentService appointmentService3 = appointmentServiceRepo.save(
+//						AppointmentService.builder()
+//								.appointment(appointment2)
+//								.service(service3)
+//								.build()
+//				);
+//
+//				AppointmentService appointmentService4 = appointmentServiceRepo.save(
+//						AppointmentService.builder()
+//								.appointment(appointment2)
+//								.service(service4)
+//								.build()
+//				);
+//
+//				AppointmentService appointmentService5 = appointmentServiceRepo.save(
+//						AppointmentService.builder()
+//								.appointment(appointment3)
+//								.service(service5)
+//								.build()
+//				);
+//
+//				AppointmentService appointmentService6 = appointmentServiceRepo.save(
+//						AppointmentService.builder()
+//								.appointment(appointment3)
+//								.service(service6)
+//								.build()
+//				);
+//
+//				AppointmentService appointmentService7 = appointmentServiceRepo.save(
+//						AppointmentService.builder()
+//								.appointment(appointment4)
+//								.service(service7)
+//								.build()
+//				);
+//
+//				AppointmentService appointmentService8 = appointmentServiceRepo.save(
+//						AppointmentService.builder()
+//								.appointment(appointment4)
+//								.service(service8)
+//								.build()
+//				);
+//
+//				// init service report-----------------------------------------------------//
+//				ServiceReport report1 = serviceReportRepo.save(
+//						ServiceReport.builder()
+//								.appointment(appointment1)
+//								.report("Đã tiêm phòng vaccine dại")
+//								.extraContent("Sau khi tiêm xong cần chăm sóc chó tốt hơn, kiêng tắm; Kiêng thức ăn có chứa nhiều mỡ, sữa, đồ tanh ít nhất là 1 tuần.")
+//								.date(appointment1.getDate())
+//								.location(appointment1.getServiceProvider().getServiceCenter().getAddress())
+//								.build()
+//				);
+//
+//				ServiceReport report2 = serviceReportRepo.save(
+//						ServiceReport.builder()
+//								.appointment(appointment2)
+//								.report("Đã triệt sản")
+//								.extraContent("Không để thú cưng bị ướt. Không cho ăn quá no, hạn chế những loại thức ăn có thể gây kích ứng như cá biển, thịt gà.")
+//								.date(appointment2.getDate())
+//								.location(appointment2.getServiceProvider().getServiceCenter().getAddress())
+//								.build()
+//				);
+//
+//				ServiceReport report3 = serviceReportRepo.save(
+//						ServiceReport.builder()
+//								.appointment(appointment3)
+//								.report("Đã cạo lông toàn thân")
+//								.extraContent("Nếu có triệu chứng ngứa hay nhưng biểu hiện lạ hãy liên hệ với trung tâm nhanh nhất có thể để được hỗ trợ kịp thời.")
+//								.date(appointment3.getDate())
+//								.location(appointment3.getServiceProvider().getServiceCenter().getAddress())
+//								.build()
+//				);
+//
+//				ServiceReport report4 = serviceReportRepo.save(
+//						ServiceReport.builder()
+//								.appointment(appointment4)
+//								.report("Đã nhuộm tai màu hồng và tỉa lông toàn thân")
+//								.extraContent("Nếu có triệu chứng ngứa hay nhưng biểu hiện lạ hãy liên hệ với trung tâm nhanh nhất có thể để được hỗ trợ kịp thời.")
+//								.date(appointment4.getDate())
+//								.location(appointment4.getServiceProvider().getServiceCenter().getAddress())
+//								.build()
+//				);
+//
+//				// init shop plan------------------------------------------------------------------//
+//				ShopPlan shopPlan1 = shopPlanRepo.save(
+//						ShopPlan.builder()
+//								.planStatus(activePlan)
+//								.name("PetVip1")
+//								.fee(450000)
+//								.duration(150)
+//								.description("Gói VIP 1")
+//								.build()
+//				);
+//
+//				ShopPlan shopPlan2 = shopPlanRepo.save(
+//						ShopPlan.builder()
+//								.planStatus(activePlan)
+//								.name("PetVip2")
+//								.fee(700000)
+//								.duration(360)
+//								.description("Gói VIP 2")
+//								.build()
+//				);
+//
+//				// init shop-----------------------------------------------------------------------//
+//				Shop shop1 = shopRepo.save(
+//						Shop.builder()
+//								.account(shopAcc1)
+//								.shopPlan(shopPlan1)
+//								.shopStatus(activeShop)
+//								.planPurchasedDate(LocalDateTime.now().minusWeeks(5))
+//								.name("Pet Station")
+//								.address("369A Tân Sơn Nhì, Phường Tân Thành, Quận Tân Phú, TP.Hồ Chí Minh")
+//								.rating(4)
+//								.build()
+//				);
+//
+//				Shop shop2 = shopRepo.save(
+//						Shop.builder()
+//								.account(shopAcc2)
+//								.shopPlan(shopPlan2)
+//								.shopStatus(activeShop)
+//								.planPurchasedDate(LocalDateTime.now().minusMonths(2))
+//								.name("Paddiers")
+//								.address("116 Nguyễn Văn Thủ, Phường Đa Kao, Quận 1, Thành phố Hồ Chí Minh")
+//								.rating(5)
+//								.build()
+//				);
+//
+//				// init product category--------------------------------------------------------//
+//				ProductCategory category1 = productCategoryRepo.save(
+//						ProductCategory.builder()
+//								.name("Thức Ăn")
+//								.build()
+//				);
+//
+//				ProductCategory category2 = productCategoryRepo.save(
+//						ProductCategory.builder()
+//								.name("Phụ kiện")
+//								.build()
+//				);
+//
+//				ProductCategory category3 = productCategoryRepo.save(
+//						ProductCategory.builder()
+//								.name("Đồ Chơi")
+//								.build()
+//				);
+//
+//				ProductCategory category4 = productCategoryRepo.save(
+//						ProductCategory.builder()
+//								.name("Thời Trang")
+//								.build()
+//				);
+//
+//				// init product-----------------------------------------------------------------//
+//				Product product1 = productRepo.save(
+//						Product.builder()
+//								.shop(shop1)
+//								.productStatus(availableProduct)
+//								.productCategory(category1)
+//								.name("Hạt Tươi Taste Of The Wild Cho Chó Trưởng Thành")
+//								.price(125000)
+//								.soldQty(100)
+//								.availableQty(50)
+//								.rating(3)
 //								.imgLinkList(Collections.emptyList())
 //								.build()
 //				);
 //
-//				List<ServiceProvider> serviceProviders = new ArrayList<>();
-//				for(int i = 0; i < 10; i++){
-//					serviceProviders.add(
-//							serviceProviderRepo.save(
-//									ServiceProvider.builder()
-//											.account(accounts.get(i))
-//											.providerStatus(availableProvider)
-//											.build()
-//							)
-//					);
-//				}
+//				Product product2 = productRepo.save(
+//						Product.builder()
+//								.shop(shop1)
+//								.productStatus(availableProduct)
+//								.productCategory(category2)
+//								.name("Vòng Cổ Chó Mèo Có Chuông Dày 1cm	")
+//								.price(15000)
+//								.soldQty(20)
+//								.availableQty(100)
+//								.rating(4)
+//								.imgLinkList(Collections.emptyList())
+//								.build()
+//				);
 //
-//				List<Appointment> appointments = new ArrayList<>();
-//				for(int i = 0; i < 5; i++){
-//					appointments.add(
-//							Appointment.builder()
-//									.pet(tran_dan)
-//									.serviceProvider(serviceProviders.get(i))
-//									.appointmentStatus(successfulAppointment)
-//									.type(Const.APPOINTMENT_TYPE_HEALTH)
-//									.date(LocalDateTime.parse(dateList[i], formatter))
-//									.fee((i + 10) * 1000 + 20000)
-//									.build()
-//					);
-//				}
+//				Product product3 = productRepo.save(
+//						Product.builder()
+//								.shop(shop1)
+//								.productStatus(availableProduct)
+//								.productCategory(category3)
+//								.name("Cỏ Mèo Bạc Hà Catnip Cho Mèo")
+//								.price(30000)
+//								.soldQty(100)
+//								.availableQty(50)
+//								.rating(4)
+//								.imgLinkList(Collections.emptyList())
+//								.build()
+//				);
 //
-//				for(int i = 5; i < 10; i++){
-//					appointments.add(
-//							Appointment.builder()
-//									.pet(johnny_dang)
-//									.serviceProvider(serviceProviders.get(i))
-//									.appointmentStatus(successfulAppointment)
-//									.type(Const.APPOINTMENT_TYPE_HEALTH)
-//									.date(LocalDateTime.parse(dateList[i], formatter))
-//									.fee((i + 10) * 1000 + 20000)
-//									.build()
-//					);
-//				}
+//				Product product4 = productRepo.save(
+//						Product.builder()
+//								.shop(shop1)
+//								.productStatus(availableProduct)
+//								.productCategory(category4)
+//								.name("Áo Cho Chó Mèo Sơ Mi Trái Cây - Chuối Vàng")
+//								.price(60000)
+//								.soldQty(21)
+//								.availableQty(30)
+//								.rating(4)
+//								.imgLinkList(Collections.emptyList())
+//								.build()
+//				);
 //
-//				appointmentRepo.saveAll(appointments);
+//				// init order--------------------------------------------------------------//
+//				Order order1 = orderRepo.save(
+//						Order.builder()
+//								.user(user1)
+//								.paymentMethod(VNPayMethod)
+//								.orderStatus(confirmedOrder)
+//								.orderDate(LocalDateTime.now().minusWeeks(7))
+//								.totalPrice(775000)
+//								.build()
+//				);
 //
-//				List<ServiceReport> serviceReports = new ArrayList<>();
-//				for(int i = 0; i < 10; i++){
-//					serviceReports.add(
-//							ServiceReport.builder()
-//									.appointment(appointments.get(i))
-//									.report(reportList[i])
-//									.date(appointments.get(i).getDate())
-//									.extraContent(extraContentList[i])
-//									.build()
-//					);
-//				}
+//				Order order2 = orderRepo.save(
+//						Order.builder()
+//								.user(user2)
+//								.paymentMethod(VNPayMethod)
+//								.orderStatus(successfulOrder)
+//								.orderDate(LocalDateTime.now().minusWeeks(1))
+//								.totalPrice(120000)
+//								.build()
+//				);
 //
-//				serviceReportRepo.saveAll(serviceReports);
+//				// init order detail-----------------------------------------------------//
+//				OrderDetail detail1 = orderDetailRepo.save(
+//						OrderDetail.builder()
+//								.order(order1)
+//								.product(product1)
+//								.productName(product1.getName())
+//								.productPrice(product1.getPrice())
+//								.productQty(5)
+//								.build()
+//				);
+//
+//				OrderDetail detail2 = orderDetailRepo.save(
+//						OrderDetail.builder()
+//								.order(order1)
+//								.product(product2)
+//								.productName(product2.getName())
+//								.productPrice(product2.getPrice())
+//								.productQty(10)
+//								.build()
+//				);
+//
+//				OrderDetail detail3 = orderDetailRepo.save(
+//						OrderDetail.builder()
+//								.order(order2)
+//								.product(product3)
+//								.productName(product3.getName())
+//								.productPrice(product3.getPrice())
+//								.productQty(2)
+//								.build()
+//				);
+//
+//				OrderDetail detail4 = orderDetailRepo.save(
+//						OrderDetail.builder()
+//								.order(order2)
+//								.product(product4)
+//								.productName(product4.getName())
+//								.productPrice(product4.getPrice())
+//								.productQty(1)
+//								.build()
+//				);
+//
+//				//init feedback------------------------------------------------------------------//
+//				Feedback feedback1 = feedBackRepo.save(
+//						Feedback.builder()
+//								.user(user1)
+//								.product(product1)
+//								.isReported(false)
+//								.content("Hạt rất thơm.Bé nhà mình ăn được nhiều mà cũng không bị tiêu chảy nữa")
+//								.rating(5)
+//								.build()
+//				);
+//
+//				Feedback feedback2 = feedBackRepo.save(
+//						Feedback.builder()
+//								.user(user1)
+//								.product(product2)
+//								.isReported(true)
+//								.content("Vòng cổ mới sử dụng đợc 2 ngày đã bong chốt, bạn mèo của mình đeo vào thì bị stress !!!")
+//								.rating(0)
+//								.build()
+//				);
+//
+//				Feedback feedback3 = feedBackRepo.save(
+//						Feedback.builder()
+//								.user(user2)
+//								.product(product3)
+//								.isReported(false)
+//								.content("Mèo mình ngửi vào xong sủa lun mà")
+//								.rating(5)
+//								.build()
+//				);
+//
+//				Feedback feedback4 = feedBackRepo.save(
+//						Feedback.builder()
+//								.user(user2)
+//								.product(product4)
+//								.isReported(true)
+//								.content("Đường chỉ ko bền, vừa mua về ã rơi cúc.Nói chung là dởm, ko nên mua")
+//								.rating(0)
+//								.build()
+//				);
 //			}
 //		};
 //	}

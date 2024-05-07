@@ -28,4 +28,8 @@ public class ServiceProvider {
     @OneToMany(mappedBy = "serviceProvider")
     @ToString.Exclude
     private List<Appointment> appointmentList;
+
+    @ManyToOne
+    @JoinColumn(name = "`service_center_id`")
+    private ServiceCenter serviceCenter;
 }

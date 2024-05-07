@@ -22,4 +22,8 @@ public class PlanStatus {
     @OneToMany(mappedBy = "planStatus")
     @ToString.Exclude
     private List<ShopPlan> shopPlanList;
+
+    @OneToMany(mappedBy = "planStatus")
+    @ToString.Exclude
+    private List<ServiceCenterPlan> serviceCenterPlanList;
 }
