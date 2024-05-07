@@ -12,11 +12,12 @@ public interface UserService {
 
     BlackListResponse viewBlackList();
 
-    ResponseEntity<?> viewNotification(UserRequest userRequest);
+    NotificationResponse viewNotification();
 
     HealthHistoryResponse getHealthHistoryList(HealthHistoryRequest request);
 
     PetListResponse getPetList();
 
-    CreateAppointmentResponse createAppointment(CreateAppointmentRequest request);
+    CreateAppointmentResponse createAppointment(CreateAppointmentRequest request, String type);
+
 }

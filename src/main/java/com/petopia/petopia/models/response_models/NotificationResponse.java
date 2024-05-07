@@ -11,6 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class NotificationResponse {
 
+    private String status;
+
+    private String message;
+
     private int id;
 
     private String content;

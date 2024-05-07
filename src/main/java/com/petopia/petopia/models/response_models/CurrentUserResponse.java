@@ -1,5 +1,6 @@
 package com.petopia.petopia.models.response_models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.petopia.petopia.enums.Role;
 import com.petopia.petopia.models.entity_models.*;
 import lombok.AllArgsConstructor;
@@ -25,41 +26,15 @@ public class CurrentUserResponse {
 
         private String name;
 
-//        private String password;
 
         private String email;
 
         private String avatarLink;
 
-        @Data
-        @AllArgsConstructor
-        @NoArgsConstructor
-        @Builder
-        public static class accountStatusResponse {
-            private String status;
-        }
+        private String status;
 
-        private accountStatusResponse accountStatus;
 
-        @Data
-        @AllArgsConstructor
-        @NoArgsConstructor
-        @Builder
-        public static class tokenListResponse {
-            private int id;
-            @Data
-            @AllArgsConstructor
-            @NoArgsConstructor
-            @Builder
-            public static class tokenStatusResponse {
-                private String status;
-            }
-            private tokenStatusResponse tokenStatus;
-            private String value;
-            private String type;
-        }
-
-        private List<tokenListResponse> tokenList;
+        private String accessToken;
 
         @Data
         @AllArgsConstructor
@@ -76,6 +51,7 @@ public class CurrentUserResponse {
                 private String status;
             }
             private appointmentStatusResponse appointmentStatus;
+            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
             private LocalDateTime date;
             private String location;
             private double fee;
