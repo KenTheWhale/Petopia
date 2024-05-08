@@ -135,7 +135,7 @@ public class UserServiceImpl implements UserService {
     public HealthHistoryResponse getHealthHistoryList(HealthHistoryRequest request) {
         Pet pet = petRepo.findById(request.getPetId()).orElse(null);
         if (pet != null) {
-            Page<ServiceReport> serviceReports = getPaginationHealthReportListByUserId(request.getPage(), request.getPetId(), request.getSort());
+            Page<ServiceReport> serviceReports = getPaginationHealthReportListByPetId(request.getPage(), request.getPetId(), request.getSort());
             List<HealthHistoryResponse.HealthReportResponse> list = new ArrayList<>();
             for (ServiceReport report : serviceReports) {
                 list.add(
@@ -216,7 +216,7 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    private Page<ServiceReport> getPaginationHealthReportListByUserId(int pageNo, Integer petID, String sort) {
+    private Page<ServiceReport> getPaginationHealthReportListByPetId(int pageNo, Integer petID, String sort) {
         Pageable pageable = PageRequest.of(pageNo, Const.PAGE_SIZE, Sort.by(sort));
         return serviceReportRepo.findAllByAppointment_Pet_IdAndAppointment_TypeAndAppointment_AppointmentStatus_Status(petID, Const.APPOINTMENT_TYPE_HEALTH, Const.APPOINTMENT_STATUS_SUCCESSFUL, pageable);
     }
