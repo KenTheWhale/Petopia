@@ -35,29 +35,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JWTService jwtService;
 
     private final PasswordEncoder passwordEncoder;
-    @Override
-    public String getAccessToken(Integer accountID) {
-        Token accessToken = tokenRepo.findByAccount_IdAndTokenStatus_StatusAndType(accountID, Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_ACCESS).orElse(null);
-        if(accessToken != null){
-            return accessToken.getValue();
-        }
-        return "";
-    }
-
-    @Override
-    public String getRefreshToken(Integer accountID) {
-        Token refreshToken = tokenRepo.findByAccount_IdAndTokenStatus_StatusAndType(accountID, Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_REFRESH).orElse(null);
-        if(refreshToken != null){
-            return refreshToken.getValue();
-        }
-        return "";
-    }
-
-    @Override
-    public Account getCurrentLoggedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return accountRepo.findByEmail(authentication.getName()).orElse(null);
-    }
 
     @Override
     public LoginResponse login(LoginRequest request) {
@@ -152,11 +129,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                                 .build()
                 )
                 .build();
-    }
-
-    @Override
-    public RefreshResponse refresh() {
-        return null;
     }
 
     private boolean checkIfStringIsValid(String value){
