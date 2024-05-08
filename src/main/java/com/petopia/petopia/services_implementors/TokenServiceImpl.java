@@ -3,6 +3,7 @@ package com.petopia.petopia.services_implementors;
 import com.petopia.petopia.enums.Const;
 import com.petopia.petopia.models.entity_models.Account;
 import com.petopia.petopia.models.entity_models.Token;
+import com.petopia.petopia.services.JWTService;
 import com.petopia.petopia.services.TokenService;
 import com.petopia.petopia.services.TokenStatusService;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +15,14 @@ public class TokenServiceImpl implements TokenService {
 
     private final TokenStatusService tokenStatusService;
 
+    private final JWTService jwtService;
+
     @Override
-    public Token createNewAccessToken(Account account, String value) {
+    public Token createNewAccessToken(Account account) {
         Token newAccessToken =  Token.builder()
                 .account(account)
                 .tokenStatus(null)
-                .value(value)
+                .value(jwtService.generateAccessToken(account))
                 .type(Const.TOKEN_TYPE_ACCESS)
                 .build();
 
@@ -27,11 +30,11 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public Token createNewRefreshToken(Account account, String value) {
+    public Token createNewRefreshToken(Account account) {
         Token newRefreshToken =  Token.builder()
                 .account(account)
                 .tokenStatus(null)
-                .value(value)
+                .value(jwtService.generateRefreshToken(account))
                 .type(Const.TOKEN_TYPE_REFRESH)
                 .build();
 

@@ -49,11 +49,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         if(oldAccess != null) tokenStatusService.applyExpiredStatus(oldAccess);
                         if(oldRefresh != null) tokenStatusService.applyExpiredStatus(oldRefresh);
 
-                        String accessToken = jwtService.generateAccessToken(account);
-                        String refreshToken = jwtService.generateRefreshToken(account);
-
-                        tokenService.createNewAccessToken(account, accessToken);
-                        tokenService.createNewRefreshToken(account, refreshToken);
+                        Token accessToken = tokenService.createNewAccessToken(account);
+                        tokenService.createNewRefreshToken(account);
 
                         return LoginResponse.builder()
                                 .status("200")
@@ -65,7 +62,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                                                 .email(account.getEmail())
                                                 .role(account.getRole().name())
                                                 .avatar(account.getAvatarLink())
-                                                .accessToken(accessToken)
+                                                .accessToken(accessToken.getValue())
                                                 .build()
                                 )
                                 .build();

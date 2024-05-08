@@ -7,6 +7,5 @@ import com.petopia.petopia.models.response_models.RefreshResponse;
 
 public interface AuthenticationService {
 
-
     LoginResponse login(LoginRequest request);
 }
