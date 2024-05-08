@@ -21,6 +21,8 @@ public class Const {
     public final static String APPOINTMENT_STATUS_CANCELLED = "đã hủy";
     public final static String APPOINTMENT_TYPE_HEALTH = "sức khỏe";
     public final static String APPOINTMENT_TYPE_SERVICE = "dịch vụ";
+    public final static String SERVICE_CENTER_TYPE_HEALTH = "sức khỏe";
+    public final static String SERVICE_CENTER_TYPE_SERVICE = "dịch vụ";
     public final static String ORDER_STATUS_PROCESSING = "đang xử lý";
     public final static String ORDER_STATUS_CONFIRMED = "đã xác nhận";
     public final static String ORDER_STATUS_DELIVERING = "đang vận chuyển";

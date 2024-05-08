@@ -577,6 +577,7 @@ public class PetopiaApplication {
 //								.name("Mèo Spa")
 //								.address(" 38/1/95 Trường Chinh, quận Tân Bình, tp Hồ Chí Minh")
 //								.rating(4)
+//								.type(Const.SERVICE_CENTER_TYPE_SERVICE)
 //								.build()
 //				);
 //
@@ -589,6 +590,7 @@ public class PetopiaApplication {
 //								.name("Puppy Mart")
 //								.address("244 Khánh Hội, quận 4, tp Hồ Chí Minh")
 //								.rating(5)
+//								.type(Const.SERVICE_CENTER_TYPE_HEALTH)
 //								.build()
 //				);
 //

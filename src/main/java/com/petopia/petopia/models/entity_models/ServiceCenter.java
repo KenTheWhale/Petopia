@@ -45,4 +45,6 @@ public class ServiceCenter {
     private String address;
 
     private int rating;
+
+    private String type;
 }
