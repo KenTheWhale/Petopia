@@ -15,6 +15,6 @@ public class CreateAppointmentRequest {
 
     private String petName;
 
-    private String location;
+    private String serviceCenterName;
 
 }

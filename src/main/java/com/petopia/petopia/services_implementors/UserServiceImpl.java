@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,7 @@ public class UserServiceImpl implements UserService {
     private final AppointmentRepo appointmentRepo;
     private final TokenRepo tokenRepo;
     private final NotificationRepo notificationRepo;
+    private final ServiceCenterRepo serviceCenterRepo;
 
     @Override
     public CurrentUserResponse getCurrentUserProfile() {
@@ -206,15 +208,39 @@ public class UserServiceImpl implements UserService {
     public CreateAppointmentResponse createAppointment(CreateAppointmentRequest request, String type) {
         Account currentAcc = accountService.getCurrentLoggedAccount();
         assert currentAcc != null;
+
+        String appointmentType = type.equals("health")? Const.APPOINTMENT_TYPE_HEALTH: Const.APPOINTMENT_TYPE_SERVICE;
+
+        ServiceCenter serviceCenter = serviceCenterRepo.findServiceCenterByName(request.getServiceCenterName()).orElse(null);
+        if(serviceCenter == null) {
+            return CreateAppointmentResponse.builder()
+                    .status("400")
+                    .message("Can not find service center with this name")
+                    .build();
+        }
         Pet pet = petRepo.findByNameAndUser_Account_Id(request.getPetName(), currentAcc.getId());
         if (pet == null) {
             return CreateAppointmentResponse.builder()
                     .status("400")
-                    .message("Can not find pet")
+                    .message("Can not find pet with this name")
                     .build();
         }
-//        type.equals("health")? Const.APPOINTMENT_TYPE_HEALTH: Const.APPOINTMENT_TYPE_SERVICE;
-        return null;
+        return CreateAppointmentResponse.builder()
+                .status("200")
+                .message("Create appointment successfully")
+                .appointment(
+                        CreateAppointmentResponse.appointmentDraft.builder()
+                                .petName(pet.getName())
+                                .status(Const.APPOINTMENT_STATUS_PENDING)
+                                .date(LocalDateTime.now())
+                                .location(serviceCenter.getAddress())
+                                .service(serviceCenter.getServiceList().stream()
+                                        .map(service -> new  CreateAppointmentResponse.serviceList(service.getId(), service.getName()))
+                                        .collect(Collectors.toList()))
+                                .type(appointmentType)
+                                .build()
+                )
+                .build();
     }
 
     private Page<ServiceReport> getPaginationHealthReportListByPetId(int pageNo, Integer petID, String sort) {

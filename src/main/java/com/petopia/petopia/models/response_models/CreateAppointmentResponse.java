@@ -1,12 +1,14 @@
 package com.petopia.petopia.models.response_models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.petopia.petopia.models.entity_models.Service;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -24,6 +26,15 @@ public class CreateAppointmentResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
+    public static class serviceList{
+        private int id;
+        private String name;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
     public static class appointmentDraft {
         private String petName;
 
@@ -34,9 +45,7 @@ public class CreateAppointmentResponse {
 
         private String location;
 
-        private String service;
-
-        private double fee;
+        private List<serviceList> service;
 
         private String type;
     }
