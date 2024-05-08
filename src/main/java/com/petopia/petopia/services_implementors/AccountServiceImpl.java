@@ -8,6 +8,8 @@ import com.petopia.petopia.models.response_models.RefreshResponse;
 import com.petopia.petopia.repositories.AccountRepo;
 import com.petopia.petopia.repositories.TokenRepo;
 import com.petopia.petopia.services.AccountService;
+import com.petopia.petopia.services.JWTService;
+import com.petopia.petopia.services.TokenService;
 import com.petopia.petopia.services.TokenStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -23,6 +25,10 @@ public class AccountServiceImpl implements AccountService {
     private final TokenRepo tokenRepo;
 
     private final TokenStatusService tokenStatusService;
+
+    private final TokenService tokenService;
+
+    private final JWTService jwtService;
 
     @Override
     public LogoutResponse logout() {
@@ -44,7 +50,20 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public RefreshResponse refresh() {
-        return null;
+        Account currentAccount = getCurrentLoggedAccount();
+        if(currentAccount == null) return RefreshResponse.builder().status("400").message("Invalid account").accessToken("").build();
+
+        Token currentAccessToken = tokenRepo.findByAccount_IdAndTokenStatus_StatusAndType(currentAccount.getId(), Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_ACCESS).orElse(null);
+        Token currentRefreshToken = tokenRepo.findByAccount_IdAndTokenStatus_StatusAndType(currentAccount.getId(), Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_REFRESH).orElse(null);
+
+        if(currentRefreshToken != null && jwtService.checkTokenIsValid(currentRefreshToken.getValue())){
+            tokenStatusService.applyExpiredStatus(currentAccessToken);
+            tokenStatusService.applyExpiredStatus(currentRefreshToken);
+            Token access = tokenService.createNewAccessToken(currentAccount);
+            tokenService.createNewRefreshToken(currentAccount);
+            return RefreshResponse.builder().status("200").message("Refresh successfully").accessToken(access.getValue()).build();
+        }
+        return RefreshResponse.builder().status("400").message("Refresh token is already expired").accessToken("").build();
     }
 
     @Override

@@ -62,9 +62,15 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
             Token refreshToken = tokenRepo.findByAccount_IdAndTokenStatus_StatusAndType(account.getId(), Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_REFRESH).orElse(null);
-            Token accessToken = tokenRepo.findByValue(jwt).orElse(null);
+            Token accessToken = tokenRepo.findByAccount_IdAndTokenStatus_StatusAndType(account.getId(), Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_ACCESS).orElse(null);
+
             assert refreshToken != null;
             assert accessToken != null;
+
+            if(!accessToken.getValue().equals(jwt)){
+                filterChain.doFilter(request, response);
+                return;
+            }
             //check if refresh token is expired to disable it
             if(!jwtService.checkTokenIsValid(refreshToken.getValue())){
                 tokenStatusService.applyExpiredStatus(refreshToken);

@@ -14,4 +14,6 @@ public class RefreshResponse {
     private String status;
 
     private String message;
+
+    private String accessToken;
 }

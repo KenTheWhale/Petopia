@@ -629,9 +629,9 @@ public class PetopiaApplication {
 //				List<Token> tokenList = new ArrayList<>();
 //				System.out.println("TOKEN LIST:\n");
 //				for(Account account: accountList){
-//					tokenList.add(tokenService.createNewAccessToken(account, jwtService.generateAccessToken(account)));
+//					tokenList.add(tokenService.createNewAccessToken(account));
 //					Token lastToken = tokenList.get(tokenList.size() - 1);
-//					tokenList.add(tokenService.createNewRefreshToken(account, jwtService.generateRefreshToken(account)));
+//					tokenList.add(tokenService.createNewRefreshToken(account));
 //					System.out.println(
 //							(accountList.indexOf(account) + 1)
 //									+ ". (" + account.getRole().name().toUpperCase()
