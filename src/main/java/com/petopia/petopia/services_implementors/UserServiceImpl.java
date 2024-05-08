@@ -7,6 +7,7 @@ import com.petopia.petopia.models.request_models.HealthHistoryRequest;
 import com.petopia.petopia.models.request_models.UserRequest;
 import com.petopia.petopia.models.response_models.*;
 import com.petopia.petopia.repositories.*;
+import com.petopia.petopia.services.AccountService;
 import com.petopia.petopia.services.AuthenticationService;
 import com.petopia.petopia.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,14 +29,14 @@ public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
     private final ServiceReportRepo serviceReportRepo;
     private final PetRepo petRepo;
-    private final AuthenticationService authenticationService;
+    private final AccountService accountService;
     private final AppointmentRepo appointmentRepo;
     private final TokenRepo tokenRepo;
     private final NotificationRepo notificationRepo;
 
     @Override
     public CurrentUserResponse getCurrentUserProfile() {
-        Account currentAcc = authenticationService.getCurrentLoggedUser();
+        Account currentAcc = accountService.getCurrentLoggedAccount();
         assert currentAcc != null;
 
         Token accessToken = tokenRepo.findByAccount_IdAndType(currentAcc.getId(), "Truy Cập").orElse(null);
@@ -76,7 +77,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public BlackListResponse viewBlackList() {
-        Account currentAcc = authenticationService.getCurrentLoggedUser();
+        Account currentAcc = accountService.getCurrentLoggedAccount();
         assert currentAcc != null;
 
         List<Integer> blackListUserIdList = currentAcc.getUser().getBlackListUserIdList();
@@ -111,7 +112,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public NotificationResponse viewNotification() {
-        Account currentAcc = authenticationService.getCurrentLoggedUser();
+        Account currentAcc = accountService.getCurrentLoggedAccount();
         assert currentAcc != null;
         Notification notification = notificationRepo.findNotificationByUser_Id(currentAcc.getId());
         if(notification != null) {
@@ -189,7 +190,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PetListResponse getPetList() {
-        Account currentAcc = authenticationService.getCurrentLoggedUser();
+        Account currentAcc = accountService.getCurrentLoggedAccount();
         assert currentAcc != null;
         List<Pet> pets = petRepo.findAllByUser_Account_IdOrderById(currentAcc.getId());
         return PetListResponse.builder()
@@ -203,7 +204,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CreateAppointmentResponse createAppointment(CreateAppointmentRequest request, String type) {
-        Account currentAcc = authenticationService.getCurrentLoggedUser();
+        Account currentAcc = accountService.getCurrentLoggedAccount();
         assert currentAcc != null;
         Pet pet = petRepo.findByNameAndUser_Account_Id(request.getPetName(), currentAcc.getId());
         if (pet == null) {
