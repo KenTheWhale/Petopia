@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -31,7 +32,7 @@ public class Order {
     private PaymentMethod paymentMethod;
 
     @Column(name = "`order_date`")
-    private Date orderDate;
+    private LocalDateTime orderDate;
 
     @Column(name = "`total_price`")
     private double totalPrice;

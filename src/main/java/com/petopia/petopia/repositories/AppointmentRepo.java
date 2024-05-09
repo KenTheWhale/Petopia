@@ -9,4 +9,8 @@ import java.util.List;
 public interface AppointmentRepo extends JpaRepository<Appointment, Integer> {
 
     List<Appointment> findAllByPet_User_IdAndTypeAndAppointmentStatus_Status(Integer ownerID, String type, String status, Pageable pageable);
+
+    List<Appointment> findAllByPet_User_Id(Integer userId);
+
+
 }

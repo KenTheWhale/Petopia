@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -35,7 +36,7 @@ public class Shop {
     private List<Product> productList;
 
 
-    private Date planExpiredDate;
+    private LocalDateTime planPurchasedDate;
 
     private String name;
 

@@ -21,6 +21,10 @@ public class ServiceCenterPlan {
     @ToString.Exclude
     private List<ServiceCenter> serviceCenterList;
 
+    @ManyToOne
+    @JoinColumn(name = "`status_id`")
+    private PlanStatus planStatus;
+
     private String name;
 
     private double fee;

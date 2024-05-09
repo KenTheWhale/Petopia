@@ -5,7 +5,7 @@ import com.petopia.petopia.models.entity_models.Token;
 
 public interface TokenService {
 
-    Token createNewAccessToken(Account account, String value);
+    Token createNewAccessToken(Account account);
 
-    Token createNewRefreshToken(Account account, String value);
+    Token createNewRefreshToken(Account account);
 }

@@ -9,13 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class NotificationResponse {
-
+public class AvailableServiceProviderListResponse {
     private String status;
 
     private String message;
 
-    private int id;
+    private Integer providerId;
 
-    private String content;
+    private String providerName;
 }

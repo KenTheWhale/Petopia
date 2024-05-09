@@ -13,13 +13,14 @@ public interface UserService {
 
     BlackListResponse viewBlackList();
 
-    ResponseEntity<?> viewNotification(UserRequest userRequest);
+    NotificationResponse viewNotification();
 
     HealthHistoryResponse getHealthHistoryList(HealthHistoryRequest request);
 
     PetListResponse getPetList();
 
-    CreateAppointmentResponse createAppointment(CreateAppointmentRequest request);
-
     CreateUserProfileResponse createUserProfile(int id, CreateUserProfileRequest request);
+
+    CreateAppointmentResponse createAppointment(CreateAppointmentRequest request, String type);
+
 }

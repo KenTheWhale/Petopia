@@ -21,7 +21,15 @@ public class Service {
     @JoinColumn(name = "status_id")
     private ServiceStatus serviceStatus;
 
+    @ManyToOne
+    @JoinColumn(name = "`sc_id`")
+    private ServiceCenter serviceCenter;
+
     private String name;
 
     private double fee;
+
+    @OneToMany(mappedBy = "service")
+    @ToString.Exclude
+    private List<AppointmentService> appointmentServiceList;
 }

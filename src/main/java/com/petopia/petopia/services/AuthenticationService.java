@@ -6,12 +6,6 @@ import com.petopia.petopia.models.response_models.LoginResponse;
 import com.petopia.petopia.models.response_models.RefreshResponse;
 
 public interface AuthenticationService {
-    String getAccessToken(Integer accountID);
-    String getRefreshToken(Integer accountID);
-
-    Account getCurrentLoggedUser();
 
     LoginResponse login(LoginRequest request);
-
-    RefreshResponse refresh();
 }

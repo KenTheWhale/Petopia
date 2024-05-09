@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -33,7 +34,7 @@ public class Post {
 
     @Column(name = "`post_date`")
     //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private Date postDate;
+    private LocalDateTime postDate;
 
     @Transient
     private List<String> imgLinkList;
