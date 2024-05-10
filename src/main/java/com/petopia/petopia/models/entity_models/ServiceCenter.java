@@ -36,7 +36,7 @@ public class ServiceCenter {
 
     @OneToMany(mappedBy = "serviceCenter")
     @ToString.Exclude
-    private List<Service> serviceList;
+    private List<Services> servicesList;
 
     private LocalDateTime planPurchasedDate;
 
@@ -44,7 +44,7 @@ public class ServiceCenter {
 
     private String address;
 
-    private int rating;
+    private double rating;
 
     private String type;
 }
