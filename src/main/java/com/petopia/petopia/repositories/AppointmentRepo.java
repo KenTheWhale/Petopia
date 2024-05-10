@@ -12,5 +12,6 @@ public interface AppointmentRepo extends JpaRepository<Appointment, Integer> {
 
     List<Appointment> findAllByPet_User_Id(Integer userId);
 
-
+    //find list appointment by appointment status
+    List<Appointment> findAllByAppointmentStatus_Status(String status);
 }

@@ -5,19 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CreateAppointmentRequest {
-
-    private String petName;
-
+public class ServiceRequest {
     private Integer centerId;
-
-    private List<Integer> serviceId;
-
 }

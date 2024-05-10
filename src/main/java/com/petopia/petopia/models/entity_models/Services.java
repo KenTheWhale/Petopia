@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "`service`")
-public class Service {
+public class Services {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,9 @@ public class Service {
 
     private double fee;
 
-    @OneToMany(mappedBy = "service")
+    private double rating;
+
+    @OneToMany(mappedBy = "services")
     @ToString.Exclude
     private List<AppointmentService> appointmentServiceList;
 }

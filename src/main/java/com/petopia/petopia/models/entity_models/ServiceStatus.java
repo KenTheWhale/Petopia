@@ -21,5 +21,5 @@ public class ServiceStatus {
 
     @OneToMany(mappedBy = "serviceStatus")
     @ToString.Exclude
-    private List<Service> serviceList;
+    private List<Services> servicesList;
 }
