@@ -54,8 +54,9 @@ public class User {
     @ToString.Exclude
     private List<Feedback> feedbackList;
 
-    @Transient
-    private List<Integer> blackListUserIdList;
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    private List<BlackList> blackList;
 
     @OneToMany(mappedBy = "user")
     @ToString.Exclude

@@ -36,30 +36,30 @@ public class CurrentUserResponse {
 
         private String accessToken;
 
-        @Data
-        @AllArgsConstructor
-        @NoArgsConstructor
-        @Builder
-        public static class appointmentResponse {
-            private int id;
-            private Pet pet;
-            @Data
-            @AllArgsConstructor
-            @NoArgsConstructor
-            @Builder
-            public static class appointmentStatusResponse {
-                private String status;
-            }
-            private appointmentStatusResponse appointmentStatus;
-            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-            private LocalDateTime date;
-            private String location;
-            private double fee;
-            private String type;
-            private ServiceReport serviceReport;
-        }
-
-        private List<appointmentResponse> appointmentList;
+//        @Data
+//        @AllArgsConstructor
+//        @NoArgsConstructor
+//        @Builder
+//        public static class appointmentResponse {
+//            private int id;
+//            private Pet pet;
+//            @Data
+//            @AllArgsConstructor
+//            @NoArgsConstructor
+//            @Builder
+//            public static class appointmentStatusResponse {
+//                private String status;
+//            }
+//            private appointmentStatusResponse appointmentStatus;
+//            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+//            private LocalDateTime date;
+//            private String location;
+//            private double fee;
+//            private String type;
+//            private ServiceReport serviceReport;
+//        }
+//
+//        private List<appointmentResponse> appointmentList;
 
         @Data
         @AllArgsConstructor
