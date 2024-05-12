@@ -21,10 +21,6 @@ public class ServiceProvider {
     @JoinColumn(name = "`account_id`")
     private Account account;
 
-    @ManyToOne
-    @JoinColumn(name = "`status_id`")
-    private ProviderStatus providerStatus;
-
     @OneToMany(mappedBy = "serviceProvider")
     @ToString.Exclude
     private List<Appointment> appointmentList;

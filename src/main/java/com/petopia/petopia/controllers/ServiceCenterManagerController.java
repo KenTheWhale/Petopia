@@ -1,6 +1,7 @@
 package com.petopia.petopia.controllers;
 
 import com.petopia.petopia.models.request_models.AppointmentProcessingRequest;
+import com.petopia.petopia.models.request_models.AvailableServiceProviderListRequest;
 import com.petopia.petopia.models.response_models.AppointmentProcessingResponse;
 import com.petopia.petopia.models.response_models.AvailableServiceProviderListResponse;
 import com.petopia.petopia.models.response_models.RequestingAppointmentResponse;
@@ -18,10 +19,10 @@ public class ServiceCenterManagerController {
 
     private final SCMService scmService;
 
-    @GetMapping("/available-service-provider-list")
+    @PostMapping("/available-service-provider-list")
     @PreAuthorize("hasAuthority('scm:read')")
-    public AvailableServiceProviderListResponse getAvailableServiceProvider(){
-        return scmService.getAvailableServiceProvider();
+    public AvailableServiceProviderListResponse getAvailableServiceProvider(@RequestBody AvailableServiceProviderListRequest request){
+        return scmService.getAvailableServiceProvider(request);
     }
 
     @PostMapping("/appointment-processing")
