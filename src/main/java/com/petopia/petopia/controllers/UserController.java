@@ -1,8 +1,13 @@
 package com.petopia.petopia.controllers;
 
 import com.petopia.petopia.models.request_models.*;
+import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
+import com.petopia.petopia.models.request_models.HealthHistoryRequest;
+import com.petopia.petopia.models.request_models.ServiceRequest;
+import com.petopia.petopia.models.request_models.UserRequest;
 import com.petopia.petopia.models.response_models.*;
 import com.petopia.petopia.services.AccountService;
+import com.petopia.petopia.services.SCMService;
 import com.petopia.petopia.services.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +23,7 @@ public class UserController {
 
     private final UserService userService;
     private final AccountService accountService;
+    private final SCMService scmService;
 
     @GetMapping("/userProfile")
     @PreAuthorize("hasAuthority('user:read')")
@@ -49,6 +55,12 @@ public class UserController {
         return userService.getPetList();
     }
 
+    @PostMapping("/service-list")
+    @PreAuthorize("hasAuthority('user:read')")
+    public ServiceListResponse getServiceList(@RequestBody ServiceRequest request){
+        return userService.getServiceList(request);
+    }
+
     @PostMapping("/health-appointment-creation")
     @PreAuthorize("hasAuthority('user:create')")
     public CreateAppointmentResponse createHealthAppointment(@RequestBody CreateAppointmentRequest request){
@@ -60,6 +72,25 @@ public class UserController {
     public CreateAppointmentResponse createServiceAppointment(@RequestBody CreateAppointmentRequest request){
         return userService.createAppointment(request, "service");
     }
+
+    @GetMapping("/requesting-appointment-list")
+    @PreAuthorize("hasAuthority('user:create')")
+    public RequestingAppointment getRequestingAppointmentList(){
+        return scmService.viewRequestingAppointment();
+    }
+
+    @PostMapping("/health-service-page")
+    @PreAuthorize("hasAuthority('user:read')")
+    public LoadServicePageResponse loadHealthServicePage(){
+        return userService.loadServicePage("health");
+    }
+
+    @PostMapping("/service-service-page")
+    @PreAuthorize("hasAuthority('user:read')")
+    public LoadServicePageResponse loadServiceServicePage(){
+        return userService.loadServicePage("service");
+    }
+
     @PostMapping("/create-user-profile")
     public CreateUserProfileResponse createUserProfile(
             @RequestParam("accountId") int accountId,

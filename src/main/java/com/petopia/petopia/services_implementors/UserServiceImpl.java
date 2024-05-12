@@ -5,7 +5,7 @@ import com.petopia.petopia.models.entity_models.*;
 import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
 import com.petopia.petopia.models.request_models.CreateUserProfileRequest;
 import com.petopia.petopia.models.request_models.HealthHistoryRequest;
-import com.petopia.petopia.models.request_models.UserRequest;
+import com.petopia.petopia.models.request_models.ServiceRequest;
 import com.petopia.petopia.models.response_models.*;
 import com.petopia.petopia.repositories.AccountRepo;
 import com.petopia.petopia.repositories.PetRepo;
@@ -13,24 +13,19 @@ import com.petopia.petopia.repositories.ServiceReportRepo;
 import com.petopia.petopia.repositories.UserRepo;
 import com.petopia.petopia.repositories.*;
 import com.petopia.petopia.services.AccountService;
-import com.petopia.petopia.services.AuthenticationService;
 import com.petopia.petopia.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -45,6 +40,8 @@ public class UserServiceImpl implements UserService {
     private final TokenRepo tokenRepo;
     private final NotificationRepo notificationRepo;
     private final ServiceCenterRepo serviceCenterRepo;
+    private final AppointmentStatusRepo appointmentStatusRepo;
+    private final ServiceRepo serviceRepo;
 
     @Override
     public CurrentUserResponse getCurrentUserProfile() {
@@ -214,15 +211,17 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+
+
     @Override
     public CreateAppointmentResponse createAppointment(CreateAppointmentRequest request, String type) {
         Account currentAcc = accountService.getCurrentLoggedAccount();
         assert currentAcc != null;
 
-        String appointmentType = type.equals("health")? Const.APPOINTMENT_TYPE_HEALTH: Const.APPOINTMENT_TYPE_SERVICE;
+        String appointmentType = type.equals("health") ? Const.APPOINTMENT_TYPE_HEALTH : Const.APPOINTMENT_TYPE_SERVICE;
 
-        ServiceCenter serviceCenter = serviceCenterRepo.findServiceCenterByName(request.getServiceCenterName()).orElse(null);
-        if(serviceCenter == null) {
+        ServiceCenter serviceCenter = serviceCenterRepo.findServiceCenterById(request.getCenterId()).orElse(null);
+        if (serviceCenter == null) {
             return CreateAppointmentResponse.builder()
                     .status("400")
                     .message("Can not find service center with this name")
@@ -235,23 +234,108 @@ public class UserServiceImpl implements UserService {
                     .message("Can not find pet with this name")
                     .build();
         }
+
+        AppointmentStatus appointmentStatus = appointmentStatusRepo.findByStatus(Const.APPOINTMENT_STATUS_PENDING);
+
+        Appointment appointment = Appointment.builder()
+                .pet(pet)
+                .serviceProvider(serviceCenter.getServiceProviderList().get(1))
+                .appointmentStatus(appointmentStatus)
+                .date(LocalDateTime.now())
+                .fee(calculateSumOfFees(request))
+                .type(appointmentType)
+                .build();
+
+        // Save the Appointment
+        Appointment savedAppointment = appointmentRepo.save(appointment);
+
         return CreateAppointmentResponse.builder()
                 .status("200")
                 .message("Create appointment successfully")
                 .appointment(
                         CreateAppointmentResponse.appointmentDraft.builder()
-                                .petName(pet.getName())
+                                .petName(savedAppointment.getPet().getName())
                                 .status(Const.APPOINTMENT_STATUS_PENDING)
                                 .date(LocalDateTime.now())
-                                .location(serviceCenter.getAddress())
-                                .service(serviceCenter.getServiceList().stream()
-                                        .map(service -> new  CreateAppointmentResponse.serviceList(service.getId(), service.getName()))
+                                .location(savedAppointment.getServiceProvider().getServiceCenter().getAddress())
+                                .service(serviceCenter.getServicesList().stream()
+                                        .map(service -> new CreateAppointmentResponse.serviceList(service.getId(), service.getName()))
                                         .collect(Collectors.toList()))
                                 .type(appointmentType)
                                 .build()
                 )
                 .build();
     }
+
+    public double calculateSumOfFees(CreateAppointmentRequest request) {
+        double sum = 0;
+        for (Integer id : request.getServiceId()) {
+            Optional<Services> sv = serviceRepo.findById(id);
+            if (sv.isPresent()) {
+                Services services = sv.get();
+                sum += services.getFee();
+            }
+        }
+        return sum;
+    }
+
+
+
+    @Override
+    public ServiceListResponse getServiceList(ServiceRequest request) {
+        ServiceCenter serviceCenter = serviceCenterRepo.findServiceCenterById(request.getCenterId()).orElse(null);
+        if(serviceCenter == null) {
+            return ServiceListResponse.builder()
+                    .status("400")
+                    .message("Can not find service center with this id")
+                    .serviceList(Collections.emptyList())
+                    .build();
+        }
+        return ServiceListResponse.builder()
+                .status("200")
+                .message("Get list successfully")
+                .serviceList(serviceCenter.getServicesList().stream()
+                        .map(service -> new ServiceListResponse.ServiceList(service.getId(), service.getName(), service.getServiceCenter().getType(), service.getFee()))
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    @Override
+    public LoadServicePageResponse loadServicePage(String type) {
+        String types = type.equals("health") ? Const.APPOINTMENT_TYPE_HEALTH : Const.APPOINTMENT_TYPE_SERVICE;
+        List<ServiceCenter> serviceCenterList = getServiceCenterList(types);
+        List<Services> serviceList = getHealthServiceList(types);
+        return LoadServicePageResponse.builder()
+                .status("200")
+                .message("Get service page successfully")
+                .serviceCenters(serviceCenterList.stream()
+                        .map(serviceCenter -> LoadServicePageResponse.ServiceCenter.builder()
+                                .id(serviceCenter.getId())
+                                .name(serviceCenter.getName())
+                                .address(serviceCenter.getAddress())
+                                .rating(serviceCenter.getRating())
+                                .build())
+                        .collect(Collectors.toList()))
+                .services(serviceList.stream()
+                        .map(service -> LoadServicePageResponse.Service.builder()
+                                .id(service.getId())
+                                .serviceName(service.getName())
+                                .rating(service.getRating())
+                                .servicePrice(service.getFee())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
+
+    }
+
+    private List<ServiceCenter> getServiceCenterList(String type){
+        return serviceCenterRepo.findAllByTypeAndServiceCenterStatus_StatusOrServiceCenterStatus_StatusOrderByRatingDesc(type, Const.SERVICE_CENTER_STATUS_ACTIVE, Const.SERVICE_CENTER_STATUS_CLOSED);
+    }
+
+    private  List<Services> getHealthServiceList(String type) {
+        return serviceRepo.findAllByServiceCenter_TypeAndServiceStatus_StatusOrderByRatingDesc(type, Const.SERVICE_STATUS_ACTIVE);
+    }
+
 
     @Override
     public CreateUserProfileResponse createUserProfile(int id, CreateUserProfileRequest request) {

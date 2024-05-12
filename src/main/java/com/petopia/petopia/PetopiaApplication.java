@@ -576,7 +576,7 @@ public class PetopiaApplication {
 //								.planPurchasedDate(LocalDateTime.now().minusWeeks(2))
 //								.name("Mèo Spa")
 //								.address(" 38/1/95 Trường Chinh, quận Tân Bình, tp Hồ Chí Minh")
-//								.rating(4)
+//								.rating(3.5)
 //								.type(Const.SERVICE_CENTER_TYPE_SERVICE)
 //								.build()
 //				);
@@ -589,7 +589,7 @@ public class PetopiaApplication {
 //								.planPurchasedDate(LocalDateTime.now().minusDays(28))
 //								.name("Puppy Mart")
 //								.address("244 Khánh Hội, quận 4, tp Hồ Chí Minh")
-//								.rating(5)
+//								.rating(4)
 //								.type(Const.SERVICE_CENTER_TYPE_HEALTH)
 //								.build()
 //				);
@@ -860,75 +860,83 @@ public class PetopiaApplication {
 //				);
 //
 //				// init service------------------------------------------------------------//
-//				Service service1 = serviceRepo.save(
-//						Service.builder()
+//				Services services1 = serviceRepo.save(
+//						Services.builder()
 //								.serviceCenter(sc1)
 //								.serviceStatus(activeService)
 //								.fee(250000)
 //								.name("Combo Siêu Sạch")
+//								.rating(5)
 //								.build()
 //				);
 //
-//				Service service2 = serviceRepo.save(
-//						Service.builder()
+//				Services services2 = serviceRepo.save(
+//						Services.builder()
 //								.serviceCenter(sc1)
 //								.serviceStatus(activeService)
 //								.fee(350000)
 //								.name("Combo Siêu Đẹp")
+//								.rating(4)
 //								.build()
 //				);
 //
-//				Service service3 = serviceRepo.save(
-//						Service.builder()
+//				Services services3 = serviceRepo.save(
+//						Services.builder()
 //								.serviceCenter(sc1)
 //								.serviceStatus(activeService)
 //								.fee(350000)
 //								.name("Combo nhuộm tai đuôi, 4 chân")
+//								.rating(4)
 //								.build()
 //				);
 //
-//				Service service4 = serviceRepo.save(
-//						Service.builder()
+//				Services services4 = serviceRepo.save(
+//						Services.builder()
 //								.serviceCenter(sc1)
 //								.serviceStatus(activeService)
 //								.fee(400000)
 //								.name("Combo Siêu Thư Giãn")
+//								.rating(3)
 //								.build()
 //				);
 //
-//				Service service5 = serviceRepo.save(
-//						Service.builder()
+//				Services services5 = serviceRepo.save(
+//						Services.builder()
 //								.serviceCenter(sc2)
 //								.serviceStatus(activeService)
 //								.fee(110000)
 //								.name("Vacxin 7 bệnh cho chó - VANGUARD ZOETIS ")
+//								.rating(5)
 //								.build()
 //				);
 //
-//				Service service6 = serviceRepo.save(
-//						Service.builder()
+//				Services services6 = serviceRepo.save(
+//						Services.builder()
 //								.serviceCenter(sc2)
 //								.serviceStatus(activeService)
 //								.fee(350000)
 //								.name("Vacxin 7 bệnh cho Mèo - Vaccine Nga")
+//								.rating(5)
 //								.build()
 //				);
 //
-//				Service service7 = serviceRepo.save(
-//						Service.builder()
+//				Services services7 = serviceRepo.save(
+//						Services.builder()
 //								.serviceCenter(sc2)
 //								.serviceStatus(activeService)
 //								.fee(550000)
 //								.name("Triệt sản Mèo")
+//								.rating(4)
 //								.build()
 //				);
 //
-//				Service service8 = serviceRepo.save(
-//						Service.builder()
+//				Services services8 = serviceRepo.save(
+//						Services.builder()
 //								.serviceCenter(sc2)
 //								.serviceStatus(activeService)
 //								.fee(700000)
 //								.name("Triệt sản chó")
+//								.rating(4)
 //								.build()
 //				);
 //
@@ -981,56 +989,56 @@ public class PetopiaApplication {
 //				AppointmentService appointmentService1 = appointmentServiceRepo.save(
 //						AppointmentService.builder()
 //								.appointment(appointment1)
-//								.service(service1)
+//								.services(services1)
 //								.build()
 //				);
 //
 //				AppointmentService appointmentService2 = appointmentServiceRepo.save(
 //						AppointmentService.builder()
 //								.appointment(appointment1)
-//								.service(service2)
+//								.services(services2)
 //								.build()
 //				);
 //
 //				AppointmentService appointmentService3 = appointmentServiceRepo.save(
 //						AppointmentService.builder()
 //								.appointment(appointment2)
-//								.service(service3)
+//								.services(services3)
 //								.build()
 //				);
 //
 //				AppointmentService appointmentService4 = appointmentServiceRepo.save(
 //						AppointmentService.builder()
 //								.appointment(appointment2)
-//								.service(service4)
+//								.services(services4)
 //								.build()
 //				);
 //
 //				AppointmentService appointmentService5 = appointmentServiceRepo.save(
 //						AppointmentService.builder()
 //								.appointment(appointment3)
-//								.service(service5)
+//								.services(services5)
 //								.build()
 //				);
 //
 //				AppointmentService appointmentService6 = appointmentServiceRepo.save(
 //						AppointmentService.builder()
 //								.appointment(appointment3)
-//								.service(service6)
+//								.services(services6)
 //								.build()
 //				);
 //
 //				AppointmentService appointmentService7 = appointmentServiceRepo.save(
 //						AppointmentService.builder()
 //								.appointment(appointment4)
-//								.service(service7)
+//								.services(services7)
 //								.build()
 //				);
 //
 //				AppointmentService appointmentService8 = appointmentServiceRepo.save(
 //						AppointmentService.builder()
 //								.appointment(appointment4)
-//								.service(service8)
+//								.services(services8)
 //								.build()
 //				);
 //
