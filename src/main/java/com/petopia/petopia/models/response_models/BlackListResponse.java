@@ -17,32 +17,17 @@ public class BlackListResponse {
 
     private String message;
 
-    private List<blackList> blackList;
+    private List<BlockedUser> blockedUsers;
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class blackList {
+    public static class BlockedUser {
 
-        private String status;
-
-        private String message;
-
-        @Data
-        @AllArgsConstructor
-        @NoArgsConstructor
-        @Builder
-        public static class userResponse{
-            private int id;
-
+            private Integer id;
             private String name;
-
             private String avatarLink;
-
         }
-        private userResponse userData;
-
-    }
 
 }

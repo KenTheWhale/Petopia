@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,7 +17,15 @@ public class NotificationResponse {
 
     private String message;
 
-    private int id;
+    private List<Notificationn> notifications;
 
-    private String content;
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class Notificationn {
+        private int id;
+
+        private String content;
+    }
 }

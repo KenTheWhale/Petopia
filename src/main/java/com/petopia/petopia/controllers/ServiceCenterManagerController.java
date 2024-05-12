@@ -3,6 +3,7 @@ package com.petopia.petopia.controllers;
 import com.petopia.petopia.models.request_models.AppointmentProcessingRequest;
 import com.petopia.petopia.models.response_models.AppointmentProcessingResponse;
 import com.petopia.petopia.models.response_models.AvailableServiceProviderListResponse;
+import com.petopia.petopia.models.response_models.RequestingAppointmentResponse;
 import com.petopia.petopia.services.SCMService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +28,11 @@ public class ServiceCenterManagerController {
     @PreAuthorize("hasAuthority('scm:update')")
     public AppointmentProcessingResponse processAppointment(@RequestBody AppointmentProcessingRequest request){
         return scmService.processAppointment(request);
+    }
+
+    @GetMapping("/requesting-appointment-list")
+    @PreAuthorize("hasAuthority('scm:read')")
+    public RequestingAppointmentResponse getRequestingAppointmentList(){
+        return scmService.viewRequestingAppointment();
     }
 }

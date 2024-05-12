@@ -5,7 +5,7 @@ import com.petopia.petopia.models.entity_models.Appointment;
 import com.petopia.petopia.models.request_models.AppointmentProcessingRequest;
 import com.petopia.petopia.models.response_models.AppointmentProcessingResponse;
 import com.petopia.petopia.models.response_models.AvailableServiceProviderListResponse;
-import com.petopia.petopia.models.response_models.RequestingAppointment;
+import com.petopia.petopia.models.response_models.RequestingAppointmentResponse;
 import com.petopia.petopia.repositories.AppointmentRepo;
 import com.petopia.petopia.services.SCMService;
 import lombok.RequiredArgsConstructor;
@@ -36,27 +36,31 @@ public class SCMServiceImpl implements SCMService {
     }
 
     @Override
-    public RequestingAppointment viewRequestingAppointment() {
+    public RequestingAppointmentResponse viewRequestingAppointment() {
 
         List<Appointment> appointmentList = appointmentRepo.findAllByAppointmentStatus_Status(Const.APPOINTMENT_STATUS_PENDING);
 
-        if(appointmentList != null){
-            return RequestingAppointment.builder()
+        if(!appointmentList.isEmpty()){
+            return RequestingAppointmentResponse.builder()
                     .status("200")
-                    .message("Get requesting appointment successfully")
-                    .requestingAppointmentList(appointmentList.stream()
-                            .map(appointment -> RequestingAppointment.requestingAppointment.builder()
-                                    .id(appointment.getId())
-                                    .petName(appointment.getPet().getName())
-                                    .status(appointment.getAppointmentStatus().getStatus())
-                                    .type(appointment.getType())
-                                    .location(appointment.getServiceProvider().getServiceCenter().getAddress())
-                                    .date(appointment.getDate())
-                                    .build())
-                            .collect(Collectors.toList()))
+                    .message("Get requesting appointment list successfully")
+                    .requestingAppointmentList(appointmentList.stream().map(appointment -> RequestingAppointmentResponse.RequestingAppointment.builder()
+                            .id(appointment.getId())
+                            .petName(appointment.getPet().getName())
+                            .status(appointment.getAppointmentStatus().getStatus())
+                            .type(appointment.getType())
+                            .location(appointment.getServiceProvider().getServiceCenter().getAddress())
+                            .date(appointment.getDate())
+                            .appointmentServiceList(appointment.getAppointmentServiceList().stream()
+                                    .map(appointmentService -> RequestingAppointmentResponse.AppointmentService.builder()
+                                    .id(appointmentService.getId())
+                                    .serviceName(appointmentService.getServices().getName())
+                                    .build()).collect(Collectors.toList()))
+                            .fee(appointment.getFee())
+                            .build()).collect(Collectors.toList()))
                     .build();
         }
-        return RequestingAppointment.builder()
+        return RequestingAppointmentResponse.builder()
                 .status("400")
                 .message("No requesting appointment")
                 .requestingAppointmentList(Collections.emptyList())

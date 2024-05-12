@@ -25,7 +25,7 @@ public class CreateAppointmentResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class serviceList{
+    public static class Servicee{
         private int id;
         private String name;
     }
@@ -44,7 +44,7 @@ public class CreateAppointmentResponse {
 
         private String location;
 
-        private List<serviceList> service;
+        private List<Servicee> services;
 
         private String type;
     }
