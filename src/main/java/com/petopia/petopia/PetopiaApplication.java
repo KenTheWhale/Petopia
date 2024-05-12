@@ -56,8 +56,6 @@ public class PetopiaApplication {
 
 	private final ServiceProviderRepo serviceProviderRepo;
 
-	private final ProviderStatusRepo providerStatusRepo;
-
 	private final ServiceStatusRepo serviceStatusRepo;
 
 	private final ServiceCenterStatusRepo serviceCenterStatusRepo;
@@ -239,15 +237,6 @@ public class PetopiaApplication {
 //				// init payment method
 //				PaymentMethod VNPayMethod = paymentMethodRepo.save(
 //						PaymentMethod.builder().method("VNPay").build()
-//				);
-//
-//				// init provider status
-//				ProviderStatus availableProvider = providerStatusRepo.save(
-//						ProviderStatus.builder().status(Const.PROVIDER_STATUS_AVAILABLE).build()
-//				);
-//
-//				ProviderStatus busyProvider = providerStatusRepo.save(
-//						ProviderStatus.builder().status(Const.PROVIDER_STATUS_BUSY).build()
 //				);
 //
 //				// Init service status
@@ -598,7 +587,6 @@ public class PetopiaApplication {
 //				ServiceProvider sp1 = serviceProviderRepo.save(
 //						ServiceProvider.builder()
 //								.account(spAcc1)
-//								.providerStatus(availableProvider)
 //								.serviceCenter(sc1)
 //								.build()
 //				);
@@ -606,7 +594,6 @@ public class PetopiaApplication {
 //				ServiceProvider sp2 = serviceProviderRepo.save(
 //						ServiceProvider.builder()
 //								.account(spAcc2)
-//								.providerStatus(availableProvider)
 //								.serviceCenter(sc1)
 //								.build()
 //				);
@@ -614,7 +601,6 @@ public class PetopiaApplication {
 //				ServiceProvider sp3 = serviceProviderRepo.save(
 //						ServiceProvider.builder()
 //								.account(spAcc3)
-//								.providerStatus(availableProvider)
 //								.serviceCenter(sc2)
 //								.build()
 //				);
@@ -622,7 +608,6 @@ public class PetopiaApplication {
 //				ServiceProvider sp4 = serviceProviderRepo.save(
 //						ServiceProvider.builder()
 //								.account(spAcc4)
-//								.providerStatus(availableProvider)
 //								.serviceCenter(sc2)
 //								.build()
 //				);

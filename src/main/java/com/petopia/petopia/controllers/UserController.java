@@ -67,8 +67,6 @@ public class UserController {
         return userService.createAppointment(request, "service");
     }
 
-
-
     @PostMapping("/health-service-page")
     @PreAuthorize("hasAuthority('user:read')")
     public LoadServicePageResponse loadHealthServicePage(){
