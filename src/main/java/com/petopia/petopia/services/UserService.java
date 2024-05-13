@@ -1,5 +1,6 @@
 package com.petopia.petopia.services;
 
+import com.petopia.petopia.models.request_models.BlockUserRequest;
 import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
 import com.petopia.petopia.models.request_models.CreateUserProfileRequest;
 import com.petopia.petopia.models.request_models.HealthHistoryRequest;
@@ -25,5 +26,7 @@ public interface UserService {
     ServiceListResponse getServiceList(ServiceRequest request);
 
     LoadServicePageResponse loadServicePage(String type);
+
+    BlackListResponse blockUser(BlockUserRequest request);
 
 }

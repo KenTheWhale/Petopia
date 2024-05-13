@@ -5,6 +5,7 @@ import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
 import com.petopia.petopia.models.request_models.HealthHistoryRequest;
 import com.petopia.petopia.models.request_models.ServiceRequest;
 import com.petopia.petopia.models.request_models.UserRequest;
+import com.petopia.petopia.models.request_models.*;
 import com.petopia.petopia.models.response_models.*;
 import com.petopia.petopia.services.AccountService;
 import com.petopia.petopia.services.SCMService;
@@ -73,12 +74,6 @@ public class UserController {
         return userService.createAppointment(request, "service");
     }
 
-    @GetMapping("/requesting-appointment-list")
-    @PreAuthorize("hasAuthority('user:create')")
-    public RequestingAppointment getRequestingAppointmentList(){
-        return scmService.viewRequestingAppointment();
-    }
-
     @PostMapping("/health-service-page")
     @PreAuthorize("hasAuthority('user:read')")
     public LoadServicePageResponse loadHealthServicePage(){
@@ -101,4 +96,10 @@ public class UserController {
     public CreateAccountResponse createAccount(@RequestBody CreateAccountRequest request){
         return  accountService.createAccount(request);
     }
+    @PostMapping("/user-block")
+    @PreAuthorize("hasAuthority('user:update')")
+    public BlackListResponse blockUser(@RequestBody BlockUserRequest request){
+        return userService.blockUser(request);
+    }
+
 }

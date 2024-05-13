@@ -2,6 +2,7 @@ package com.petopia.petopia.services_implementors;
 
 import com.petopia.petopia.enums.Const;
 import com.petopia.petopia.models.entity_models.*;
+import com.petopia.petopia.models.request_models.BlockUserRequest;
 import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
 import com.petopia.petopia.models.request_models.CreateUserProfileRequest;
 import com.petopia.petopia.models.request_models.HealthHistoryRequest;
@@ -20,12 +21,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -42,6 +45,10 @@ public class UserServiceImpl implements UserService {
     private final ServiceCenterRepo serviceCenterRepo;
     private final AppointmentStatusRepo appointmentStatusRepo;
     private final ServiceRepo serviceRepo;
+    private final AppointmentServiceRepo appointmentServiceRepo;
+    private final AccountStatusRepo accountStatusRepo;
+    private final BlackListRepo blackListRepo;
+
 
     @Override
     public CurrentUserResponse getCurrentUserProfile() {
@@ -62,16 +69,16 @@ public class UserServiceImpl implements UserService {
                                 .avatarLink(currentAcc.getAvatarLink())
                                 .status(currentAcc.getAccountStatus().getStatus())
                                 .accessToken(accessTokenValue)
-                                .appointmentList(appointmentRepo.findAllByPet_User_Id(currentAcc.getId()).stream()
-                                        .map(appointment -> CurrentUserResponse.userResponse.appointmentResponse.builder()
-                                                .id(appointment.getId())
-                                                .pet(appointment.getPet())
-                                                .appointmentStatus(CurrentUserResponse.userResponse.appointmentResponse.appointmentStatusResponse.builder()
-                                                        .status(appointment.getAppointmentStatus().getStatus())
-                                                        .build())
-                                                .date(appointment.getDate())
-                                                .build())
-                                        .collect(Collectors.toList()))
+//                                .appointmentList(appointmentRepo.findAllByPet_User_Id(currentAcc.getId()).stream()
+//                                        .map(appointment -> CurrentUserResponse.userResponse.appointmentResponse.builder()
+//                                                .id(appointment.getId())
+//                                                .pet(appointment.getPet())
+//                                                .appointmentStatus(CurrentUserResponse.userResponse.appointmentResponse.appointmentStatusResponse.builder()
+//                                                        .status(appointment.getAppointmentStatus().getStatus())
+//                                                        .build())
+//                                                .date(appointment.getDate())
+//                                                .build())
+//                                        .collect(Collectors.toList()))
                                 .shop(currentAcc.getShop() != null ?
                                         CurrentUserResponse.userResponse.shopResponse.builder()
                                                 .id(currentAcc.getShop().getId())
@@ -89,54 +96,44 @@ public class UserServiceImpl implements UserService {
         Account currentAcc = accountService.getCurrentLoggedAccount();
         assert currentAcc != null;
 
-        List<Integer> blackListUserIdList = currentAcc.getUser().getBlackListUserIdList();
-        List<BlackListResponse.blackList> blackListResponses = new ArrayList<>();
-
-        if (blackListUserIdList != null) {
-            blackListResponses = blackListUserIdList.stream()
-                    .map(blackList -> {
-                        User user = userRepo.findById(blackList).orElse(null);
-                        if (user != null) {
-                            return BlackListResponse.blackList.builder()
-                                    .userData(BlackListResponse.blackList.userResponse.builder()
-                                            .id(user.getId())
-                                            .name(user.getAccount().getName())
-                                            .avatarLink(user.getAccount().getAvatarLink())
-                                            .build())
-                                    .build();
-                        } else {
-                            return null;
-                        }
-                    })
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
-        }
+        List<BlackList> blackList = currentAcc.getUser().getBlackList();
 
         return BlackListResponse.builder()
-                .status("200")
-                .message("Get black list successfully")
-                .blackList(blackListResponses)
-                .build();
+                    .status("200")
+                    .message("Get black list successfully")
+                    .blockedUsers(blackList.stream()
+                            .map(element -> BlackListResponse.BlockedUser.builder()
+                                    .id(userRepo.findUserById(element.getBlockedUserId()).getId())
+                                    .name(userRepo.findUserById(element.getBlockedUserId()).getAccount().getName())
+                                    .avatarLink(userRepo.findUserById(element.getBlockedUserId()).getAccount().getAvatarLink())
+                                    .build())
+                            .collect(Collectors.toList()))
+                    .build();
+
+
     }
 
     @Override
     public NotificationResponse viewNotification() {
         Account currentAcc = accountService.getCurrentLoggedAccount();
         assert currentAcc != null;
-        Notification notification = notificationRepo.findNotificationByUser_Id(currentAcc.getId());
-        if(notification != null) {
+        List<Notification> notification = notificationRepo.findAllByUser_Id(currentAcc.getUser().getId());
+        if (notification != null) {
             return NotificationResponse.builder()
                     .status("200")
                     .message("Get notification successfully")
-                    .id(notification.getId())
-                    .content(notification.getContent())
+                    .notifications(notification.stream()
+                            .map(notify -> NotificationResponse.Notificationn.builder()
+                                    .id(notify.getId())
+                                    .content(notify.getContent())
+                                    .build())
+                            .collect(Collectors.toList()))
                     .build();
         }
         return NotificationResponse.builder()
                 .status("400")
                 .message("This user has no notification")
-                .id(0)
-                .content("")
+                .notifications(null)
                 .build();
     }
 
@@ -212,7 +209,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     @Override
     public CreateAppointmentResponse createAppointment(CreateAppointmentRequest request, String type) {
         Account currentAcc = accountService.getCurrentLoggedAccount();
@@ -221,6 +217,13 @@ public class UserServiceImpl implements UserService {
         String appointmentType = type.equals("health") ? Const.APPOINTMENT_TYPE_HEALTH : Const.APPOINTMENT_TYPE_SERVICE;
 
         ServiceCenter serviceCenter = serviceCenterRepo.findServiceCenterById(request.getCenterId()).orElse(null);
+
+        List<Services> serviceList = new ArrayList<>();
+
+        for (Integer id : request.getServiceId()) {
+            Optional<Services> sv = serviceRepo.findById(id);
+            serviceList.add(sv.get());
+        }
         if (serviceCenter == null) {
             return CreateAppointmentResponse.builder()
                     .status("400")
@@ -248,6 +251,7 @@ public class UserServiceImpl implements UserService {
 
         // Save the Appointment
         Appointment savedAppointment = appointmentRepo.save(appointment);
+        saveServiceListToAppointment(savedAppointment, serviceList);
 
         return CreateAppointmentResponse.builder()
                 .status("200")
@@ -258,8 +262,11 @@ public class UserServiceImpl implements UserService {
                                 .status(Const.APPOINTMENT_STATUS_PENDING)
                                 .date(LocalDateTime.now())
                                 .location(savedAppointment.getServiceProvider().getServiceCenter().getAddress())
-                                .service(serviceCenter.getServicesList().stream()
-                                        .map(service -> new CreateAppointmentResponse.serviceList(service.getId(), service.getName()))
+                                .services(serviceList.stream()
+                                        .map(service -> CreateAppointmentResponse.Servicee.builder()
+                                                .id(service.getId())
+                                                .name(service.getName())
+                                                .build())
                                         .collect(Collectors.toList()))
                                 .type(appointmentType)
                                 .build()
@@ -279,12 +286,25 @@ public class UserServiceImpl implements UserService {
         return sum;
     }
 
-
+    //save list of services to appointment
+    public void saveServiceListToAppointment(Appointment appointment, List<Services> serviceList) {
+        for (Services service : serviceList) {
+            AppointmentService appointmentService = AppointmentService.builder()
+                    .appointment(appointment)
+                    .services(service)
+                    .build();
+            if (appointment.getAppointmentServiceList() == null) {
+                appointment.setAppointmentServiceList(new ArrayList<>());
+            }
+            appointment.getAppointmentServiceList().add(appointmentService);
+            appointmentServiceRepo.save(appointmentService);
+        }
+    }
 
     @Override
     public ServiceListResponse getServiceList(ServiceRequest request) {
         ServiceCenter serviceCenter = serviceCenterRepo.findServiceCenterById(request.getCenterId()).orElse(null);
-        if(serviceCenter == null) {
+        if (serviceCenter == null) {
             return ServiceListResponse.builder()
                     .status("400")
                     .message("Can not find service center with this id")
@@ -328,11 +348,55 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    private List<ServiceCenter> getServiceCenterList(String type){
+    @Override
+    public BlackListResponse blockUser(BlockUserRequest request) {
+        Account currentAcc = accountService.getCurrentLoggedAccount();
+        assert currentAcc != null;
+        User blockedUser = userRepo.findById(request.getUserId()).orElse(null);
+        if (blockedUser == null) {
+            return BlackListResponse.builder()
+                    .status("400")
+                    .message("Can not find user with this id")
+                    .build();
+        }
+        //check block yourself
+        if (request.getUserId().equals(currentAcc.getUser().getId())) {
+            return BlackListResponse.builder()
+                    .status("400")
+                    .message("Can not block yourself")
+                    .build();
+        }
+
+        BlackList blackList = BlackList.builder()
+                .user(currentAcc.getUser())
+                .blockedUserId(blockedUser.getId())
+                .build();
+
+        blackListRepo.save(blackList);
+
+        List<BlackList> blockedUserList = new ArrayList<>();
+        blockedUserList.add(blackList);
+
+        return BlackListResponse.builder()
+                .status("200")
+                .message("Block user successfully")
+                //return the black list
+                .blockedUsers(blockedUserList.stream()
+                        .map(user -> BlackListResponse.BlockedUser.builder()
+                                .id(user.getBlockedUserId())
+                                .name(user.getUser().getAccount().getName())
+                                .avatarLink(user.getUser().getAccount().getAvatarLink())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
+
+    }
+
+    private List<ServiceCenter> getServiceCenterList(String type) {
         return serviceCenterRepo.findAllByTypeAndServiceCenterStatus_StatusOrServiceCenterStatus_StatusOrderByRatingDesc(type, Const.SERVICE_CENTER_STATUS_ACTIVE, Const.SERVICE_CENTER_STATUS_CLOSED);
     }
 
-    private  List<Services> getHealthServiceList(String type) {
+    private List<Services> getHealthServiceList(String type) {
         return serviceRepo.findAllByServiceCenter_TypeAndServiceStatus_StatusOrderByRatingDesc(type, Const.SERVICE_STATUS_ACTIVE);
     }
 
