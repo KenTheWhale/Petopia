@@ -2,10 +2,7 @@ package com.petopia.petopia.services_implementors;
 
 import com.petopia.petopia.enums.Const;
 import com.petopia.petopia.models.entity_models.*;
-import com.petopia.petopia.models.request_models.BlockUserRequest;
-import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
-import com.petopia.petopia.models.request_models.HealthHistoryRequest;
-import com.petopia.petopia.models.request_models.ServiceRequest;
+import com.petopia.petopia.models.request_models.*;
 import com.petopia.petopia.models.response_models.*;
 import com.petopia.petopia.repositories.*;
 import com.petopia.petopia.services.AccountService;
@@ -18,7 +15,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
 
         return CurrentUserResponse.builder()
                 .status("200")
-                .message("Get current user profile successfully")
+                .message("Lấy thông tin người dùng thành công")
                 .user(
                         CurrentUserResponse.userResponse.builder()
                                 .id(currentAcc.getId())
@@ -87,10 +87,15 @@ public class UserServiceImpl implements UserService {
         assert currentAcc != null;
 
         List<BlackList> blackList = currentAcc.getUser().getBlackList();
-
+        if(blackList.isEmpty()){
+            return BlackListResponse.builder()
+                    .status("400")
+                    .message("Người dùng không có ai trong danh sách chặn")
+                    .build();
+        }
         return BlackListResponse.builder()
                     .status("200")
-                    .message("Get black list successfully")
+                    .message("Lấy danh sách chặn thành công")
                     .blockedUsers(blackList.stream()
                             .map(element -> BlackListResponse.BlockedUser.builder()
                                     .id(userRepo.findUserById(element.getBlockedUserId()).getId())
@@ -111,7 +116,7 @@ public class UserServiceImpl implements UserService {
         if (notification != null) {
             return NotificationResponse.builder()
                     .status("200")
-                    .message("Get notification successfully")
+                    .message("Lấy thông báo thành công")
                     .notifications(notification.stream()
                             .map(notify -> NotificationResponse.Notificationn.builder()
                                     .id(notify.getId())
@@ -122,7 +127,7 @@ public class UserServiceImpl implements UserService {
         }
         return NotificationResponse.builder()
                 .status("400")
-                .message("This user has no notification")
+                .message("Người dùng không có thông báo")
                 .notifications(null)
                 .build();
     }
@@ -155,7 +160,7 @@ public class UserServiceImpl implements UserService {
 
             return HealthHistoryResponse.builder()
                     .status("200")
-                    .message("Get list successfully")
+                    .message("Lấy lịch sử khám sức khỏe thành công")
                     .totalPage(serviceReports.getTotalPages())
                     .petId(pet.getId())
                     .petName(pet.getName())
@@ -170,7 +175,7 @@ public class UserServiceImpl implements UserService {
         }
         return HealthHistoryResponse.builder()
                 .status("400")
-                .message("Can not find pet")
+                .message("Không tìm thấy thú cưng với id này")
                 .totalPage(0)
                 .petId(0)
                 .petName("")
@@ -191,7 +196,7 @@ public class UserServiceImpl implements UserService {
         List<Pet> pets = petRepo.findAllByUser_Account_IdOrderById(currentAcc.getId());
         return PetListResponse.builder()
                 .status("200")
-                .message("Get list successfully")
+                .message("Lấy danh sách thú cưng thành công")
                 .petList(pets.stream()
                         .map(pet -> new PetListResponse.PetResponse(pet.getId(), pet.getName(), pet.getGender(), pet.getAge(), pet.getType(), pet.getNecklaceId(), pet.getDescription(), pet.getImgLinkList()))
                         .collect(Collectors.toList()))
@@ -217,14 +222,14 @@ public class UserServiceImpl implements UserService {
         if (serviceCenter == null) {
             return CreateAppointmentResponse.builder()
                     .status("400")
-                    .message("Can not find service center with this name")
+                    .message("Không thể tìm thấy trung tâm dịch vụ với id này")
                     .build();
         }
         Pet pet = petRepo.findByNameAndUser_Account_Id(request.getPetName(), currentAcc.getId());
         if (pet == null) {
             return CreateAppointmentResponse.builder()
                     .status("400")
-                    .message("Can not find pet with this name")
+                    .message("Không tìm thấy thú cưng với tên này")
                     .build();
         }
 
@@ -245,7 +250,7 @@ public class UserServiceImpl implements UserService {
 
         return CreateAppointmentResponse.builder()
                 .status("200")
-                .message("Create appointment successfully")
+                .message("Tạo lịch hẹn thành công")
                 .appointment(
                         CreateAppointmentResponse.appointmentDraft.builder()
                                 .petName(savedAppointment.getPet().getName())
@@ -292,18 +297,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ServiceListResponse getServiceList(ServiceRequest request) {
+    public ServiceListResponse getServiceList(ServiceCenterRequest request) {
         ServiceCenter serviceCenter = serviceCenterRepo.findServiceCenterById(request.getCenterId()).orElse(null);
         if (serviceCenter == null) {
             return ServiceListResponse.builder()
                     .status("400")
-                    .message("Can not find service center with this id")
+                    .message("Không thể tìm thấy trung tâm dịch vụ với id này")
                     .serviceList(Collections.emptyList())
                     .build();
         }
         return ServiceListResponse.builder()
                 .status("200")
-                .message("Get list successfully")
+                .message("Lấy danh sách dịch vụ thành công")
                 .serviceList(serviceCenter.getServicesList().stream()
                         .map(service -> new ServiceListResponse.ServiceList(service.getId(), service.getName(), service.getServiceCenter().getType(), service.getFee()))
                         .collect(Collectors.toList()))
@@ -317,7 +322,7 @@ public class UserServiceImpl implements UserService {
         List<Services> serviceList = getHealthServiceList(types);
         return LoadServicePageResponse.builder()
                 .status("200")
-                .message("Get service page successfully")
+                .message("Lấy trang dịch vụ thành công")
                 .serviceCenters(serviceCenterList.stream()
                         .map(serviceCenter -> LoadServicePageResponse.ServiceCenter.builder()
                                 .id(serviceCenter.getId())
@@ -339,21 +344,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BlackListResponse blockUser(BlockUserRequest request) {
+    public BlackListResponse blockUser(BlockAndUnblockUserRequest request) {
         Account currentAcc = accountService.getCurrentLoggedAccount();
         assert currentAcc != null;
-        User blockedUser = userRepo.findById(request.getUserId()).orElse(null);
+        User blockedUser = userRepo.findById(request.getBlockUserId()).orElse(null);
         if (blockedUser == null) {
             return BlackListResponse.builder()
                     .status("400")
-                    .message("Can not find user with this id")
+                    .message("Không thể tìm thấy người dùng với id này")
                     .build();
         }
         //check block yourself
-        if (request.getUserId().equals(currentAcc.getUser().getId())) {
+        if (request.getBlockUserId().equals(currentAcc.getUser().getId())) {
             return BlackListResponse.builder()
                     .status("400")
-                    .message("Can not block yourself")
+                    .message("Không thể chặn chính mình")
                     .build();
         }
 
@@ -369,17 +374,95 @@ public class UserServiceImpl implements UserService {
 
         return BlackListResponse.builder()
                 .status("200")
-                .message("Block user successfully")
+                .message("Chặn người dùng thành công")
                 //return the black list
                 .blockedUsers(blockedUserList.stream()
                         .map(user -> BlackListResponse.BlockedUser.builder()
-                                .id(user.getBlockedUserId())
-                                .name(user.getUser().getAccount().getName())
-                                .avatarLink(user.getUser().getAccount().getAvatarLink())
+                                .id(blockedUser.getId())
+                                .name(blockedUser.getAccount().getName())
+                                .avatarLink(blockedUser.getAccount().getAvatarLink())
                                 .build())
                         .collect(Collectors.toList()))
                 .build();
 
+    }
+    @Override
+    public BlackListResponse unblockUser(BlockAndUnblockUserRequest request) {
+        Account currentAcc = accountService.getCurrentLoggedAccount();
+        assert currentAcc != null;
+
+        BlackList blackList = blackListRepo.findByBlockedUserIdAndUser_Id(request.getBlockUserId(), currentAcc.getUser().getId()).orElse(null);
+
+        User unBlockUser = userRepo.findUserById(request.getBlockUserId());
+
+        if (unBlockUser == null) {
+            return BlackListResponse.builder()
+                    .status("400")
+                    .message("Không thể tìm thấy người dùng với id này")
+                    .build();
+        }
+        if(blackList == null){
+            return BlackListResponse.builder()
+                    .status("400")
+                    .message("Người dùng không nằm trong danh sách chặn")
+                    .build();
+        }
+        //delete the unblock user from the black list
+        blackListRepo.deleteByBlockedUserIdAndUser_Id(request.getBlockUserId(), currentAcc.getUser().getId());
+
+        List<BlackList> blockedUserList = new ArrayList<>();
+        blockedUserList.add(blackList);
+
+        return BlackListResponse.builder()
+                .status("200")
+                .message("Bỏ chặn người dùng thành công")
+                .blockedUsers(blockedUserList.stream()
+                        .map(user -> BlackListResponse.BlockedUser.builder()
+                                .id(unBlockUser.getId())
+                                .name(unBlockUser.getAccount().getName())
+                                .avatarLink(unBlockUser.getAccount().getAvatarLink())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    @Override
+    public ServiceCenterDetailResponse getServiceCenterDetail(ServiceCenterRequest request) {
+        ServiceCenter serviceCenter = serviceCenterRepo.findServiceCenterById(request.getCenterId()).orElse(null);
+        if (serviceCenter == null) {
+            return ServiceCenterDetailResponse.builder()
+                    .status("400")
+                    .message("Không thể tìm thấy trung tâm dịch vụ với id này")
+                    .build();
+        }
+        return ServiceCenterDetailResponse.builder()
+                .status("200")
+                .message("Lấy thông tin trung tâm dịch vụ thành công")
+                .name(serviceCenter.getName())
+                .website(serviceCenter.getWebsite())
+                .phone(serviceCenter.getPhone())
+                .address(serviceCenter.getAddress())
+                .description(serviceCenter.getDescription())
+                .imgLink(serviceCenter.getImgLink())
+                .build();
+    }
+
+    @Override
+    public ServiceDetailResponse getServiceDetail(ServiceRequest request) {
+        Services service = serviceRepo.findById(request.getServiceId()).orElse(null);
+        if (service == null) {
+            return ServiceDetailResponse.builder()
+                    .status("400")
+                    .message("Không thể tìm thấy dịch vụ với id này")
+                    .build();
+        }
+        return ServiceDetailResponse.builder()
+                .status("200")
+                .message("Lấy thông tin dịch vụ thành công")
+                .name(service.getName())
+                .description(service.getDescription())
+                .imgLink(service.getImgLink())
+                .build();
     }
 
     private List<ServiceCenter> getServiceCenterList(String type) {

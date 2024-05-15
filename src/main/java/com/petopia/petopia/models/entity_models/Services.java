@@ -27,6 +27,10 @@ public class Services {
 
     private String name;
 
+    private String description;
+
+    private String imgLink;
+
     private double fee;
 
     private double rating;

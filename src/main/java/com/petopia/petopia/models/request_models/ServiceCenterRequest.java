@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ServiceRequest {
-    private Integer serviceId;
+public class ServiceCenterRequest {
+    private Integer centerId;
 }
