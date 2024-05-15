@@ -42,6 +42,14 @@ public class ServiceCenter {
 
     private String name;
 
+    private String description;
+
+    private String phone;
+
+    private String imgLink;
+
+    private String website;
+
     private String address;
 
     private double rating;
