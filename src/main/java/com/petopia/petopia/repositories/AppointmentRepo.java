@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface AppointmentRepo extends JpaRepository<Appointment, Integer> {
     //find list appointment by appointment status
@@ -24,4 +25,6 @@ public interface AppointmentRepo extends JpaRepository<Appointment, Integer> {
             @Param("status") String status,
             @Param("date") LocalDateTime date
     );
+
+    Optional<Appointment> findByIdAndCenterId(Integer appointmentId, Integer centerId);
 }
