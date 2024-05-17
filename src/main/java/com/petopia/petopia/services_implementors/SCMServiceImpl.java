@@ -39,10 +39,12 @@ public class SCMServiceImpl implements SCMService {
 
     @Override
     public AppointmentProcessingResponse processAppointment(AppointmentProcessingRequest request) {
-        Appointment appointment = appointmentRepo.findById(request.getAppointmentId()).orElse(null);
-        if(appointment == null){
-            return AppointmentProcessingResponse.builder().status("400").message("No existed appointment with id " + request.getAppointmentId()).build();
-        }
+//        Account currentAcc = accountService.getCurrentLoggedAccount();
+//        assert currentAcc != null;
+//        Appointment appointment = appointmentRepo.findByIdAndCenterId(request.getAppointmentId(), currentAcc.getServiceCenter().getId()).orElse(null);
+//        if(appointment == null) return AppointmentProcessingResponse.builder().status("400").message("Cuộc hẹn này không thuộc về cơ sở dịch vụ này").providers(Collections.emptyList()).build();
+//        ServiceProvider serviceProvider = serviceProviderRepo.findByIdAndServiceCenter_Id(request.getProviderId(), currentAcc.getServiceCenter().getId()).orElse(null);
+//
 
         return null;
     }
@@ -50,10 +52,10 @@ public class SCMServiceImpl implements SCMService {
     @Override
     public AvailableServiceProviderListResponse getAvailableServiceProvider(AvailableServiceProviderListRequest request) {
         Account currentSCMAcc = accountService.getCurrentLoggedAccount();
-        Appointment appointment = appointmentRepo.findById(request.getAppointmentId()).orElse(null);
-        if(currentSCMAcc == null) return AvailableServiceProviderListResponse.builder().status("400").message("Account invalid").providers(Collections.emptyList()).build();
-        if(appointment == null) return AvailableServiceProviderListResponse.builder().status("400").message("Appointment id invalid").providers(Collections.emptyList()).build();
+        if(currentSCMAcc == null) return AvailableServiceProviderListResponse.builder().status("400").message("Tài khoản không hợp lệ").providers(Collections.emptyList()).build();
         ServiceCenter center = currentSCMAcc.getServiceCenter();
+        Appointment appointment = appointmentRepo.findByIdAndCenterId(request.getAppointmentId(), currentSCMAcc.getServiceCenter().getId()).orElse(null);
+        if(appointment == null) return AvailableServiceProviderListResponse.builder().status("400").message("Cuộc hẹn này không thuộc về cơ sở dịch vụ này").providers(Collections.emptyList()).build();
         List<AvailableServiceProviderListResponse.ProviderResponse> list = new ArrayList<>();
 
         for(ServiceProvider provider: center.getServiceProviderList()){
@@ -113,4 +115,5 @@ public class SCMServiceImpl implements SCMService {
                 .requestingAppointmentList(Collections.emptyList())
                 .build();
     }
+
 }

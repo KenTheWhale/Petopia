@@ -46,8 +46,6 @@ public class PetopiaApplication {
 
 	private final TokenService tokenService;
 
-	private final JWTService jwtService;
-
 	private final AccountRepo accountRepo;
 
 	private final UserRepo userRepo;
@@ -122,6 +120,10 @@ public class PetopiaApplication {
 //				AccountStatus bannedAccount = accountStatusRepo.save(
 //						AccountStatus.builder().status(Const.ACCOUNT_STATUS_BANNED).build()
 //				);
+//
+//              AccountStatus deletedAccount = accountStatusRepo.save(
+//                      AccountStatus.builder().status(Const.ACCOUNT_STATUS_DELETED).build()
+//              );
 //
 //				// init group status
 //				GroupStatus activeGroup = groupStatusRepo.save(
@@ -954,6 +956,7 @@ public class PetopiaApplication {
 //						Appointment.builder()
 //								.pet(pet1)
 //								.serviceProvider(sp1)
+//                              .centerId(1)
 //								.appointmentStatus(successfulAppointment)
 //								.type(Const.APPOINTMENT_TYPE_SERVICE)
 //								.date(LocalDateTime.now().minusDays(3))
@@ -965,6 +968,7 @@ public class PetopiaApplication {
 //						Appointment.builder()
 //								.pet(pet2)
 //								.serviceProvider(sp2)
+//                              .centerId(1)
 //								.appointmentStatus(successfulAppointment)
 //								.type(Const.APPOINTMENT_TYPE_SERVICE)
 //								.date(LocalDateTime.now().minusDays(12))
@@ -976,6 +980,7 @@ public class PetopiaApplication {
 //						Appointment.builder()
 //								.pet(pet3)
 //								.serviceProvider(sp3)
+//                              .centerId(2)
 //								.appointmentStatus(successfulAppointment)
 //								.type(Const.APPOINTMENT_TYPE_HEALTH)
 //								.date(LocalDateTime.now().minusDays(30))
@@ -987,6 +992,7 @@ public class PetopiaApplication {
 //						Appointment.builder()
 //								.pet(pet4)
 //								.serviceProvider(sp4)
+//                              .centerId(2)
 //								.appointmentStatus(successfulAppointment)
 //								.type(Const.APPOINTMENT_TYPE_HEALTH)
 //								.date(LocalDateTime.now().minusDays(9))

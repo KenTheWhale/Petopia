@@ -3,6 +3,7 @@ package com.petopia.petopia.enums;
 public class Const {
     public final static String ACCOUNT_STATUS_ACTIVE = "hoạt động";
     public final static String ACCOUNT_STATUS_BANNED = "bị cấm";
+    public final static String ACCOUNT_STATUS_DELETED = "đã xóa";
     public final static String TOKEN_TYPE_ACCESS = "truy cập";
     public final static String TOKEN_TYPE_REFRESH = "làm mới";
     public final static String TOKEN_STATUS_ACTIVE = "hoạt động";
