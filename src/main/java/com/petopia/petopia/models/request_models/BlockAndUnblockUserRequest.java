@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BlockUserRequest {
-    private Integer userId;
+public class BlockAndUnblockUserRequest {
+    private Integer blockUserId;
 }
