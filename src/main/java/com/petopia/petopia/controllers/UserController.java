@@ -91,10 +91,7 @@ public class UserController {
             @RequestBody CreateUserProfileRequest request) {
          return userService.createUserProfile(accountId, request);
     }
-    @PostMapping("/create-Account")
-    public CreateAccountResponse createAccount(@RequestBody CreateAccountRequest request){
-        return  accountService.createAccount(request);
-    }
+
     @PostMapping("/service-center-detail")
     @PreAuthorize("hasAuthority('user:read')")
     public ServiceCenterDetailResponse getServiceCenterDetail(@RequestBody ServiceCenterRequest request){
@@ -108,7 +105,7 @@ public class UserController {
 
     @PostMapping("/user-block")
     @PreAuthorize("hasAuthority('user:update')")
-    public BlackListResponse blockUser(@RequestBody BlockUserRequest request){
+    public BlackListResponse blockUser(@RequestBody BlockAndUnblockUserRequest request){
         return userService.blockUser(request);
     }
     @PostMapping("/user-unblock")

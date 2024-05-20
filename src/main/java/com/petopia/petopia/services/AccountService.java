@@ -9,7 +9,6 @@ import com.petopia.petopia.models.response_models.RefreshResponse;
 public interface AccountService {
 
     LogoutResponse logout();
-    CreateAccountResponse createAccount(CreateAccountRequest createAccountRequest);
 
     RefreshResponse refresh();
 

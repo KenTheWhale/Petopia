@@ -2,7 +2,7 @@ package com.petopia.petopia.services_implementors;
 
 import com.petopia.petopia.enums.Const;
 import com.petopia.petopia.models.entity_models.*;
-import com.petopia.petopia.models.request_models.BlockUserRequest;
+import com.petopia.petopia.models.request_models.BlockAndUnblockUserRequest;
 import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
 import com.petopia.petopia.models.request_models.CreateUserProfileRequest;
 import com.petopia.petopia.models.request_models.HealthHistoryRequest;
@@ -15,6 +15,7 @@ import com.petopia.petopia.repositories.ServiceReportRepo;
 import com.petopia.petopia.repositories.UserRepo;
 import com.petopia.petopia.repositories.*;
 import com.petopia.petopia.services.AccountService;
+import com.petopia.petopia.services.AuthenticationService;
 import com.petopia.petopia.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,10 +25,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -487,10 +485,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CreateUserProfileResponse createUserProfile(int id, CreateUserProfileRequest request) {
-        // Kiểm tra xem accountId đã tồn tại trong bảng User hay chưa
         Optional<User> existingUser = userRepo.findByAccountId(id);
         if (existingUser.isPresent()) {
-            // Nếu đã tồn tại, trả về thông báo lỗi
             return CreateUserProfileResponse.builder()
                     .status("409")
                     .message("User profile for this account already exists")

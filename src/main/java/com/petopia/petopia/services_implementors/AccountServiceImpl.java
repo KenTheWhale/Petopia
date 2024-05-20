@@ -15,6 +15,7 @@ import com.petopia.petopia.models.response_models.RefreshResponse;
 import com.petopia.petopia.repositories.AccountRepo;
 import com.petopia.petopia.repositories.TokenRepo;
 import com.petopia.petopia.services.AccountService;
+import com.petopia.petopia.services.AuthenticationService;
 import com.petopia.petopia.services.JWTService;
 import com.petopia.petopia.services.TokenService;
 import com.petopia.petopia.services.TokenStatusService;
@@ -109,40 +110,5 @@ public class AccountServiceImpl implements AccountService {
         }
         return "";
     }
-    @Override
-    public CreateAccountResponse createAccount(CreateAccountRequest request) {
-        Optional<Account> optionalAccount = accountRepo.findByEmail(request.getEmail());
-        if (optionalAccount.isPresent()) {
-            return CreateAccountResponse.builder()
-                    .status("409")
-                    .message("Email already exists")
-                    .build();
-        }
 
-        AccountStatus accountStatus = accountStatusRepo.findById(1).orElse(null);
-
-        if (accountStatus == null) {
-            return CreateAccountResponse.builder()
-                    .status("404")
-                    .message("Default account status not found")
-                    .build();
-        }
-
-        // Tạo mới đối tượng Account
-        Account newAccount = Account.builder()
-                .name(request.getName())
-                .password(request.getPassword())
-                .email(request.getEmail())
-                .avatarLink("https://via.placeholder.com/150")
-                .role(Role.VET)
-                .accountStatus(accountStatus)
-                .build();
-
-        accountRepo.save(newAccount);
-
-        return CreateAccountResponse.builder()
-                .status("200")
-                .message("Account created successfully")
-                .build();
-    }
 }
