@@ -32,6 +32,8 @@ public class Appointment {
 
     private LocalDateTime date;
 
+    private Integer centerId;
+
     private double fee;
 
     private String type;
