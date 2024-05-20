@@ -4,7 +4,6 @@ import com.petopia.petopia.enums.Const;
 import com.petopia.petopia.enums.Role;
 import com.petopia.petopia.models.entity_models.*;
 import com.petopia.petopia.repositories.*;
-import com.petopia.petopia.services.JWTService;
 import com.petopia.petopia.services.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -91,6 +90,12 @@ public class PetopiaApplication {
 	private final AppointmentServiceRepo appointmentServiceRepo;
 
 	private final NotificationRepo notificationRepo;
+
+	private final CartStatusRepo cartStatusRepo;
+
+	private final CartItemRepo cartItemRepo;
+
+	private final CartRepo cartRepo;
 
 	public static void main(String[] args) {
 		SpringApplication.run(PetopiaApplication.class, args);
@@ -269,6 +274,15 @@ public class PetopiaApplication {
 //
 //				ServiceCenterStatus deletedServiceCenter = serviceCenterStatusRepo.save(
 //						ServiceCenterStatus.builder().status(Const.SERVICE_CENTER_STATUS_DELETED).build()
+//				);
+//
+//				// init cart status
+//				CartStatus activeCart = cartStatusRepo.save(
+//						CartStatus.builder().status(Const.CART_STATUS_ACTIVE).build()
+//				);
+//
+//				CartStatus deleteCart = cartStatusRepo.save(
+//						CartStatus.builder().status(Const.CART_STATUS_DELETE).build()
 //				);
 //
 //				// init account-------------------------------------------------------------------------//
@@ -1229,21 +1243,67 @@ public class PetopiaApplication {
 //				// init order--------------------------------------------------------------//
 //				Order order1 = orderRepo.save(
 //						Order.builder()
-//								.user(user1)
 //								.paymentMethod(VNPayMethod)
 //								.orderStatus(confirmedOrder)
 //								.orderDate(LocalDateTime.now().minusWeeks(7))
-//								.totalPrice(775000)
 //								.build()
 //				);
 //
 //				Order order2 = orderRepo.save(
 //						Order.builder()
-//								.user(user2)
 //								.paymentMethod(VNPayMethod)
 //								.orderStatus(successfulOrder)
 //								.orderDate(LocalDateTime.now().minusWeeks(1))
+//								.build()
+//				);
+//
+//				// init cart-------------------------------------------------------------//
+//				Cart cart1 = cartRepo.save(
+//						Cart.builder()
+//								.user(user1)
+//								.cartStatus(deleteCart)
+//								.totalPrice(775000)
+//								.build()
+//				);
+//
+//				Cart cart2 = cartRepo.save(
+//						Cart.builder()
+//								.user(user2)
+//								.cartStatus(deleteCart)
 //								.totalPrice(120000)
+//								.build()
+//				);
+//
+//				// init cart item--------------------------------------------------------//
+//				CartItem item1 = cartItemRepo.save(
+//						CartItem.builder()
+//								.cart(cart1)
+//								.product(product1)
+//								.productQty(5)
+//								.build()
+//				);
+//
+//				CartItem item2 = cartItemRepo.save(
+//						CartItem.builder()
+//								.cart(cart1)
+//								.product(product2)
+//								.productQty(10)
+//								.build()
+//				);
+//
+//				CartItem item3 = cartItemRepo.save(
+//						CartItem.builder()
+//								.cart(cart2)
+//								.product(product3)
+//								.productQty(2)
+//								.build()
+//				);
+//
+//				CartItem item4 = cartItemRepo.save(
+//						CartItem.builder()
+//								.cart(cart2)
+//								.product(product4)
+//								.productQty(1)
 //								.build()
 //				);
 //
@@ -1251,40 +1311,36 @@ public class PetopiaApplication {
 //				OrderDetail detail1 = orderDetailRepo.save(
 //						OrderDetail.builder()
 //								.order(order1)
-//								.product(product1)
-//								.productName(product1.getName())
-//								.productPrice(product1.getPrice())
-//								.productQty(5)
+//								.cartItem(item1)
+//								.productName(item1.getProduct().getName())
+//								.productPrice(item1.getProduct().getPrice())
 //								.build()
 //				);
 //
 //				OrderDetail detail2 = orderDetailRepo.save(
 //						OrderDetail.builder()
 //								.order(order1)
-//								.product(product2)
-//								.productName(product2.getName())
-//								.productPrice(product2.getPrice())
-//								.productQty(10)
+//								.cartItem(item2)
+//								.productName(item2.getProduct().getName())
+//								.productPrice(item3.getProduct().getPrice())
 //								.build()
 //				);
 //
 //				OrderDetail detail3 = orderDetailRepo.save(
 //						OrderDetail.builder()
 //								.order(order2)
-//								.product(product3)
-//								.productName(product3.getName())
-//								.productPrice(product3.getPrice())
-//								.productQty(2)
+//								.cartItem(item3)
+//								.productName(item3.getProduct().getName())
+//								.productPrice(item3.getProduct().getPrice())
 //								.build()
 //				);
 //
 //				OrderDetail detail4 = orderDetailRepo.save(
 //						OrderDetail.builder()
 //								.order(order2)
-//								.product(product4)
-//								.productName(product4.getName())
-//								.productPrice(product4.getPrice())
-//								.productQty(1)
+//								.cartItem(item4)
+//								.productName(item4.getProduct().getName())
+//								.productPrice(item4.getProduct().getPrice())
 //								.build()
 //				);
 //

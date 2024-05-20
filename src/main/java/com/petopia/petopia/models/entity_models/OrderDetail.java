@@ -18,20 +18,17 @@ public class OrderDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "`cart_id`")
+    private CartItem cartItem;
+
     @ManyToOne
     @JoinColumn(name = "`order_id`")
     private Order order;
-
-    @ManyToOne
-    @JoinColumn(name = "`product_id`")
-    private Product product;
 
     @Column(name = "`product_name`")
     private String productName;
 
     @Column(name = "`product_price`")
     private double productPrice;
-
-    @Column(name = "`product_quantity`")
-    private int productQty;
 }

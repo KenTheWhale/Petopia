@@ -48,7 +48,7 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     @ToString.Exclude
-    private List<Order> orderList;
+    private List<Cart> cartList;
 
     @OneToMany(mappedBy = "user")
     @ToString.Exclude
