@@ -2,10 +2,20 @@ package com.petopia.petopia.services_implementors;
 
 import com.petopia.petopia.enums.Const;
 import com.petopia.petopia.models.entity_models.*;
+import com.petopia.petopia.models.request_models.BlockAndUnblockUserRequest;
+import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
+import com.petopia.petopia.models.request_models.CreateUserProfileRequest;
+import com.petopia.petopia.models.request_models.HealthHistoryRequest;
+import com.petopia.petopia.models.request_models.ServiceRequest;
 import com.petopia.petopia.models.request_models.*;
 import com.petopia.petopia.models.response_models.*;
+import com.petopia.petopia.repositories.AccountRepo;
+import com.petopia.petopia.repositories.PetRepo;
+import com.petopia.petopia.repositories.ServiceReportRepo;
+import com.petopia.petopia.repositories.UserRepo;
 import com.petopia.petopia.repositories.*;
 import com.petopia.petopia.services.AccountService;
+import com.petopia.petopia.services.AuthenticationService;
 import com.petopia.petopia.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,10 +25,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +35,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
     private final ServiceReportRepo serviceReportRepo;
     private final PetRepo petRepo;
+    private final AuthenticationService authenticationService;
+    private final AccountRepo accountRepo;
     private final AccountService accountService;
     private final AppointmentRepo appointmentRepo;
     private final TokenRepo tokenRepo;
@@ -472,6 +481,44 @@ public class UserServiceImpl implements UserService {
     private List<Services> getHealthServiceList(String type) {
         return serviceRepo.findAllByServiceCenter_TypeAndServiceStatus_StatusOrderByRatingDesc(type, Const.SERVICE_STATUS_ACTIVE);
     }
+
+
+    @Override
+    public CreateUserProfileResponse createUserProfile(int id, CreateUserProfileRequest request) {
+        Optional<User> existingUser = userRepo.findByAccountId(id);
+        if (existingUser.isPresent()) {
+            return CreateUserProfileResponse.builder()
+                    .status("409")
+                    .message("User profile for this account already exists")
+                    .build();
+        }
+
+        Optional<Account> optionalAccount = accountRepo.findById(id);
+        if (optionalAccount.isEmpty()) {
+            return CreateUserProfileResponse.builder()
+                    .status("404")
+                    .message("User does not exist")
+                    .build();
+        }
+
+        Account account = optionalAccount.get();
+        User user = User.builder()
+                .account(account)
+                .gender(request.getGender())
+                .address(request.getAddress())
+                .phone(request.getPhone())
+                .build();
+        userRepo.save(user);
+
+        return CreateUserProfileResponse.builder()
+                .address(user.getAddress())
+                .gender(user.getGender())
+                .phone(user.getPhone())
+                .status("200")
+                .message("User profile created successfully")
+                .build();
+    }
+
 
 
     private Page<ServiceReport> getPaginationHealthReportListByPetId(int pageNo, Integer petID, String sort) {

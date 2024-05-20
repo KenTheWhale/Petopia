@@ -1,7 +1,13 @@
 package com.petopia.petopia.controllers;
 
 import com.petopia.petopia.models.request_models.*;
+import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
+import com.petopia.petopia.models.request_models.HealthHistoryRequest;
+import com.petopia.petopia.models.request_models.ServiceRequest;
+import com.petopia.petopia.models.request_models.UserRequest;
+import com.petopia.petopia.models.request_models.*;
 import com.petopia.petopia.models.response_models.*;
+import com.petopia.petopia.services.AccountService;
 import com.petopia.petopia.services.SCMService;
 import com.petopia.petopia.services.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final AccountService accountService;
     private final SCMService scmService;
 
     @GetMapping("/user-profile")
@@ -76,6 +83,13 @@ public class UserController {
     @PreAuthorize("hasAuthority('user:read')")
     public LoadServicePageResponse loadServiceServicePage(){
         return userService.loadServicePage("service");
+    }
+
+    @PostMapping("/create-user-profile")
+    public CreateUserProfileResponse createUserProfile(
+            @RequestParam("accountId") int accountId,
+            @RequestBody CreateUserProfileRequest request) {
+         return userService.createUserProfile(accountId, request);
     }
 
     @PostMapping("/service-center-detail")

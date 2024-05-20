@@ -1,7 +1,10 @@
 package com.petopia.petopia.controllers;
 
+import com.petopia.petopia.models.request_models.CreateAccountRequest;
 import com.petopia.petopia.models.request_models.LoginRequest;
+import com.petopia.petopia.models.response_models.CreateAccountResponse;
 import com.petopia.petopia.models.response_models.LoginResponse;
+import com.petopia.petopia.services.AccountService;
 import com.petopia.petopia.services.AuthenticationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +17,11 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
-
-
+    private final AccountService accountService;
+    @PostMapping("/register")
+    public CreateAccountResponse createAccount(@RequestBody CreateAccountRequest request){
+        return  authenticationService.Register(request);
+    }
     @GetMapping("/awake")
     public String awake() {return  "Sever still alive";}
 

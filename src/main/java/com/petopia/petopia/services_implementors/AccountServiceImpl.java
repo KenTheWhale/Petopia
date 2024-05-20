@@ -1,13 +1,21 @@
 package com.petopia.petopia.services_implementors;
 
+import com.petopia.petopia.enums.Role;
+import com.petopia.petopia.models.entity_models.Account;
+import com.petopia.petopia.models.entity_models.AccountStatus;
+import com.petopia.petopia.models.request_models.CreateAccountRequest;
+import com.petopia.petopia.models.response_models.CreateAccountResponse;
 import com.petopia.petopia.enums.Const;
 import com.petopia.petopia.models.entity_models.Account;
 import com.petopia.petopia.models.entity_models.Token;
 import com.petopia.petopia.models.response_models.LogoutResponse;
+import com.petopia.petopia.repositories.AccountRepo;
+import com.petopia.petopia.repositories.AccountStatusRepo;
 import com.petopia.petopia.models.response_models.RefreshResponse;
 import com.petopia.petopia.repositories.AccountRepo;
 import com.petopia.petopia.repositories.TokenRepo;
 import com.petopia.petopia.services.AccountService;
+import com.petopia.petopia.services.AuthenticationService;
 import com.petopia.petopia.services.JWTService;
 import com.petopia.petopia.services.TokenService;
 import com.petopia.petopia.services.TokenStatusService;
@@ -15,6 +23,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +39,9 @@ public class AccountServiceImpl implements AccountService {
     private final TokenService tokenService;
 
     private final JWTService jwtService;
+
+    private final AccountStatusRepo accountStatusRepo;
+
 
     @Override
     public LogoutResponse logout() {
@@ -97,4 +110,5 @@ public class AccountServiceImpl implements AccountService {
         }
         return "";
     }
+
 }
