@@ -114,4 +114,27 @@ public class UserController {
         return userService.unblockUser(request);
     }
 
+    @PostMapping("/cart-creation")
+    @PreAuthorize("hasAuthority('user:create')")
+    public void createCart(){
+
+    }
+
+    @PostMapping("/cart-list")
+    @PreAuthorize("hasAuthority('user:read')")
+    public void getCart(){
+
+    }
+
+    @PostMapping("/cart-updating")
+    @PreAuthorize("hasAuthority('user:update')")
+    public void updateCart(){
+
+    }
+
+    @PostMapping("/cart-deletion")
+    @PreAuthorize("hasAuthority('user:delete')")
+    public void deleteCart(){
+
+    }
 }

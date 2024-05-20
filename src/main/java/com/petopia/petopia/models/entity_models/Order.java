@@ -20,10 +20,6 @@ public class Order {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "`user_id`")
-    private User user;
-
-    @ManyToOne
     @JoinColumn(name = "`status_id`")
     private OrderStatus orderStatus;
 
@@ -33,9 +29,6 @@ public class Order {
 
     @Column(name = "`order_date`")
     private LocalDateTime orderDate;
-
-    @Column(name = "`total_price`")
-    private double totalPrice;
 
     @OneToMany(mappedBy = "order")
     @ToString.Exclude
