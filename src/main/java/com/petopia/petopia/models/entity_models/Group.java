@@ -1,10 +1,7 @@
 package com.petopia.petopia.models.entity_models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -30,12 +27,15 @@ public class Group {
 
     private String name;
 
-    @Transient
-    private List<String> imgLinkList;
+    @OneToMany(mappedBy = "group")
+    @ToString.Exclude
+    private List<GroupManager> groupManagerList;
 
-    @Transient
-    private List<Integer> managerIdList;
+    @OneToMany(mappedBy = "group")
+    @ToString.Exclude
+    private List<GroupMember> groupMemberList;
 
-    @Transient
-    private List<Integer> memberIdList;
+    @OneToMany(mappedBy = "group")
+    @ToString.Exclude
+    private List<GroupImage> groupImageList;
 }

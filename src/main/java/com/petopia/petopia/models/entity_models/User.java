@@ -27,8 +27,9 @@ public class User {
 
     private String phone;
 
-    @Transient
-    private List<String> imgLinkList;
+    @OneToMany(mappedBy = "user")
+    @ToString.Exclude
+    private List<UserImage> userImageList;
 
     @OneToMany(mappedBy = "user")
     @ToString.Exclude

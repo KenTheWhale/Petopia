@@ -45,8 +45,8 @@ public class UserServiceImpl implements UserService {
     private final AppointmentStatusRepo appointmentStatusRepo;
     private final ServiceRepo serviceRepo;
     private final AppointmentServiceRepo appointmentServiceRepo;
-    private final AccountStatusRepo accountStatusRepo;
     private final BlackListRepo blackListRepo;
+    private final PetImageRepo petImageRepo;
 
 
     @Override
@@ -178,7 +178,7 @@ public class UserServiceImpl implements UserService {
                     .petType(pet.getType())
                     .petNecklaceId(pet.getNecklaceId())
                     .petDescription(pet.getDescription())
-                    .imgLinkList(pet.getImgLinkList())
+                    .imgLinkList(petImageRepo.findAllImageByPetId(pet.getId()))
                     .appointments(list)
                     .build();
         }
@@ -207,7 +207,7 @@ public class UserServiceImpl implements UserService {
                 .status("200")
                 .message("Lấy danh sách thú cưng thành công")
                 .petList(pets.stream()
-                        .map(pet -> new PetListResponse.PetResponse(pet.getId(), pet.getName(), pet.getGender(), pet.getAge(), pet.getType(), pet.getNecklaceId(), pet.getDescription(), pet.getImgLinkList()))
+                        .map(pet -> new PetListResponse.PetResponse(pet.getId(), pet.getName(), pet.getGender(), pet.getAge(), pet.getType(), pet.getNecklaceId(), pet.getDescription(), petImageRepo.findAllImageByPetId(pet.getId())))
                         .collect(Collectors.toList()))
                 .build();
     }
