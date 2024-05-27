@@ -53,6 +53,10 @@ public class Account implements UserDetails {
     @ToString.Exclude
     private ServiceCenter serviceCenter;
 
+    @OneToMany(mappedBy = "account")
+    @ToString.Exclude
+    private List<AccountImage> accountImageList;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

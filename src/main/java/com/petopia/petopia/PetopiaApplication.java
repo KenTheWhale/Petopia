@@ -97,6 +97,12 @@ public class PetopiaApplication {
 
 	private final CartRepo cartRepo;
 
+	private final GroupManagerRepo groupManagerRepo;
+
+	private final GroupMemberRepo groupMemberRepo;
+
+	private final PostLikedUserRepo postLikedUserRepo;
+
 	public static void main(String[] args) {
 		SpringApplication.run(PetopiaApplication.class, args);
 	}
@@ -473,7 +479,6 @@ public class PetopiaApplication {
 //								.gender(Const.HUMAN_GENDER_MALE)
 //								.address("43 Ông Ích Khiêm, quận 10, tp Hồ Chí Minh")
 //								.phone("0913253221")
-//								.imgLinkList(Collections.emptyList())
 //								.build()
 //				);
 //
@@ -483,7 +488,6 @@ public class PetopiaApplication {
 //								.gender(Const.HUMAN_GENDER_FEMALE)
 //								.address("11/12 Vĩnh Viễn, quận 10, tp Hồ Chí Minh")
 //								.phone("0833552464")
-//								.imgLinkList(Collections.emptyList())
 //								.build()
 //				);
 //
@@ -494,7 +498,6 @@ public class PetopiaApplication {
 //								.gender(Const.HUMAN_GENDER_MALE)
 //								.address("406 Tran Van Kieu, quận 6, tp Hồ Chí Minh")
 //								.phone("0123268894")
-//								.imgLinkList(Collections.emptyList())
 //								.build()
 //				);
 //
@@ -504,7 +507,6 @@ public class PetopiaApplication {
 //								.gender(Const.HUMAN_GENDER_FEMALE)
 //								.address("C16/60 Võ Văn Vân, quận Bình Tân, tp Hồ Chí Minh")
 //								.phone("0343748912")
-//								.imgLinkList(Collections.emptyList())
 //								.build()
 //				);
 //
@@ -515,7 +517,6 @@ public class PetopiaApplication {
 //								.gender(Const.HUMAN_GENDER_MALE)
 //								.address("16 đường 12, quận 2, tp Hồ Chí Minh")
 //								.phone("0837400952")
-//								.imgLinkList(Collections.emptyList())
 //								.build()
 //				);
 //
@@ -525,7 +526,6 @@ public class PetopiaApplication {
 //								.gender(Const.HUMAN_GENDER_MALE)
 //								.address("167 Nguyễn Văn Cừ, quận 5, tp Hồ Chí Minh")
 //								.phone("0838357347")
-//								.imgLinkList(Collections.emptyList())
 //								.build()
 //				);
 //
@@ -535,7 +535,6 @@ public class PetopiaApplication {
 //								.gender(Const.HUMAN_GENDER_FEMALE)
 //								.address("148 Hai Bà Trưng, quận 1, tp Hồ Chí Minh	")
 //								.phone("0838227648")
-//								.imgLinkList(Collections.emptyList())
 //								.build()
 //				);
 //
@@ -545,7 +544,6 @@ public class PetopiaApplication {
 //								.gender(Const.HUMAN_GENDER_FEMALE)
 //								.address("12/B24 Phan Huy ich, Gò Vấp, tp Hồ Chí Minh")
 //								.phone("0854272338")
-//								.imgLinkList(Collections.emptyList())
 //								.build()
 //				);
 //
@@ -654,7 +652,6 @@ public class PetopiaApplication {
 //				Notification notification1 = notificationRepo.save(
 //						Notification.builder()
 //								.user(user1)
-//								.imgListLink(Collections.emptyList())
 //								.content("Phương Anh đã block bạn")
 //								.build()
 //				);
@@ -662,7 +659,6 @@ public class PetopiaApplication {
 //				Notification notification2 = notificationRepo.save(
 //						Notification.builder()
 //								.user(user1)
-//								.imgListLink(Collections.emptyList())
 //								.content("Phương Anh đã phẫn nộ bài post của bạn")
 //								.build()
 //				);
@@ -670,7 +666,6 @@ public class PetopiaApplication {
 //				Notification notification3 = notificationRepo.save(
 //						Notification.builder()
 //								.user(user2)
-//								.imgListLink(Collections.emptyList())
 //								.content("Phương Anh đã theo dõi bạn")
 //								.build()
 //				);
@@ -678,33 +673,16 @@ public class PetopiaApplication {
 //				Notification notification4 = notificationRepo.save(
 //						Notification.builder()
 //								.user(user2)
-//								.imgListLink(Collections.emptyList())
 //								.content("Phương Anh đã mời bạn thích trang \"1001 cách chửi thề khiến đối phương xón ra quần\" ")
 //								.build()
 //				);
 //
 //				// init group----------------------------------------------------------------------------//
-//				List<Integer> group1ManagerIdList = new ArrayList<>();
-//				List<Integer> group1MemberIdList = new ArrayList<>();
-//				List<Integer> group2ManagerIdList = new ArrayList<>();
-//				List<Integer> group2MemberIdList = new ArrayList<>();
-//
-//				group1ManagerIdList.add(gmuser1.getId());
-//				group1ManagerIdList.add(gmuser2.getId());
-//				group2ManagerIdList.add(gmuser3.getId());
-//				group2ManagerIdList.add(gmuser4.getId());
-//
-//				group1MemberIdList.add(user1.getId());
-//				group2MemberIdList.add(user2.getId());
-//
 //				Group group1 = groupRepo.save(
 //						Group.builder()
 //								.groupStatus(activeGroup)
 //								.user(gauser1)
 //								.name("Đảo Mèow")
-//								.imgLinkList(Collections.emptyList())
-//								.managerIdList(group1ManagerIdList)
-//								.memberIdList(group1MemberIdList)
 //								.build()
 //				);
 //
@@ -713,19 +691,18 @@ public class PetopiaApplication {
 //								.groupStatus(activeGroup)
 //								.user(gauser2)
 //								.name("Đảo Chó")
-//								.imgLinkList(Collections.emptyList())
-//								.managerIdList(group2ManagerIdList)
-//								.memberIdList(group2MemberIdList)
 //								.build()
 //				);
 //
+//				groupManagerRepo.save(GroupManager.builder().group(group1).managerId(gmuser1.getId()).build());
+//				groupManagerRepo.save(GroupManager.builder().group(group1).managerId(gmuser2.getId()).build());
+//				groupManagerRepo.save(GroupManager.builder().group(group2).managerId(gmuser3.getId()).build());
+//				groupManagerRepo.save(GroupManager.builder().group(group2).managerId(gmuser4.getId()).build());
+//
+//				groupMemberRepo.save(GroupMember.builder().group(group1).memberId(user1.getId()).build());
+//				groupMemberRepo.save(GroupMember.builder().group(group2).memberId(user2.getId()).build());
+//
 //				// init post-------------------------------------------------------------------------//
-//				List<Integer> post1likedUserIdList = new ArrayList<>();
-//				List<Integer> post2likedUserIdList = new ArrayList<>();
-//
-//				post1likedUserIdList.add(user2.getId());
-//				post2likedUserIdList.add(user1.getId());
-//
 //				Post post1 = postRepo.save(
 //						Post.builder()
 //								.user(user1)
@@ -733,8 +710,6 @@ public class PetopiaApplication {
 //								.canComment(true)
 //								.content("Người chơi hệ Meow")
 //								.postDate(LocalDateTime.now().minusHours(2))
-//								.imgLinkList(Collections.emptyList())
-//								.likedUserIdList(post1likedUserIdList)
 //								.build()
 //				);
 //
@@ -745,8 +720,6 @@ public class PetopiaApplication {
 //								.canComment(false)
 //								.content("Người chơi hệ Choá")
 //								.postDate(LocalDateTime.now())
-//								.imgLinkList(Collections.emptyList())
-//								.likedUserIdList(post1likedUserIdList)
 //								.build()
 //				);
 //
@@ -757,8 +730,6 @@ public class PetopiaApplication {
 //								.canComment(true)
 //								.content("Người chơi hệ DuaPet, ko bao giờ nói phét")
 //								.postDate(LocalDateTime.now().minusHours(20))
-//								.imgLinkList(Collections.emptyList())
-//								.likedUserIdList(post2likedUserIdList)
 //								.build()
 //				);
 //
@@ -769,10 +740,13 @@ public class PetopiaApplication {
 //								.canComment(false)
 //								.content("Người Dơi ko sợ mưa rơi. Hahaha")
 //								.postDate(LocalDateTime.now().minusYears(1))
-//								.imgLinkList(Collections.emptyList())
-//								.likedUserIdList(post2likedUserIdList)
 //								.build()
 //				);
+//
+//				postLikedUserRepo.save(PostLikedUser.builder().post(post1).userId(user2.getId()).build());
+//				postLikedUserRepo.save(PostLikedUser.builder().post(post2).userId(user2.getId()).build());
+//				postLikedUserRepo.save(PostLikedUser.builder().post(post3).userId(user1.getId()).build());
+//				postLikedUserRepo.save(PostLikedUser.builder().post(post4).userId(user1.getId()).build());
 //
 //				// init comment--------------------------------------------------------------------------//
 //				Comment comment1 = commentRepo.save(
@@ -817,7 +791,6 @@ public class PetopiaApplication {
 //								.type("Mèo Mau Ai Cập")
 //								.necklaceId("A001")
 //								.description("Tui là chó, hum pải mèo. Mowf Mowf....!")
-//								.imgLinkList(Collections.emptyList())
 //								.createdAt(LocalDateTime.now().minusWeeks(3))
 //								.updateAt(LocalDateTime.now().minusWeeks(3))
 //								.build()
@@ -832,7 +805,6 @@ public class PetopiaApplication {
 //								.type("Mèo Tam Thể")
 //								.necklaceId("A002")
 //								.description("Tui tên Ngúi, họ tên đầy đủ là Ngusi")
-//								.imgLinkList(Collections.emptyList())
 //								.createdAt(LocalDateTime.now().minusWeeks(1))
 //								.updateAt(LocalDateTime.now().minusWeeks(1))
 //								.build()
@@ -847,7 +819,6 @@ public class PetopiaApplication {
 //								.type("Mèo Anh Lông Ngắn")
 //								.necklaceId("A003")
 //								.description("Tuy chân tui ngắn nhưng mà tui xinh")
-//								.imgLinkList(Collections.emptyList())
 //								.createdAt(LocalDateTime.now().minusWeeks(2))
 //								.updateAt(LocalDateTime.now().minusWeeks(1))
 //								.build()
@@ -862,7 +833,6 @@ public class PetopiaApplication {
 //								.type("Mèo Ba Tư")
 //								.necklaceId("A004")
 //								.description("Tui xinh, tui đẹp nung ninh")
-//								.imgLinkList(Collections.emptyList())
 //								.createdAt(LocalDateTime.now().minusWeeks(6))
 //								.updateAt(LocalDateTime.now().minusWeeks(2))
 //								.build()
@@ -1194,7 +1164,6 @@ public class PetopiaApplication {
 //								.soldQty(100)
 //								.availableQty(50)
 //								.rating(3)
-//								.imgLinkList(Collections.emptyList())
 //								.build()
 //				);
 //
@@ -1208,7 +1177,6 @@ public class PetopiaApplication {
 //								.soldQty(20)
 //								.availableQty(100)
 //								.rating(4)
-//								.imgLinkList(Collections.emptyList())
 //								.build()
 //				);
 //
@@ -1222,7 +1190,6 @@ public class PetopiaApplication {
 //								.soldQty(100)
 //								.availableQty(50)
 //								.rating(4)
-//								.imgLinkList(Collections.emptyList())
 //								.build()
 //				);
 //
@@ -1236,7 +1203,6 @@ public class PetopiaApplication {
 //								.soldQty(21)
 //								.availableQty(30)
 //								.rating(4)
-//								.imgLinkList(Collections.emptyList())
 //								.build()
 //				);
 //

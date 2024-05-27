@@ -41,8 +41,9 @@ public class Product {
 
     private int rating;
 
-    @Transient
-    private List<String> imgLinkList;
+    @OneToMany(mappedBy = "product")
+    @ToString.Exclude
+    private List<ProductImage> productImageList;
 
     @OneToMany(mappedBy = "product")
     @ToString.Exclude

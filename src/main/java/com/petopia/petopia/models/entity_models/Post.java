@@ -36,11 +36,13 @@ public class Post {
     //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime postDate;
 
-    @Transient
-    private List<String> imgLinkList;
+    @OneToMany(mappedBy = "post")
+    @ToString.Exclude
+    private List<PostImage> postImageList;
 
-    @Transient
-    private List<Integer> likedUserIdList;
+    @OneToMany(mappedBy = "post")
+    @ToString.Exclude
+    private List<PostLikedUser> postLikedUserList;
 
     @OneToMany(mappedBy = "post")
     @ToString.Exclude

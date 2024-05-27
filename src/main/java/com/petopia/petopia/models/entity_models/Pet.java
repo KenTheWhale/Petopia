@@ -38,8 +38,9 @@ public class Pet {
 
     private String description;
 
-    @Transient
-    private List<String> imgLinkList;
+    @OneToMany(mappedBy = "pet")
+    @ToString.Exclude
+    private List<PetImage> petImageList;
 
     @OneToMany(mappedBy = "pet")
     @ToString.Exclude
