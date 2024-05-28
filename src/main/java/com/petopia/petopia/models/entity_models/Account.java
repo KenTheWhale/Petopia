@@ -55,6 +55,8 @@ public class Account implements UserDetails {
 
     private String background;
 
+
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

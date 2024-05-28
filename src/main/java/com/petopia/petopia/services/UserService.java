@@ -22,6 +22,8 @@ public interface UserService {
 
     CreateUserProfileResponse createUserProfile(int id, CreateUserProfileRequest request);
 
+    UpdateUserProfileResponse updateUserProfile(int id, UpdateUserProfileRequest request);
+
     CreateAppointmentResponse createAppointment(CreateAppointmentRequest request, String type);
 
     ServiceListResponse getServiceList(ServiceCenterRequest request);
@@ -37,4 +39,9 @@ public interface UserService {
     ServiceDetailResponse getServiceDetail(ServiceRequest request);
 
     ProductReportResponse reportProduct(ProductReportRequest request);
+
+    ViewOtherUserProfileResponse viewOtherUserProfile(ViewOtherUserProfileRequest request);
+
+    FindOtherUserProfileResponse findOtherUserProfileResponse(FindOtherUserProfileRequest request);
+
 }

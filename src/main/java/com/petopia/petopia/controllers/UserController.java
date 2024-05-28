@@ -4,6 +4,8 @@ import com.petopia.petopia.models.request_models.*;
 import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
 import com.petopia.petopia.models.request_models.HealthHistoryRequest;
 import com.petopia.petopia.models.request_models.ServiceRequest;
+import com.petopia.petopia.models.request_models.UserRequest;
+import com.petopia.petopia.models.request_models.*;
 import com.petopia.petopia.models.response_models.*;
 import com.petopia.petopia.services.AccountService;
 import com.petopia.petopia.services.SCMService;
@@ -89,6 +91,10 @@ public class UserController {
             @RequestBody CreateUserProfileRequest request) {
          return userService.createUserProfile(accountId, request);
     }
+    @PutMapping("/{id}/profile")
+    public UpdateUserProfileResponse updateUserProfile(@PathVariable int id, @RequestBody UpdateUserProfileRequest request) {
+        return userService.updateUserProfile(id, request);
+    }
 
     @PostMapping("/service-center-detail")
     @PreAuthorize("hasAuthority('user:read')")
@@ -134,6 +140,18 @@ public class UserController {
     @PreAuthorize("hasAuthority('user:delete')")
     public void deleteCart(){
 
+    }
+
+    @PostMapping("/account-deletion")
+    @PreAuthorize("hasAuthority('user:delete')")
+    public DeleteAccountResponse accountDelete(int accountId) {
+        return accountService.deleteAccount(accountId);
+    }
+
+    @PostMapping("/search")
+    @PreAuthorize("hasAuthority('user:read')")
+    public FindOtherUserProfileResponse findOtherUserProfile(@RequestBody FindOtherUserProfileRequest request) {
+        return userService.findOtherUserProfileResponse(request);
     }
 
     @PostMapping("/product-report")
