@@ -91,6 +91,10 @@ public class UserController {
             @RequestBody CreateUserProfileRequest request) {
          return userService.createUserProfile(accountId, request);
     }
+    @PostMapping("/profile-update")
+    public UpdateUserProfileResponse updateUserProfile( @RequestBody UpdateUserProfileRequest request) {
+        return userService.updateUserProfile(request);
+    }
 
     @PostMapping("/service-center-detail")
     @PreAuthorize("hasAuthority('user:read')")
@@ -136,5 +140,17 @@ public class UserController {
     @PreAuthorize("hasAuthority('user:delete')")
     public void deleteCart(){
 
+    }
+
+    @PostMapping("/account-deletion")
+    @PreAuthorize("hasAuthority('user:delete')")
+    public void accountDelete() {
+         accountService.deleteAccount();
+    }
+
+    @PostMapping("/search")
+    @PreAuthorize("hasAuthority('user:read')")
+    public FindOtherUserProfileResponse findOtherUserProfile(@RequestBody FindOtherUserProfileRequest request) {
+        return userService.findOtherUserProfileResponse(request);
     }
 }

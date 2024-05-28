@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "`group_image`")
 public class GroupImage {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -23,5 +22,4 @@ public class GroupImage {
     @ManyToOne
     @JoinColumn(name = "`group_id`")
     private Group group;
-
 }
