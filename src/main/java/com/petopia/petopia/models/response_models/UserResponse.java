@@ -31,20 +31,15 @@ public class UserResponse {
 
     private String phone;
 
-    private List<imgLinkResponse> imgLinkList;
-    private List<groupListResponse> groupList;
-    private List<postListResponse> postList;
-    private List<commentListResponse> commentList;
-    private List<petListResponse> petList;
-    private List<orderListResponse> orderList;
-    private List<feedbackListResponse> feedbackList;
-    private List<blackListResponse> blackList;
+    private List<Image> images;
+    private List<Group> groups;
+    private List<Post> posts;
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class imgLinkResponse {
+    public static class Image {
         private String link;
     }
 
@@ -52,89 +47,41 @@ public class UserResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class groupListResponse {
-        private String groupName;
-        private String imgLink;
+    public static class Group {
+        private String name;
+        private String avatar;
     }
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class postListResponse {
+    public static class Post {
         private Integer id;
         private String status;
         private String content;
-        private LocalDateTime postDate;
-        private List<PostImageList> postImageList;
-        private List<PostLikedUserList> postLikedUserList;
-        private List<CommentList> commentList;
+        private LocalDateTime uploadDate;
+        private List<Image> images;
+        private List<PostLikedUser> postLikedUsers;
+        private List<Comment> comments;
     }
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class PostImageList {
-        private String imgLink;
-    }
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class PostLikedUserList {
+    public static class PostLikedUser {
         private Integer id;
+        private String name;
+        private String avatar;
     }
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class CommentList {
+    public static class Comment {
         private String name;
-        private List<imgLinkResponse> imgLink;
         private String content;
-    }
-
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class commentListResponse {
-        private Integer id;
-        private String content;
-    }
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class petListResponse {
-        private Integer id;
-        private String name;
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class orderListResponse {
-        private Integer id;
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class feedbackListResponse {
-        private Integer id;
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class blackListResponse {
-        private Integer id;
-        private String name;
-        private String imgLink;
     }
 }
