@@ -10,20 +10,16 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "`payment_method`")
-public class PaymentMethod {
+@Table(name = "`substitute_status`")
+public class SubstituteStatus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String method;
+    private String status;
 
-    @OneToMany(mappedBy = "paymentMethod")
+    @OneToMany(mappedBy = "substituteStatus")
     @ToString.Exclude
-    private List<Order> orderList;
-
-    @OneToMany(mappedBy = "paymentMethod")
-    @ToString.Exclude
-    private List<Appointment> appointmentList;
+    private List<Substitute> substituteList;
 }

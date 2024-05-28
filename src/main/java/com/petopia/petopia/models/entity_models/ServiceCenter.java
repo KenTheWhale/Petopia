@@ -46,7 +46,9 @@ public class ServiceCenter {
 
     private String phone;
 
-    private String imgLink;
+    @OneToMany(mappedBy = "serviceCenter")
+    @ToString.Exclude
+    private List<ServiceCenterImage> serviceCenterImageList;
 
     private String website;
 

@@ -30,6 +30,14 @@ public class Appointment {
     @JoinColumn(name = "`status_id`")
     private AppointmentStatus appointmentStatus;
 
+    @ManyToOne
+    @JoinColumn(name = "`payment_id`")
+    private PaymentMethod paymentMethod;
+
+    @ManyToMany(mappedBy = "appointmentList")
+    @ToString.Exclude
+    private List<Substitute> substituteList;
+
     private LocalDateTime date;
 
     private Integer centerId;
@@ -38,11 +46,20 @@ public class Appointment {
 
     private String type;
 
+    private String location;
+
+    @Column(name = "`extra_information`")
+    private String extraInformation;
+
     @OneToOne(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
     private ServiceReport serviceReport;
 
-    @OneToMany(mappedBy = "appointment")
-    @ToString.Exclude
-    private List<AppointmentService> appointmentServiceList;
+    @ManyToMany
+    @JoinTable(
+            name = "appointment_service",
+            joinColumns = @JoinColumn(name = "`appointment_id`"),
+            inverseJoinColumns = @JoinColumn(name = "`service_id`")
+    )
+    private List<Services> servicesList;
 }

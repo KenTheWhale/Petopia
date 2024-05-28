@@ -53,9 +53,9 @@ public class Account implements UserDetails {
     @ToString.Exclude
     private ServiceCenter serviceCenter;
 
-    @OneToMany(mappedBy = "account")
-    @ToString.Exclude
-    private List<AccountImage> accountImageList;
+    private String avatar;
+
+    private String background;
 
     @Enumerated(EnumType.STRING)
     private Role role;

@@ -5,11 +5,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class ServiceCenterDetailResponse {
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class ImageResponse{
+        private String link;
+    }
 
     private String status;
 
@@ -25,5 +35,5 @@ public class ServiceCenterDetailResponse {
 
     private String description;
 
-    private String imgLink;
+    private List<ImageResponse> images;
 }

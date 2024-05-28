@@ -35,9 +35,10 @@ public class UserServiceImpl implements UserService {
     private final ServiceCenterRepo serviceCenterRepo;
     private final AppointmentStatusRepo appointmentStatusRepo;
     private final ServiceRepo serviceRepo;
-    private final AppointmentServiceRepo appointmentServiceRepo;
     private final BlackListRepo blackListRepo;
     private final PetImageRepo petImageRepo;
+    private final ServiceCenterImageRepo serviceCenterImageRepo;
+    private final ServiceImageRepo serviceImageRepo;
 
 
     @Override
@@ -246,7 +247,7 @@ public class UserServiceImpl implements UserService {
 
         // Save the Appointment
         Appointment savedAppointment = appointmentRepo.save(appointment);
-        saveServiceListToAppointment(savedAppointment, serviceList);
+        savedAppointment.setServicesList(serviceList);
 
         return CreateAppointmentResponse.builder()
                 .status("200")
@@ -279,21 +280,6 @@ public class UserServiceImpl implements UserService {
             }
         }
         return sum;
-    }
-
-    //save list of services to appointment
-    public void saveServiceListToAppointment(Appointment appointment, List<Services> serviceList) {
-        for (Services service : serviceList) {
-            AppointmentService appointmentService = AppointmentService.builder()
-                    .appointment(appointment)
-                    .services(service)
-                    .build();
-            if (appointment.getAppointmentServiceList() == null) {
-                appointment.setAppointmentServiceList(new ArrayList<>());
-            }
-            appointment.getAppointmentServiceList().add(appointmentService);
-            appointmentServiceRepo.save(appointmentService);
-        }
     }
 
     @Override
@@ -443,7 +429,12 @@ public class UserServiceImpl implements UserService {
                 .phone(serviceCenter.getPhone())
                 .address(serviceCenter.getAddress())
                 .description(serviceCenter.getDescription())
-                .imgLink(serviceCenter.getImgLink())
+                .images(
+                        serviceCenterImageRepo.findAllImageByCenterId(serviceCenter.getId())
+                                .stream()
+                                .map(x -> ServiceCenterDetailResponse.ImageResponse.builder().link(x).build())
+                                .toList()
+                )
                 .build();
     }
 
@@ -461,7 +452,12 @@ public class UserServiceImpl implements UserService {
                 .message("Lấy thông tin dịch vụ thành công")
                 .name(service.getName())
                 .description(service.getDescription())
-                .imgLink(service.getImgLink())
+                .images(
+                        serviceImageRepo.findAllImageByServiceId(service.getId())
+                                .stream()
+                                .map(x -> ServiceDetailResponse.ImageResponse.builder().link(x).build())
+                                .toList()
+                )
                 .build();
     }
 
