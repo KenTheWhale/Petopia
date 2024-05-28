@@ -55,8 +55,8 @@ public class UserServiceImpl implements UserService {
         Account currentAcc = accountService.getCurrentLoggedAccount();
         assert currentAcc != null;
 
-        Token accessToken = tokenRepo.findByAccount_IdAndType(currentAcc.getId(), "Truy Cập").orElse(null);
-        String accessTokenValue = accessToken != null ? accessToken.getValue() : "No access token";
+        Token accessToken = tokenRepo.findByAccount_IdAndType(currentAcc.getId(), Const.TOKEN_TYPE_ACCESS).orElse(null);
+        String accessTokenValue = accessToken != null ? accessToken.getValue() : "không có access token";
 
         return CurrentUserResponse.builder()
                 .status("200")
@@ -542,7 +542,7 @@ public class UserServiceImpl implements UserService {
                 .gender(user.getGender())
                 .phone(user.getPhone())
                 .status("200")
-                .message("User profile created successfully")
+                .message("Tạo hồ sơ người dùng thành công")
                 .build();
     }
 
