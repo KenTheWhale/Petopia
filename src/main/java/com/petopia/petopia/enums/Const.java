@@ -42,6 +42,8 @@ public class Const {
     public final static String SERVICE_STATUS_ACTIVE = "hoạt động";
     public final static String SERVICE_STATUS_CLOSED = "ngừng cung cấp";
     public final static String SERVICE_STATUS_DELETED = "bị xóa";
+    public final static String SERVICE_REPORT_STATUS_DRAFTING = "bản nháp";
+    public final static String SERVICE_REPORT_STATUS_CONFIRMED = "đã duyệt";
     public final static String PRODUCT_STATUS_AVAILABLE = "còn hàng";
     public final static String PRODUCT_STATUS_OUT_OF_STOCK = "hết hàng";
     public final static String PRODUCT_STATUS_DELETED = "bị xóa";

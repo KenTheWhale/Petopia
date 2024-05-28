@@ -47,5 +47,7 @@ public class CreateAppointmentResponse {
         private List<Servicee> services;
 
         private String type;
+
+        private String extraInformation;
     }
 }

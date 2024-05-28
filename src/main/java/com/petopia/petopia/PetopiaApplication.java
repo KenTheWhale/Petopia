@@ -107,6 +107,8 @@ public class PetopiaApplication {
 
     private final SubstituteStatusRepo substituteStatusRepo;
 
+    private final ServiceReportStatusRepo serviceReportStatusRepo;
+
     public static void main(String[] args) {
         SpringApplication.run(PetopiaApplication.class, args);
     }
@@ -320,6 +322,14 @@ public class PetopiaApplication {
 //
 //				SubstituteStatus deletedSubtitute = substituteStatusRepo.save(
 //                        SubstituteStatus.builder().status(Const.SUBSTITUTE_STATUS_DELETE).build()
+//                );
+//
+//                ServiceReportStatus draftingServiceReport = serviceReportStatusRepo.save(
+//                        ServiceReportStatus.builder().status(Const.SERVICE_REPORT_STATUS_DRAFTING).build()
+//                );
+//
+//                ServiceReportStatus confirmedServiceReport = serviceReportStatusRepo.save(
+//                        ServiceReportStatus.builder().status(Const.SERVICE_REPORT_STATUS_CONFIRMED).build()
 //                );
 //
 //                // init account-------------------------------------------------------------------------//
@@ -1087,6 +1097,7 @@ public class PetopiaApplication {
 //                                .extraContent("Sau khi tiêm xong cần chăm sóc chó tốt hơn, kiêng tắm; Kiêng thức ăn có chứa nhiều mỡ, sữa, đồ tanh ít nhất là 1 tuần.")
 //                                .date(appointment1.getDate())
 //                                .location(appointment1.getServiceProvider().getServiceCenter().getAddress())
+//                                .serviceReportStatus(confirmedServiceReport)
 //                                .build()
 //                );
 //
@@ -1097,6 +1108,7 @@ public class PetopiaApplication {
 //                                .extraContent("Không để thú cưng bị ướt. Không cho ăn quá no, hạn chế những loại thức ăn có thể gây kích ứng như cá biển, thịt gà.")
 //                                .date(appointment2.getDate())
 //                                .location(appointment2.getServiceProvider().getServiceCenter().getAddress())
+//                                .serviceReportStatus(confirmedServiceReport)
 //                                .build()
 //                );
 //
@@ -1107,6 +1119,7 @@ public class PetopiaApplication {
 //                                .extraContent("Nếu có triệu chứng ngứa hay nhưng biểu hiện lạ hãy liên hệ với trung tâm nhanh nhất có thể để được hỗ trợ kịp thời.")
 //                                .date(appointment3.getDate())
 //                                .location(appointment3.getServiceProvider().getServiceCenter().getAddress())
+//                                .serviceReportStatus(confirmedServiceReport)
 //                                .build()
 //                );
 //
@@ -1117,6 +1130,7 @@ public class PetopiaApplication {
 //                                .extraContent("Nếu có triệu chứng ngứa hay nhưng biểu hiện lạ hãy liên hệ với trung tâm nhanh nhất có thể để được hỗ trợ kịp thời.")
 //                                .date(appointment4.getDate())
 //                                .location(appointment4.getServiceProvider().getServiceCenter().getAddress())
+//                                .serviceReportStatus(confirmedServiceReport)
 //                                .build()
 //                );
 //

@@ -24,6 +24,10 @@ public class ServiceReport {
     @JoinColumn(name = "`appointment_id`")
     private Appointment appointment;
 
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    private ServiceReportStatus serviceReportStatus;
+
     private LocalDateTime date;
 
     private String report;

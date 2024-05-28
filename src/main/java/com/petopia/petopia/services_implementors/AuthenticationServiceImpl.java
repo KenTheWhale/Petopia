@@ -134,6 +134,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                                 .email("")
                                 .role("")
                                 .avatar("")
+                                .background("")
                                 .accessToken("")
                                 .build()
                 )
@@ -180,7 +181,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .name(request.getName())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .email(request.getEmail())
-                .avatarLink("https://via.placeholder.com/150")
+                .avatar("https://via.placeholder.com/150")
                 .role(Role.USER)
                 .accountStatus(accountStatus)
                 .build();

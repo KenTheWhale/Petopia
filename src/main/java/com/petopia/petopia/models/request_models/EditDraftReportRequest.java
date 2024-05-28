@@ -5,18 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DraftReportRequest {
+public class EditDraftReportRequest {
 
-    private Integer appointmentId;
+    private Integer draftReportId;
 
     private String report;
 
     private String extraContent;
-
 }

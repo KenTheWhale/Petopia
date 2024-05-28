@@ -24,4 +24,5 @@ public class GroupMember {
     @ManyToOne
     @JoinColumn(name = "`group_id`")
     private Group group;
+
 }

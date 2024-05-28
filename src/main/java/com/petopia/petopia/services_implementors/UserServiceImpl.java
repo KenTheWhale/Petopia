@@ -69,16 +69,6 @@ public class UserServiceImpl implements UserService {
                                 .avatarLink(currentAcc.getAvatar())
                                 .status(currentAcc.getAccountStatus().getStatus())
                                 .accessToken(accessTokenValue)
-//                                .appointmentList(appointmentRepo.findAllByPet_User_Id(currentAcc.getId()).stream()
-//                                        .map(appointment -> CurrentUserResponse.userResponse.appointmentResponse.builder()
-//                                                .id(appointment.getId())
-//                                                .pet(appointment.getPet())
-//                                                .appointmentStatus(CurrentUserResponse.userResponse.appointmentResponse.appointmentStatusResponse.builder()
-//                                                        .status(appointment.getAppointmentStatus().getStatus())
-//                                                        .build())
-//                                                .date(appointment.getDate())
-//                                                .build())
-//                                        .collect(Collectors.toList()))
                                 .shop(currentAcc.getShop() != null ?
                                         CurrentUserResponse.userResponse.shopResponse.builder()
                                                 .id(currentAcc.getShop().getId())
@@ -97,7 +87,7 @@ public class UserServiceImpl implements UserService {
         assert currentAcc != null;
 
         List<BlackList> blackList = currentAcc.getUser().getBlackList();
-        if(blackList.isEmpty()){
+        if (blackList.isEmpty()) {
             return BlackListResponse.builder()
                     .status("400")
                     .message("Người dùng không có ai trong danh sách chặn")
@@ -108,10 +98,10 @@ public class UserServiceImpl implements UserService {
                     .message("Lấy danh sách chặn thành công")
                     .blockedUsers(blackList.stream()
                             .map(element -> BlackListResponse.BlockedUser.builder()
-                                    .id(userRepo.findUserById(element.getBlockedUserId()).getId())
-                                    .name(userRepo.findUserById(element.getBlockedUserId()).getAccount().getName())
-                                    .avatarLink(userRepo.findUserById(element.getBlockedUserId()).getAccount().getAvatar())
-                                    .build())
+                                 .id(userRepo.findUserById(element.getBlockedUserId()).getId())
+                                 .name(userRepo.findUserById(element.getBlockedUserId()).getAccount().getName())
+                                 .avatarLink(userRepo.findUserById(element.getBlockedUserId()).getAccount().getAvatar())
+                                 .build())
                             .collect(Collectors.toList()))
                     .build();
 
@@ -249,9 +239,10 @@ public class UserServiceImpl implements UserService {
                 .pet(pet)
                 .serviceProvider(serviceCenter.getServiceProviderList().get(1))
                 .appointmentStatus(appointmentStatus)
-                .date(LocalDateTime.now())
+                .date(request.getDateTime())
                 .fee(calculateSumOfFees(request))
                 .type(appointmentType)
+                .extraInformation(request.getExtraInformation())
                 .build();
 
         // Save the Appointment
@@ -265,7 +256,7 @@ public class UserServiceImpl implements UserService {
                         CreateAppointmentResponse.appointmentDraft.builder()
                                 .petName(savedAppointment.getPet().getName())
                                 .status(Const.APPOINTMENT_STATUS_PENDING)
-                                .date(LocalDateTime.now())
+                                .date(request.getDateTime())
                                 .location(savedAppointment.getServiceProvider().getServiceCenter().getAddress())
                                 .services(serviceList.stream()
                                         .map(service -> CreateAppointmentResponse.Servicee.builder()
@@ -274,6 +265,7 @@ public class UserServiceImpl implements UserService {
                                                 .build())
                                         .collect(Collectors.toList()))
                                 .type(appointmentType)
+                                .extraInformation(request.getExtraInformation())
                                 .build()
                 )
                 .build();
@@ -381,6 +373,7 @@ public class UserServiceImpl implements UserService {
                 .build();
 
     }
+
     @Override
     public BlackListResponse unblockUser(BlockAndUnblockUserRequest request) {
         Account currentAcc = accountService.getCurrentLoggedAccount();
@@ -396,7 +389,7 @@ public class UserServiceImpl implements UserService {
                     .message("Không thể tìm thấy người dùng với id này")
                     .build();
         }
-        if(blackList == null){
+        if (blackList == null) {
             return BlackListResponse.builder()
                     .status("400")
                     .message("Người dùng không nằm trong danh sách chặn")
@@ -514,7 +507,6 @@ public class UserServiceImpl implements UserService {
                 .message("User profile created successfully")
                 .build();
     }
-
 
 
     private Page<ServiceReport> getPaginationHealthReportListByPetId(int pageNo, Integer petID, String sort) {

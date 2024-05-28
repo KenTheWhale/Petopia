@@ -23,4 +23,5 @@ public class GroupImage {
     @ManyToOne
     @JoinColumn(name = "`group_id`")
     private Group group;
+
 }

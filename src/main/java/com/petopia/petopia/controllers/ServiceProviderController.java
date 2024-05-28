@@ -1,6 +1,8 @@
 package com.petopia.petopia.controllers;
 
+import com.petopia.petopia.models.request_models.ConfirmDraftReportRequest;
 import com.petopia.petopia.models.request_models.DraftReportRequest;
+import com.petopia.petopia.models.request_models.EditDraftReportRequest;
 import com.petopia.petopia.models.response_models.DraftReportResponse;
 import com.petopia.petopia.services.SPService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,10 +18,22 @@ public class ServiceProviderController {
 
     private final SPService SPService;
 
-    @PostMapping("/draft-report-creation")
+    @PostMapping("/draft-report")
     @PreAuthorize("hasAuthority('sp:create')")
     public DraftReportResponse createDraftReport(@RequestBody DraftReportRequest request){
         return SPService.createDraftReport(request);
+    }
+
+    @PostMapping("/draft-report-content")
+    @PreAuthorize("hasAuthority('sp:update')")
+    public DraftReportResponse editDraftServiceReport(@RequestBody EditDraftReportRequest request){
+        return SPService.editDraftReport(request);
+    }
+
+    @PostMapping("/draft-report-status")
+    @PreAuthorize("hasAuthority('sp:update')")
+    public DraftReportResponse confirmDraftServiceReport(@RequestBody ConfirmDraftReportRequest request){
+        return SPService.confirmDraftReport(request);
     }
 
 }
