@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "`account_image`")
-public class AccountImage {
+@Table(name = "`service_image`")
+public class ServiceImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +21,6 @@ public class AccountImage {
     private String link;
 
     @ManyToOne
-    @JoinColumn(name = "`account_id`")
-    private Account account;
+    @JoinColumn(name = "`service_id`")
+    private Services services;
 }

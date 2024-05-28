@@ -27,6 +27,9 @@ public class User {
 
     private String phone;
 
+    @Column(name = "`real_name`")
+    private String realName;
+
     @OneToMany(mappedBy = "user")
     @ToString.Exclude
     private List<UserImage> userImageList;

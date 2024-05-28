@@ -52,4 +52,6 @@ public class Const {
     public final static String HUMAN_GENDER_FEMALE = "nữ";
     public final static String CART_STATUS_ACTIVE = "đang hoạt động";
     public final static String CART_STATUS_DELETE = "đã bị xóa";
+    public final static String SUBSTITUTE_STATUS_ACTIVE = "đang tồn tại";
+    public final static String SUBSTITUTE_STATUS_DELETE = "đã bị xóa";
 }

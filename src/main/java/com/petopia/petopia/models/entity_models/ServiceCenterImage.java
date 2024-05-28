@@ -11,18 +11,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "`appointment_service`")
-public class AppointmentService {
+@Table(name = "`service_center_image`")
+public class ServiceCenterImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "`appointment_id`")
-    private Appointment appointment;
+    private String link;
 
     @ManyToOne
-    @JoinColumn(name = "`service_id`")
-    private Services services;
+    @JoinColumn(name = "`service_center_id`")
+    private ServiceCenter serviceCenter;
 }

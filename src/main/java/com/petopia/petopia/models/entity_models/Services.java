@@ -29,13 +29,18 @@ public class Services {
 
     private String description;
 
-    private String imgLink;
+    @OneToMany(mappedBy = "services")
+    @ToString.Exclude
+    private List<ServiceImage> serviceImageList;
 
     private double fee;
 
     private double rating;
 
-    @OneToMany(mappedBy = "services")
+    @Column(name = "`can_be_done_on_site`")
+    private boolean canBeDoneOnSite;
+
+    @ManyToMany(mappedBy = "servicesList")
     @ToString.Exclude
-    private List<AppointmentService> appointmentServiceList;
+    private List<Appointment> appointmentList;
 }
