@@ -86,7 +86,6 @@ public class SPServiceImpl implements SPService {
                         .extraDetail(draftReport.getExtraContent())
                         .location(draftReport.getLocation())
                         .fee(appointment.getFee())
-                        .status(draftReport.getServiceReportStatus().getStatus())
                         .build())
                 .build();
     }
@@ -129,7 +128,6 @@ public class SPServiceImpl implements SPService {
                         .extraDetail(existingDraftReport.getExtraContent())
                         .location(existingDraftReport.getLocation())
                         .fee(existingDraftReport.getAppointment().getFee())
-                        .status(existingDraftReport.getServiceReportStatus().getStatus())
                         .build())
                 .build();
     }
@@ -168,7 +166,6 @@ public class SPServiceImpl implements SPService {
                         .extraDetail(existingDraftReport.getExtraContent())
                         .location(existingDraftReport.getLocation())
                         .fee(existingDraftReport.getAppointment().getFee())
-                        .status(existingDraftReport.getServiceReportStatus().getStatus())
                         .build())
                 .build();
     }
