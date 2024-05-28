@@ -15,7 +15,7 @@ public interface AccountService {
 
     Account getCurrentLoggedAccount();
 
-    DeleteAccountResponse deleteAccount(int id);
+    void deleteAccount();
 
     String getAccessToken();
     String getRefreshToken();

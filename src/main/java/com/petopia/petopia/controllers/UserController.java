@@ -91,9 +91,9 @@ public class UserController {
             @RequestBody CreateUserProfileRequest request) {
          return userService.createUserProfile(accountId, request);
     }
-    @PutMapping("/{id}/profile")
-    public UpdateUserProfileResponse updateUserProfile(@PathVariable int id, @RequestBody UpdateUserProfileRequest request) {
-        return userService.updateUserProfile(id, request);
+    @PostMapping("/profile-update")
+    public UpdateUserProfileResponse updateUserProfile( @RequestBody UpdateUserProfileRequest request) {
+        return userService.updateUserProfile(request);
     }
 
     @PostMapping("/service-center-detail")
@@ -144,8 +144,8 @@ public class UserController {
 
     @PostMapping("/account-deletion")
     @PreAuthorize("hasAuthority('user:delete')")
-    public DeleteAccountResponse accountDelete(int accountId) {
-        return accountService.deleteAccount(accountId);
+    public void accountDelete() {
+         accountService.deleteAccount();
     }
 
     @PostMapping("/search")

@@ -522,6 +522,11 @@ public class UserServiceImpl implements UserService {
         return ProductReportResponse.builder().status("200").message("Báo cáo sản phẩm thành công").build();
     }
 
+    @Override
+    public ViewFeedbackListResponse viewFeedbackListResponse(ViewFeedbackListRequest request) {
+        return null;
+    }
+
     private List<ServiceCenter> getServiceCenterList(String type) {
         return serviceCenterRepo.findAllByTypeAndServiceCenterStatus_StatusOrServiceCenterStatus_StatusOrderByRatingDesc(type, Const.SERVICE_CENTER_STATUS_ACTIVE, Const.SERVICE_CENTER_STATUS_CLOSED);
     }
@@ -568,27 +573,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UpdateUserProfileResponse updateUserProfile(int id, UpdateUserProfileRequest request) {
-        Optional<Account> optionalAccount = accountRepo.findById(id);
-        if (optionalAccount.isEmpty()) {
-            return UpdateUserProfileResponse
-                    .builder()
-                    .status("404")
-                    .message("Người dùng không tồn tại")
-                    .build();
-        }
+    public UpdateUserProfileResponse updateUserProfile(UpdateUserProfileRequest request) {
+        Account account = accountService.getCurrentLoggedAccount();
 
-        Optional<User> existingUserProfile = userRepo.findByAccountId(id);
-        if (existingUserProfile.isPresent()) {
-            Account account = optionalAccount.get();
-            User user = User
-                    .builder()
-                    .account(account)
-                    .gender(request.getGender())
-                    .address(request.getAddress())
-                    .phone(request.getPhone())
-                    .build();
-            userRepo.save(user);
+        User user = account.getUser();
+        user.setAddress(request.getAddress());
+        user.setGender(request.getGender());
+        user.setPhone(request.getPhone());
+        userRepo.save(user);
 
             return UpdateUserProfileResponse
                     .builder()
@@ -598,12 +590,7 @@ public class UserServiceImpl implements UserService {
                     .status("200")
                     .message("Cập nhật hồ sơ người dùng thành công")
                     .build();
-        }
-        return UpdateUserProfileResponse
-                .builder()
-                .status("404")
-                .message("Hồ sơ người dùng không tồn tại")
-                .build();
+
     }
 
 

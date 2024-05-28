@@ -88,22 +88,13 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public DeleteAccountResponse deleteAccount(int id) {
-        Account deleteAccount = accountRepo.findById(id).orElse(null);
-        if(deleteAccount != null) {
-            AccountStatus deleteAccountStatus = accountStatusRepo.findById(3).orElse(null);
-            if (deleteAccountStatus != null) {
-                deleteAccount.setAccountStatus(deleteAccountStatus);
-                accountRepo.save(deleteAccount);
-                return DeleteAccountResponse.builder()
-                        .status("200")
-                        .message("Xóa tài khoản thành công")
-                        .build();
-            }
-        } return DeleteAccountResponse.builder()
-                    .status("400")
-                    .message("Tài khoản không tồn tại")
-                    .build();
+    public void deleteAccount() {
+            Account account  = getCurrentLoggedAccount();
+            AccountStatus deleteAccountStatus = accountStatusRepo.findByStatus(Const.ACCOUNT_STATUS_DELETED);
+
+                account.setAccountStatus(deleteAccountStatus);
+                accountRepo.save(account);
+                logout();
     }
 
     @Override
