@@ -311,6 +311,7 @@ public class UserServiceImpl implements UserService {
                                                     .phone(substitute.getPhone())
                                                     .build())
                                             .collect(Collectors.toList()))
+                                    .fee(savedAppointment.getFee())
                                     .build()
                     )
                     .build();
@@ -367,6 +368,7 @@ public class UserServiceImpl implements UserService {
                                                     .phone(substitute.getPhone())
                                                     .build())
                                             .collect(Collectors.toList()))
+                                    .fee(savedAppointment.getFee())
                                     .build()
                     )
                     .build();

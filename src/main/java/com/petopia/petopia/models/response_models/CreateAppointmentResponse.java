@@ -51,6 +51,8 @@ public class CreateAppointmentResponse {
         private String extraInformation;
 
         private List<SubstituteList> substitute;
+
+        private double fee;
     }
 
     @Data
