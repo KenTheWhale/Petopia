@@ -19,7 +19,7 @@ public class CreateAppointmentRequest {
 
     private Integer centerId;
 
-    private String note;
+    private String extraInformation;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
     private LocalDateTime dateTime;

@@ -242,7 +242,7 @@ public class UserServiceImpl implements UserService {
                 .date(request.getDateTime())
                 .fee(calculateSumOfFees(request))
                 .type(appointmentType)
-                .note(request.getNote())
+                .extraInformation(request.getExtraInformation())
                 .build();
 
         // Save the Appointment
@@ -265,7 +265,7 @@ public class UserServiceImpl implements UserService {
                                                 .build())
                                         .collect(Collectors.toList()))
                                 .type(appointmentType)
-                                .note(request.getNote())
+                                .extraInformation(request.getExtraInformation())
                                 .build()
                 )
                 .build();

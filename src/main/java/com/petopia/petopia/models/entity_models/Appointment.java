@@ -51,8 +51,6 @@ public class Appointment {
     @Column(name = "`extra_information`")
     private String extraInformation;
 
-    private String note;
-
     @OneToOne(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
     private ServiceReport serviceReport;

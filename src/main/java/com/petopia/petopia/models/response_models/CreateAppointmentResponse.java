@@ -48,6 +48,6 @@ public class CreateAppointmentResponse {
 
         private String type;
 
-        private String note;
+        private String extraInformation;
     }
 }

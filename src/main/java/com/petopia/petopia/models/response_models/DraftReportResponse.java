@@ -46,7 +46,6 @@ public class DraftReportResponse {
 
         private double fee;
 
-        private String status;
     }
 
     private String status;
