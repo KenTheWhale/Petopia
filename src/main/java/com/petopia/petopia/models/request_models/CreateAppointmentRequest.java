@@ -19,7 +19,15 @@ public class CreateAppointmentRequest {
 
     private Integer centerId;
 
+    private String substituteName;
+
+    private String substitutePhone;
+
     private String extraInformation;
+
+    private String servicePlace;
+
+    private String phone;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
     private LocalDateTime dateTime;

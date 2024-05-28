@@ -27,7 +27,7 @@ public class UserController {
 
     @GetMapping("/user-profile")
     @PreAuthorize("hasAuthority('user:read')")
-    public CurrentUserResponse getCurrentUserProfile(){
+    public UserResponse getCurrentUserProfile(){
         return userService.getCurrentUserProfile();
     }
 

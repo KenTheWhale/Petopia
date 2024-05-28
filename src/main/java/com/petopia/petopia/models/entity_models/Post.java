@@ -33,7 +33,6 @@ public class Post {
     private String content;
 
     @Column(name = "`post_date`")
-    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime postDate;
 
     @OneToMany(mappedBy = "post")

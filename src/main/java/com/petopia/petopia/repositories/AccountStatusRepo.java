@@ -5,5 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AccountStatusRepo extends JpaRepository<AccountStatus, Integer> {
 
-    AccountStatus findAccountStatusByStatus(String status);
 }
