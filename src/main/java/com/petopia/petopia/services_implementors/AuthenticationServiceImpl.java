@@ -168,17 +168,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .build();
         }
 
-        AccountStatus accountStatus = accountStatusRepo.findById(1).orElse(null);
+        AccountStatus accountStatus = accountStatusRepo.findByStatus(Const.ACCOUNT_STATUS_ACTIVE);
 
-        if (accountStatus == null) {
-            return CreateAccountResponse.builder()
-                    .status("404")
-                    .message("Không tìm thấy trạng thái tài khoản mặc định")
-                    .build();
-        }
 
         Account newAccount = Account.builder()
                 .name(request.getName())
+                .background("")
                 .password(passwordEncoder.encode(request.getPassword()))
                 .email(request.getEmail())
                 .avatar("https://via.placeholder.com/150")

@@ -13,7 +13,6 @@ import java.util.List;
 @Builder
 public class ViewFeedbackListResponse {
     private String status;
-    private String message;
     private List<UserResponse> user;
 
     @Data
@@ -21,8 +20,13 @@ public class ViewFeedbackListResponse {
     @NoArgsConstructor
     @Builder
     public static class UserResponse {
-        private String username;
         private String avatar;
+        private String username;
+        private String content;
+        private int rating;
+
+
     }
+
 
 }

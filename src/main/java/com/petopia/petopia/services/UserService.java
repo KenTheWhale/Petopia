@@ -20,7 +20,7 @@ public interface UserService {
 
     PetListResponse getPetList();
 
-    CreateUserProfileResponse createUserProfile(int id, CreateUserProfileRequest request);
+    CreateUserProfileResponse createUserProfile(CreateUserProfileRequest request);
 
     UpdateUserProfileResponse updateUserProfile(UpdateUserProfileRequest request);
 

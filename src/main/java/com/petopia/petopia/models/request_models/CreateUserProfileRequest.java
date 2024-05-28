@@ -13,4 +13,5 @@ public class CreateUserProfileRequest {
     String address;
     String gender;
     String phone;
+    String realName;
 }

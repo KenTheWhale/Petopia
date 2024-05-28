@@ -87,9 +87,8 @@ public class UserController {
 
     @PostMapping("/create-user-profile")
     public CreateUserProfileResponse createUserProfile(
-            @RequestParam("accountId") int accountId,
             @RequestBody CreateUserProfileRequest request) {
-         return userService.createUserProfile(accountId, request);
+         return userService.createUserProfile(request);
     }
     @PostMapping("/profile-update")
     public UpdateUserProfileResponse updateUserProfile( @RequestBody UpdateUserProfileRequest request) {
@@ -152,5 +151,11 @@ public class UserController {
     @PreAuthorize("hasAuthority('user:read')")
     public FindOtherUserProfileResponse findOtherUserProfile(@RequestBody FindOtherUserProfileRequest request) {
         return userService.findOtherUserProfileResponse(request);
+    }
+
+    @PostMapping("/feedback-list")
+    @PreAuthorize("hasAuthority('user:read')")
+    public ViewFeedbackListResponse viewFeedbackList(@RequestBody ViewFeedbackListRequest request) {
+        return userService.viewFeedbackListResponse(request);
     }
 }

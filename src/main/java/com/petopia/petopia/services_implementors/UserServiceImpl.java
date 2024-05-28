@@ -48,6 +48,7 @@ public class UserServiceImpl implements UserService {
     private final PetImageRepo petImageRepo;
     private final ServiceCenterImageRepo serviceCenterImageRepo;
     private final ServiceImageRepo serviceImageRepo;
+    private final FeedBackRepo feedBackRepo;
     private final SubstituteRepo substituteRepo;
     private final SubstituteStatusRepo substituteStatusRepo;
 
@@ -586,33 +587,52 @@ public class UserServiceImpl implements UserService {
         List<User> userList = userRepo.findAll();
 
         for (User user : userList) {
-            if(user.getAccount().getName().contains(request.getUserName())){
+            if (user.getAccount().getName().contains(request.getUserName())) {
                 listUserName.add(FindOtherUserProfileResponse.UserResponse
                         .builder()
-                                .username(user.getAccount().getName())
-                                .id(user.getId())
+                        .username(user.getAccount().getName())
+                        .id(user.getId())
                         .build());
             }
         }
         if (listUserName.isEmpty()) {
             message = "Không thể tìm thấy tài khoản với từ khóa " + request.getUserName();
             status = "400";
-        } else{
+        } else {
             message = "Đã tìm thấy các tài khoản với tên : " + request.getUserName();
             status = "200";
         }
         return FindOtherUserProfileResponse
-                    .builder()
-                    .status(status)
-                    .message(message)
-                    .users(listUserName)
-                    .build();
+                .builder()
+                .status(status)
+                .message(message)
+                .users(listUserName)
+                .build();
 
     }
 
     @Override
     public ViewFeedbackListResponse viewFeedbackListResponse(ViewFeedbackListRequest request) {
-        return null;
+        List<Feedback> listFeedback = feedBackRepo.findAllByProduct_Id(request.getProductId());
+        List<ViewFeedbackListResponse.UserResponse> newListFeedback = new ArrayList<>();
+        for (Feedback feedback : listFeedback) {
+            if (!feedback.isReported()) {
+
+                User user = feedback.getUser();
+                newListFeedback.add(ViewFeedbackListResponse.UserResponse
+                        .builder()
+                        .username(user.getAccount().getName())
+                        .avatar(user.getAccount().getAvatar())
+                        .content(feedback.getContent())
+                        .rating(feedback.getRating())
+                        .build());
+            }
+        }
+        return ViewFeedbackListResponse
+                .builder()
+                .status("200")
+                .user(newListFeedback)
+                .build();
     }
 
     private List<ServiceCenter> getServiceCenterList(String type) {
@@ -625,31 +645,24 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public CreateUserProfileResponse createUserProfile(int id, CreateUserProfileRequest request) {
-        Optional<Account> optionalAccount = accountRepo.findById(id);
-        if (optionalAccount.isEmpty()) {
-            return CreateUserProfileResponse.builder()
-                    .status("404")
-                    .message("Người dùng không tồn tại")
-                    .build();
-        }
-
-        Optional<User> existingUser = userRepo.findByAccountId(id);
-        if (existingUser.isPresent()) {
+    public CreateUserProfileResponse createUserProfile(CreateUserProfileRequest request) {
+        Account account = accountService.getCurrentLoggedAccount();
+        if (account.getUser() != null) {
             return CreateUserProfileResponse.builder()
                     .status("409")
                     .message("Hồ sơ người dùng cho tài khoản này đã tồn tại")
                     .build();
         }
-
-        Account account = optionalAccount.get();
-        User user = User.builder()
-                .account(account)
-                .gender(request.getGender())
-                .address(request.getAddress())
-                .phone(request.getPhone())
-                .build();
-        userRepo.save(user);
+            User user = userRepo.save(
+                    User
+                            .builder()
+                            .gender(request.getGender())
+                            .realName(request.getRealName() == null ? "" : request.getRealName())
+                            .address(request.getAddress())
+                            .phone(request.getPhone())
+                            .account(account)
+                            .build()
+            );
 
         return CreateUserProfileResponse.builder()
                 .address(user.getAddress())
@@ -670,14 +683,14 @@ public class UserServiceImpl implements UserService {
         user.setPhone(request.getPhone());
         userRepo.save(user);
 
-            return UpdateUserProfileResponse
-                    .builder()
-                    .address(user.getAddress())
-                    .gender(user.getGender())
-                    .phone(user.getPhone())
-                    .status("200")
-                    .message("Cập nhật hồ sơ người dùng thành công")
-                    .build();
+        return UpdateUserProfileResponse
+                .builder()
+                .address(user.getAddress())
+                .gender(user.getGender())
+                .phone(user.getPhone())
+                .status("200")
+                .message("Cập nhật hồ sơ người dùng thành công")
+                .build();
 
     }
 
