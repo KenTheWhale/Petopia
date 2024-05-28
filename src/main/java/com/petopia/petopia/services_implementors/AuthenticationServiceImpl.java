@@ -62,7 +62,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
                         return LoginResponse.builder()
                                 .status("200")
-                                .message("Login successfully")
+                                .message("Đăng nhập thành công")
                                 .account(
                                         LoginResponse.AccountResponse.builder()
                                                 .status(account.getAccountStatus().getStatus())
@@ -78,7 +78,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     }
                     return LoginResponse.builder()
                             .status("400")
-                            .message("This account has been banned")
+                            .message("Tài khoản này đã bị cấm")
                             .account(
                                     LoginResponse.AccountResponse.builder()
                                             .status("")
@@ -94,7 +94,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 }
                 return LoginResponse.builder()
                         .status("400")
-                        .message("Username or password is incorrect")
+                        .message("Tên người dùng hoặc mật khẩu không đúng")
                         .account(
                                 LoginResponse.AccountResponse.builder()
                                         .status("")
@@ -110,7 +110,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             }
             return LoginResponse.builder()
                     .status("400")
-                    .message("Email is wrong formatted")
+                    .message("Email sai định dạng")
                     .account(
                             LoginResponse.AccountResponse.builder()
                                     .status("")
@@ -126,7 +126,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         return LoginResponse.builder()
                 .status("400")
-                .message("Email or password is empty")
+                .message("Email hoặc mật khẩu đang trống")
                 .account(
                         LoginResponse.AccountResponse.builder()
                                 .status("")
@@ -157,14 +157,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (optionalAccount.isPresent()) {
             return CreateAccountResponse.builder()
                     .status("409")
-                    .message("Email already exists")
+                    .message("Email đã tồn tại")
                     .build();
         }
 
         if(!checkIfMailIsValid(request.getEmail())){
             return  CreateAccountResponse.builder()
                     .status("400")
-                    .message("Email not vaild")
+                    .message("Email không hợp lệ")
                     .build();
         }
 
@@ -173,7 +173,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (accountStatus == null) {
             return CreateAccountResponse.builder()
                     .status("404")
-                    .message("Default account status not found")
+                    .message("Không tìm thấy trạng thái tài khoản mặc định")
                     .build();
         }
 
@@ -190,7 +190,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         return CreateAccountResponse.builder()
                 .status("200")
-                .message("Account created successfully")
+                .message("Tạo tài khoản thành công")
                 .build();
     }
 }

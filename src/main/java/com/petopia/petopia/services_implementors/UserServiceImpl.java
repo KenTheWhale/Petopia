@@ -94,16 +94,16 @@ public class UserServiceImpl implements UserService {
                     .build();
         }
         return BlackListResponse.builder()
-                    .status("200")
-                    .message("Lấy danh sách chặn thành công")
-                    .blockedUsers(blackList.stream()
-                            .map(element -> BlackListResponse.BlockedUser.builder()
-                                 .id(userRepo.findUserById(element.getBlockedUserId()).getId())
-                                 .name(userRepo.findUserById(element.getBlockedUserId()).getAccount().getName())
-                                 .avatarLink(userRepo.findUserById(element.getBlockedUserId()).getAccount().getAvatar())
-                                 .build())
-                            .collect(Collectors.toList()))
-                    .build();
+                .status("200")
+                .message("Lấy danh sách chặn thành công")
+                .blockedUsers(blackList.stream()
+                        .map(element -> BlackListResponse.BlockedUser.builder()
+                                .id(userRepo.findUserById(element.getBlockedUserId()).getId())
+                                .name(userRepo.findUserById(element.getBlockedUserId()).getAccount().getName())
+                                .avatarLink(userRepo.findUserById(element.getBlockedUserId()).getAccount().getAvatar())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
 
 
     }
@@ -463,6 +463,44 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    @Override
+    public ViewOtherUserProfileResponse viewOtherUserProfile(ViewOtherUserProfileRequest request) {
+        return null;
+    }
+
+    @Override
+    public FindOtherUserProfileResponse findOtherUserProfileResponse(FindOtherUserProfileRequest request) {
+        String message = "";
+        String status = "";
+        ArrayList<FindOtherUserProfileResponse.UserResponse> listUserName = new ArrayList<>();
+
+        List<User> userList = userRepo.findAll();
+
+        for (User user : userList) {
+            if(user.getAccount().getName().contains(request.getUserName())){
+                listUserName.add(FindOtherUserProfileResponse.UserResponse
+                        .builder()
+                                .username(user.getAccount().getName())
+                                .id(user.getId())
+                        .build());
+            }
+        }
+        if (listUserName.isEmpty()) {
+            message = "Không thể tìm thấy tài khoản với từ khóa " + request.getUserName();
+            status = "400";
+        } else{
+            message = "Đã tìm thấy các tài khoản với tên : " + request.getUserName();
+            status = "200";
+        }
+        return FindOtherUserProfileResponse
+                    .builder()
+                    .status(status)
+                    .message(message)
+                    .users(listUserName)
+                    .build();
+
+    }
+
     private List<ServiceCenter> getServiceCenterList(String type) {
         return serviceCenterRepo.findAllByTypeAndServiceCenterStatus_StatusOrServiceCenterStatus_StatusOrderByRatingDesc(type, Const.SERVICE_CENTER_STATUS_ACTIVE, Const.SERVICE_CENTER_STATUS_CLOSED);
     }
@@ -474,19 +512,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CreateUserProfileResponse createUserProfile(int id, CreateUserProfileRequest request) {
-        Optional<User> existingUser = userRepo.findByAccountId(id);
-        if (existingUser.isPresent()) {
-            return CreateUserProfileResponse.builder()
-                    .status("409")
-                    .message("User profile for this account already exists")
-                    .build();
-        }
-
         Optional<Account> optionalAccount = accountRepo.findById(id);
         if (optionalAccount.isEmpty()) {
             return CreateUserProfileResponse.builder()
                     .status("404")
-                    .message("User does not exist")
+                    .message("Người dùng không tồn tại")
+                    .build();
+        }
+
+        Optional<User> existingUser = userRepo.findByAccountId(id);
+        if (existingUser.isPresent()) {
+            return CreateUserProfileResponse.builder()
+                    .status("409")
+                    .message("Hồ sơ người dùng cho tài khoản này đã tồn tại")
                     .build();
         }
 
@@ -505,6 +543,45 @@ public class UserServiceImpl implements UserService {
                 .phone(user.getPhone())
                 .status("200")
                 .message("User profile created successfully")
+                .build();
+    }
+
+    @Override
+    public UpdateUserProfileResponse updateUserProfile(int id, UpdateUserProfileRequest request) {
+        Optional<Account> optionalAccount = accountRepo.findById(id);
+        if (optionalAccount.isEmpty()) {
+            return UpdateUserProfileResponse
+                    .builder()
+                    .status("404")
+                    .message("Người dùng không tồn tại")
+                    .build();
+        }
+
+        Optional<User> existingUserProfile = userRepo.findByAccountId(id);
+        if (existingUserProfile.isPresent()) {
+            Account account = optionalAccount.get();
+            User user = User
+                    .builder()
+                    .account(account)
+                    .gender(request.getGender())
+                    .address(request.getAddress())
+                    .phone(request.getPhone())
+                    .build();
+            userRepo.save(user);
+
+            return UpdateUserProfileResponse
+                    .builder()
+                    .address(user.getAddress())
+                    .gender(user.getGender())
+                    .phone(user.getPhone())
+                    .status("200")
+                    .message("Cập nhật hồ sơ người dùng thành công")
+                    .build();
+        }
+        return UpdateUserProfileResponse
+                .builder()
+                .status("404")
+                .message("Hồ sơ người dùng không tồn tại")
                 .build();
     }
 
