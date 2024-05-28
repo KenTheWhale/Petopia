@@ -10,7 +10,7 @@ import com.petopia.petopia.models.response_models.*;
 
 public interface UserService {
 
-    CurrentUserResponse getCurrentUserProfile();
+    UserResponse getCurrentUserProfile();
 
     BlackListResponse viewBlackList();
 

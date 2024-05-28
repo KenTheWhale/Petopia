@@ -24,8 +24,6 @@ public class Substitute {
 
     private String phone;
 
-    private String status;
-
     @ManyToMany
     @JoinTable(
             name = "appointment_substitute",

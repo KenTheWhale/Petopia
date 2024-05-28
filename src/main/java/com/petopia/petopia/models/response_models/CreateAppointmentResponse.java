@@ -49,5 +49,18 @@ public class CreateAppointmentResponse {
         private String type;
 
         private String extraInformation;
+
+        private List<SubstituteList> substitute;
+
+        private double fee;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class SubstituteList {
+        private String name;
+        private String phone;
     }
 }

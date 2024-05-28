@@ -48,36 +48,58 @@ public class UserServiceImpl implements UserService {
     private final PetImageRepo petImageRepo;
     private final ServiceCenterImageRepo serviceCenterImageRepo;
     private final ServiceImageRepo serviceImageRepo;
+    private final SubstituteRepo substituteRepo;
+    private final SubstituteStatusRepo substituteStatusRepo;
 
 
     @Override
-    public CurrentUserResponse getCurrentUserProfile() {
+    public UserResponse getCurrentUserProfile() {
         Account currentAcc = accountService.getCurrentLoggedAccount();
         assert currentAcc != null;
 
         Token accessToken = tokenRepo.findByAccount_IdAndType(currentAcc.getId(), Const.TOKEN_TYPE_ACCESS).orElse(null);
-        String accessTokenValue = accessToken != null ? accessToken.getValue() : "không có access token";
+        String accessTokenValue = accessToken != null ? accessToken.getValue() : "Không có access token";
 
-        return CurrentUserResponse.builder()
+        return UserResponse.builder()
                 .status("200")
                 .message("Lấy thông tin người dùng thành công")
-                .user(
-                        CurrentUserResponse.userResponse.builder()
-                                .id(currentAcc.getId())
-                                .name(currentAcc.getName())
-                                .email(currentAcc.getEmail())
-                                .avatarLink(currentAcc.getAvatar())
-                                .status(currentAcc.getAccountStatus().getStatus())
-                                .accessToken(accessTokenValue)
-                                .shop(currentAcc.getShop() != null ?
-                                        CurrentUserResponse.userResponse.shopResponse.builder()
-                                                .id(currentAcc.getShop().getId())
-                                                .name(currentAcc.getShop().getName())
-                                                .address(currentAcc.getShop().getAddress())
-                                                .build() : null
-                                )
-                                .role(currentAcc.getRole())
+                .id(currentAcc.getUser().getId())
+                .gender(currentAcc.getUser().getGender())
+                .address(currentAcc.getUser().getAddress())
+                .phone(currentAcc.getUser().getPhone())
+                .imgLinkList(currentAcc.getUser().getUserImageList().stream()
+                        .map(userImage -> UserResponse.imgLinkResponse.builder()
+                                .link(userImage.getLink())
                                 .build())
+                        .collect(Collectors.toList()))
+                .groupList(currentAcc.getUser().getGroupList().stream()
+                        .map(group -> UserResponse.groupListResponse.builder()
+                                .groupName(group.getName())
+                                .imgLink(group.getGroupImageList().stream()
+                                        .map(groupImage -> groupImage.getLink())
+                                        .findFirst()
+                                        .orElse(null))
+                                .build())
+                        .collect(Collectors.toList()))
+                .postList(currentAcc.getUser().getPostList().stream()
+                        .map(post -> UserResponse.postListResponse.builder()
+                                .id(post.getId())
+                                .status(post.getPostStatus().getStatus())
+                                .content(post.getContent())
+                                .postDate(post.getPostDate())
+                                .postLikedUserList(post.getPostLikedUserList().stream()
+                                        .map(user -> UserResponse.PostLikedUserList.builder()
+                                                .id(user.getId())
+                                                .build())
+                                        .collect(Collectors.toList()))
+                                .build())
+                        .collect(Collectors.toList()))
+                .commentList(currentAcc.getUser().getCommentList().stream()
+                        .map(comment -> UserResponse.commentListResponse.builder()
+                                .id(comment.getId())
+                                .content(comment.getContent())
+                                .build())
+                        .collect(Collectors.toList()))
                 .build();
     }
 
@@ -209,6 +231,8 @@ public class UserServiceImpl implements UserService {
         Account currentAcc = accountService.getCurrentLoggedAccount();
         assert currentAcc != null;
 
+        AppointmentStatus appointmentStatus = appointmentStatusRepo.findByStatus(Const.APPOINTMENT_STATUS_PENDING);
+
         String appointmentType = type.equals("health") ? Const.APPOINTMENT_TYPE_HEALTH : Const.APPOINTMENT_TYPE_SERVICE;
 
         ServiceCenter serviceCenter = serviceCenterRepo.findServiceCenterById(request.getCenterId()).orElse(null);
@@ -233,42 +257,127 @@ public class UserServiceImpl implements UserService {
                     .build();
         }
 
-        AppointmentStatus appointmentStatus = appointmentStatusRepo.findByStatus(Const.APPOINTMENT_STATUS_PENDING);
 
-        Appointment appointment = Appointment.builder()
-                .pet(pet)
-                .serviceProvider(serviceCenter.getServiceProviderList().get(1))
-                .appointmentStatus(appointmentStatus)
-                .date(request.getDateTime())
-                .fee(calculateSumOfFees(request))
-                .type(appointmentType)
-                .extraInformation(request.getExtraInformation())
-                .build();
+        if (request.getServicePlace().trim().equalsIgnoreCase("nhà riêng")) {
+            Appointment appointment = Appointment.builder()
+                    .pet(pet)
+                    .serviceProvider(null)
+                    .appointmentStatus(appointmentStatus)
+                    .date(request.getDateTime())
+                    .fee(calculateSumOfFees(request))
+                    .type(appointmentType)
+                    .extraInformation(request.getExtraInformation())
+                    .location(currentAcc.getUser().getAddress())
+                    .build();
 
-        // Save the Appointment
-        Appointment savedAppointment = appointmentRepo.save(appointment);
-        savedAppointment.setServicesList(serviceList);
+            if (!request.getSubstituteName().isEmpty() && !request.getSubstitutePhone().isEmpty()) {
+                Substitute substitute = Substitute.builder()
+                        .name(request.getSubstituteName())
+                        .phone(request.getSubstitutePhone())
+                        .substituteStatus(substituteStatusRepo.findByStatus(Const.SUBSTITUTE_STATUS_ACTIVE))
+                        .build();
+                List<Substitute> substituteList = new ArrayList<>();
+                substituteList.add(substitute);
+                appointment.setSubstituteList(substituteList);
+            }
 
-        return CreateAppointmentResponse.builder()
-                .status("200")
-                .message("Tạo lịch hẹn thành công")
-                .appointment(
-                        CreateAppointmentResponse.appointmentDraft.builder()
-                                .petName(savedAppointment.getPet().getName())
-                                .status(Const.APPOINTMENT_STATUS_PENDING)
-                                .date(request.getDateTime())
-                                .location(savedAppointment.getServiceProvider().getServiceCenter().getAddress())
-                                .services(serviceList.stream()
-                                        .map(service -> CreateAppointmentResponse.Servicee.builder()
-                                                .id(service.getId())
-                                                .name(service.getName())
-                                                .build())
-                                        .collect(Collectors.toList()))
-                                .type(appointmentType)
-                                .extraInformation(request.getExtraInformation())
-                                .build()
-                )
-                .build();
+            Appointment savedAppointment = appointmentRepo.save(appointment);
+            savedAppointment.setServicesList(serviceList);
+
+            if (!savedAppointment.getSubstituteList().isEmpty()) {
+                List<Substitute> savedSubstitutes = savedAppointment.getSubstituteList();
+                substituteRepo.saveAll(savedSubstitutes);
+            }
+            return CreateAppointmentResponse.builder()
+                    .status("200")
+                    .message("Tạo lịch hẹn thành công")
+                    .appointment(
+                            CreateAppointmentResponse.appointmentDraft.builder()
+                                    .petName(savedAppointment.getPet().getName())
+                                    .status(Const.APPOINTMENT_STATUS_PENDING)
+                                    .date(request.getDateTime())
+                                    .location(savedAppointment.getPet().getUser().getAddress())
+                                    .services(serviceList.stream()
+                                            .map(service -> CreateAppointmentResponse.Servicee.builder()
+                                                    .id(service.getId())
+                                                    .name(service.getName())
+                                                    .build())
+                                            .collect(Collectors.toList()))
+                                    .type(appointmentType)
+                                    .extraInformation(savedAppointment.getExtraInformation())
+                                    .substitute(savedAppointment.getSubstituteList().stream()
+                                            .map(substitute -> CreateAppointmentResponse.SubstituteList.builder()
+                                                    .name(substitute.getName())
+                                                    .phone(substitute.getPhone())
+                                                    .build())
+                                            .collect(Collectors.toList()))
+                                    .fee(savedAppointment.getFee())
+                                    .build()
+                    )
+                    .build();
+        } else if (request.getServicePlace().trim().equalsIgnoreCase("trung tâm")) {
+            Appointment appointment = Appointment.builder()
+                    .pet(pet)
+                    .serviceProvider(null)
+                    .appointmentStatus(appointmentStatus)
+                    .date(request.getDateTime())
+                    .fee(calculateSumOfFees(request))
+                    .type(appointmentType)
+                    .extraInformation(request.getExtraInformation())
+                    .location(serviceCenter.getAddress())
+                    .build();
+
+            if (!request.getSubstituteName().isEmpty() && !request.getSubstitutePhone().isEmpty()) {
+                Substitute substitute = Substitute.builder()
+                        .name(request.getSubstituteName())
+                        .phone(request.getSubstitutePhone())
+                        .substituteStatus(substituteStatusRepo.findByStatus(Const.SUBSTITUTE_STATUS_ACTIVE))
+                        .build();
+                List<Substitute> substituteList = new ArrayList<>();
+                substituteList.add(substitute);
+                appointment.setSubstituteList(substituteList);
+            }
+
+            Appointment savedAppointment = appointmentRepo.save(appointment);
+            savedAppointment.setServicesList(serviceList);
+
+            if (!savedAppointment.getSubstituteList().isEmpty()) {
+                List<Substitute> savedSubstitutes = savedAppointment.getSubstituteList();
+                substituteRepo.saveAll(savedSubstitutes);
+            }
+            return CreateAppointmentResponse.builder()
+                    .status("200")
+                    .message("Tạo lịch hẹn thành công")
+                    .appointment(
+                            CreateAppointmentResponse.appointmentDraft.builder()
+                                    .petName(savedAppointment.getPet().getName())
+                                    .status(Const.APPOINTMENT_STATUS_PENDING)
+                                    .date(request.getDateTime())
+                                    .location(savedAppointment.getServiceProvider().getServiceCenter().getAddress())
+                                    .services(serviceList.stream()
+                                            .map(service -> CreateAppointmentResponse.Servicee.builder()
+                                                    .id(service.getId())
+                                                    .name(service.getName())
+                                                    .build())
+                                            .collect(Collectors.toList()))
+                                    .type(appointmentType)
+                                    .extraInformation(request.getExtraInformation())
+                                    .substitute(savedAppointment.getSubstituteList().stream()
+                                            .map(substitute -> CreateAppointmentResponse.SubstituteList.builder()
+                                                    .name(substitute.getName())
+                                                    .phone(substitute.getPhone())
+                                                    .build())
+                                            .collect(Collectors.toList()))
+                                    .fee(savedAppointment.getFee())
+                                    .build()
+                    )
+                    .build();
+        } else {
+            return CreateAppointmentResponse.builder()
+                    .status("400")
+                    .message("Địa điểm không hợp lệ")
+                    .build();
+        }
     }
 
     public double calculateSumOfFees(CreateAppointmentRequest request) {
