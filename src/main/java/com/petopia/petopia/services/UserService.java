@@ -36,4 +36,5 @@ public interface UserService {
 
     ServiceDetailResponse getServiceDetail(ServiceRequest request);
 
+    ProductReportResponse reportProduct(ProductReportRequest request);
 }

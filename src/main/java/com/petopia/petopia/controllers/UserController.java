@@ -4,8 +4,6 @@ import com.petopia.petopia.models.request_models.*;
 import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
 import com.petopia.petopia.models.request_models.HealthHistoryRequest;
 import com.petopia.petopia.models.request_models.ServiceRequest;
-import com.petopia.petopia.models.request_models.UserRequest;
-import com.petopia.petopia.models.request_models.*;
 import com.petopia.petopia.models.response_models.*;
 import com.petopia.petopia.services.AccountService;
 import com.petopia.petopia.services.SCMService;
@@ -136,5 +134,11 @@ public class UserController {
     @PreAuthorize("hasAuthority('user:delete')")
     public void deleteCart(){
 
+    }
+
+    @PostMapping("/product-report")
+    @PreAuthorize("hasAuthority('user:create')")
+    public ProductReportResponse reportProduct(@RequestBody ProductReportRequest request){
+        return userService.reportProduct(request);
     }
 }

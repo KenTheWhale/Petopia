@@ -24,7 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,7 +34,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
     private final ServiceReportRepo serviceReportRepo;
     private final PetRepo petRepo;
-    private final AuthenticationService authenticationService;
     private final AccountRepo accountRepo;
     private final AccountService accountService;
     private final AppointmentRepo appointmentRepo;
@@ -48,6 +46,8 @@ public class UserServiceImpl implements UserService {
     private final PetImageRepo petImageRepo;
     private final ServiceCenterImageRepo serviceCenterImageRepo;
     private final ServiceImageRepo serviceImageRepo;
+    private final ProductRepo productRepo;
+    private final FeedBackRepo feedBackRepo;
 
 
     @Override
@@ -461,6 +461,25 @@ public class UserServiceImpl implements UserService {
                                 .toList()
                 )
                 .build();
+    }
+
+    @Override
+    public ProductReportResponse reportProduct(ProductReportRequest request) {
+        Product product = productRepo.findById(request.getProductId()).orElse(null);
+        if(product == null || product.getProductStatus().getStatus().equals(Const.PRODUCT_STATUS_DELETED)){
+            return ProductReportResponse.builder().status("400").message("Sản phẩm không tồn tại").build();
+        }
+
+        feedBackRepo.save(
+                Feedback.builder()
+                        .user(accountService.getCurrentLoggedAccount().getUser())
+                        .product(product)
+                        .isReported(true)
+                        .content(request.getContent())
+                        .rating(0)
+                        .build()
+        );
+        return ProductReportResponse.builder().status("200").message("Báo cáo sản phẩm thành công").build();
     }
 
     private List<ServiceCenter> getServiceCenterList(String type) {
