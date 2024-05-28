@@ -94,16 +94,16 @@ public class UserServiceImpl implements UserService {
                     .build();
         }
         return BlackListResponse.builder()
-                .status("200")
-                .message("Lấy danh sách chặn thành công")
-                .blockedUsers(blackList.stream()
-                        .map(element -> BlackListResponse.BlockedUser.builder()
-                                .id(userRepo.findUserById(element.getBlockedUserId()).getId())
-                                .name(userRepo.findUserById(element.getBlockedUserId()).getAccount().getName())
-                                .avatarLink(userRepo.findUserById(element.getBlockedUserId()).getAccount().getAvatar())
-                                .build())
-                        .collect(Collectors.toList()))
-                .build();
+                    .status("200")
+                    .message("Lấy danh sách chặn thành công")
+                    .blockedUsers(blackList.stream()
+                            .map(element -> BlackListResponse.BlockedUser.builder()
+                                 .id(userRepo.findUserById(element.getBlockedUserId()).getId())
+                                 .name(userRepo.findUserById(element.getBlockedUserId()).getAccount().getName())
+                                 .avatarLink(userRepo.findUserById(element.getBlockedUserId()).getAccount().getAvatar())
+                                 .build())
+                            .collect(Collectors.toList()))
+                    .build();
 
 
     }
