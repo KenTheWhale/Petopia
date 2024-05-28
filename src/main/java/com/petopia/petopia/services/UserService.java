@@ -22,7 +22,7 @@ public interface UserService {
 
     CreateUserProfileResponse createUserProfile(int id, CreateUserProfileRequest request);
 
-    UpdateUserProfileResponse updateUserProfile(int id, UpdateUserProfileRequest request);
+    UpdateUserProfileResponse updateUserProfile(UpdateUserProfileRequest request);
 
     CreateAppointmentResponse createAppointment(CreateAppointmentRequest request, String type);
 
@@ -41,5 +41,7 @@ public interface UserService {
     ViewOtherUserProfileResponse viewOtherUserProfile(ViewOtherUserProfileRequest request);
 
     FindOtherUserProfileResponse findOtherUserProfileResponse(FindOtherUserProfileRequest request);
+
+    ViewFeedbackListResponse viewFeedbackListResponse(ViewFeedbackListRequest request);
 
 }
