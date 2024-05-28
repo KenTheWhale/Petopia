@@ -26,6 +26,8 @@ public class LoginResponse {
 
         private String avatar;
 
+        private String background;
+
         private String accessToken;
     }
 

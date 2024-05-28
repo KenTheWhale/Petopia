@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "`group_member`")
+@Table(name = "`group_manager`")
 public class GroupMember {
 
     @Id
@@ -24,4 +24,5 @@ public class GroupMember {
     @ManyToOne
     @JoinColumn(name = "`group_id`")
     private Group group;
+
 }

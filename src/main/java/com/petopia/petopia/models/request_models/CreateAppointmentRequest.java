@@ -1,5 +1,6 @@
 package com.petopia.petopia.models.request_models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,11 @@ public class CreateAppointmentRequest {
     private String petName;
 
     private Integer centerId;
+
+    private String note;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
+    private LocalDateTime dateTime;
 
     private List<Integer> serviceId;
 
