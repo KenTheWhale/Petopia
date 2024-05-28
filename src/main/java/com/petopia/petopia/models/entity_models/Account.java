@@ -27,8 +27,6 @@ public class Account implements UserDetails {
 
     private String email;
 
-    private String avatarLink;
-
     @ManyToOne
     @JoinColumn(name = "`status_id`")
     private AccountStatus accountStatus;
