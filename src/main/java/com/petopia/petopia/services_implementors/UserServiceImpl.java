@@ -602,7 +602,7 @@ public class UserServiceImpl implements UserService {
         ViewOtherUserProfileResponse.UserProfile userProfile = new ViewOtherUserProfileResponse.UserProfile();
 
         User user = userRepo.findUserById(request.getId());
-        if (user != null) {
+        if (user != null && checkIfAccountActive(user.getAccount())) {
             userProfile = ViewOtherUserProfileResponse.UserProfile.builder()
                     .userName(user.getAccount().getName())
                     .gender(user.getGender())
@@ -613,7 +613,7 @@ public class UserServiceImpl implements UserService {
             message = "Thành công tìm thấy hồ sơ người dùng";
             status = "200";
         } else {
-            message = "Người dùng chưa có hồ sơ";
+            message = "Người dùng chưa có hồ sơ hoặc người dùng không tồn tại";
             status = "404";
         }
 
@@ -633,7 +633,8 @@ public class UserServiceImpl implements UserService {
         List<User> userList = userRepo.findAll();
 
         for (User user : userList) {
-            if (user.getAccount().getName().contains(request.getUserName())) {
+            if (user.getAccount().getName().contains(request.getUserName())
+                    && checkIfAccountActive(user.getAccount())) {
                 listUserName.add(FindOtherUserProfileResponse.UserResponse
                         .builder()
                         .username(user.getAccount().getName())
@@ -641,17 +642,19 @@ public class UserServiceImpl implements UserService {
                         .build());
             }
         }
+        int totalUsers = listUserName.size();
         if (listUserName.isEmpty()) {
             message = "Không thể tìm thấy tài khoản với từ khóa " + request.getUserName();
             status = "400";
         } else {
-            message = "Đã tìm thấy các tài khoản với tên : " + request.getUserName();
+            message = "Đã tìm thấy các tài khoản từ khóa : " + request.getUserName();
             status = "200";
         }
         return FindOtherUserProfileResponse
                 .builder()
                 .status(status)
                 .message(message)
+                .totalUsers(totalUsers)
                 .users(listUserName)
                 .build();
 
@@ -706,7 +709,7 @@ public class UserServiceImpl implements UserService {
         String message = "";
         ViewShopProfileResponse.Shop shopResponse = new ViewShopProfileResponse.Shop();
         Shop shop = shopRepo.findShopsById(request.getShopId());
-        if (shop != null) {
+        if (shop != null && checkIfShopActiveOrClose(shop)) {
             shopResponse = ViewShopProfileResponse.Shop
                     .builder()
                     .name(shop.getName())
@@ -725,6 +728,40 @@ public class UserServiceImpl implements UserService {
                 .status(status)
                 .message(message)
                 .shop(shopResponse)
+                .build();
+    }
+
+    @Override
+    public SearchShopResponse searchShop(SearchShopRequest request) {
+        String message = "";
+        String status = "";
+
+        ArrayList<SearchShopResponse.ShopResponse> shopResponses = new ArrayList<>();
+
+        List<Shop> shops = shopRepo.findAll();
+        for (Shop shop : shops) {
+            if (shop.getName().contains(request.getShopName()) && checkIfShopActiveOrClose(shop)) {
+                shopResponses.add(SearchShopResponse.ShopResponse
+                        .builder()
+                        .id(shop.getId())
+                        .name(shop.getName())
+                        .build());
+            }
+        }
+        int totalShop = shopResponses.size();
+        if (shopResponses.isEmpty()) {
+            message = "Không thể tìm thấy cửa hàng với từ khóa " + request.getShopName();
+            status = "400";
+        } else {
+            message = "Đã tìm thấy các cửa hàng với từ khóa : " + request.getShopName();
+            status = "200";
+        }
+        return SearchShopResponse
+                .builder()
+                .status(status)
+                .message(message)
+                .totalShop(totalShop)
+                .shops(shopResponses)
                 .build();
     }
 
@@ -839,5 +876,13 @@ public class UserServiceImpl implements UserService {
     private Page<ServiceReport> getPaginationHealthReportListByPetId(int pageNo, Integer petID, String sort) {
         Pageable pageable = PageRequest.of(pageNo, Const.PAGE_SIZE, Sort.by(sort));
         return serviceReportRepo.findAllByAppointment_Pet_IdAndAppointment_TypeAndAppointment_AppointmentStatus_Status(petID, Const.APPOINTMENT_TYPE_HEALTH, Const.APPOINTMENT_STATUS_SUCCESSFUL, pageable);
+    }
+
+    private boolean checkIfAccountActive(Account account) {
+        return account.getAccountStatus().getStatus().equals(Const.ACCOUNT_STATUS_ACTIVE);
+    }
+
+    private boolean checkIfShopActiveOrClose(Shop shop){
+        return shop.getShopStatus().getStatus().equals(Const.SHOP_STATUS_ACTIVE) || shop.getShopStatus().getStatus().equals(Const.SHOP_STATUS_CLOSED);
     }
 }

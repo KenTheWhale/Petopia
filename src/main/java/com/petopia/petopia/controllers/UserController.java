@@ -136,7 +136,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/account-deletion")
+    @PostMapping("/account/delete")
     @PreAuthorize("hasAuthority('user:delete')")
     public void accountDelete() {
          accountService.deleteAccount();
@@ -154,7 +154,7 @@ public class UserController {
         return userService.reportProduct(request);
     }
 
-    @PostMapping("/feedback-list")
+    @PostMapping("/feedback/list")
     @PreAuthorize("hasAuthority('user:read')")
     public ViewFeedbackListResponse viewFeedbackList(@RequestBody ViewFeedbackListRequest request) {
         return userService.viewFeedbackListResponse(request);
@@ -165,10 +165,16 @@ public class UserController {
     public ViewOtherUserProfileResponse viewOtherUserProfile(@RequestBody ViewOtherUserProfileRequest request) {
         return userService.viewOtherUserProfile(request);
     }
-    @PostMapping("/shop-profile")
+    @PostMapping("/shop/profile")
     @PreAuthorize("hasAuthority('user:read')")
     public ViewShopProfileResponse viewShopProfileResponse(@RequestBody ViewShopProfileRequest request) {
         return userService.viewShopProfile(request);
+    }
+
+    @PostMapping("/shop/search")
+    @PreAuthorize("hasAuthority('user:read')")
+    public SearchShopResponse searchShopResponse(@RequestBody SearchShopRequest request) {
+        return userService.searchShop(request);
     }
 
     @PostMapping("/cart/add")
