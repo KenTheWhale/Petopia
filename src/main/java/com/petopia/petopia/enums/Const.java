@@ -56,4 +56,5 @@ public class Const {
     public final static String CART_STATUS_DELETE = "đã bị xóa";
     public final static String SUBSTITUTE_STATUS_ACTIVE = "đang tồn tại";
     public final static String SUBSTITUTE_STATUS_DELETE = "đã bị xóa";
+    public final static Integer MAX_ATTRIBUTE_ALLOWED = 2;
 }

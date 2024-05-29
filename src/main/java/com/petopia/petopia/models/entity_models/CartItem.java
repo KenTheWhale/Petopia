@@ -20,11 +20,11 @@ public class CartItem {
     private Cart cart;
 
     @ManyToOne
-    @JoinColumn(name = "`product_id`")
-    private Product product;
+    @JoinColumn(name = "`attribute_combo_id`")
+    private AttributeCombo attributeCombo;
 
     @Column(name = "`product_quantity`")
-    private int productQty;
+    private int quantity;
 
     @OneToOne(mappedBy = "cartItem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude

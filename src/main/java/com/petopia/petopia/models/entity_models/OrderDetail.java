@@ -29,6 +29,18 @@ public class OrderDetail {
     @Column(name = "`product_name`")
     private String productName;
 
-    @Column(name = "`product_price`")
-    private double productPrice;
+    @Column(name = "`combo_price`")
+    private float comboPrice;
+
+    @Column(name = "`main_attribute_name`")
+    private String MAN;
+
+    @Column(name = "`main_value_name`")
+    private String MAVN;
+
+    @Column(name = "`sub_attribute_name`")
+    private String SAN;
+
+    @Column(name = "`sub_value_name`")
+    private String SAVN;
 }

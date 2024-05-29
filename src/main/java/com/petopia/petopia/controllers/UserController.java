@@ -177,4 +177,10 @@ public class UserController {
         return userService.searchShop(request);
     }
 
+    @PostMapping("/cart/add")
+    @PreAuthorize("hasAuthority('user:create')")
+    public AddToCartResponse addProductToCart (@RequestBody AddToCartRequest request){
+        return userService.addProductToCart(request);
+    }
+
 }

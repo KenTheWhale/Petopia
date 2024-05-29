@@ -53,6 +53,7 @@ public class UserServiceImpl implements UserService {
     private final SubstituteRepo substituteRepo;
     private final SubstituteStatusRepo substituteStatusRepo;
     private final ShopRepo shopRepo;
+    private final ProductAttributeRepo productAttributeRepo;
 
     @Override
     public UserResponse getCurrentUserProfile() {
@@ -762,6 +763,54 @@ public class UserServiceImpl implements UserService {
                 .totalShop(totalShop)
                 .shops(shopResponses)
                 .build();
+    }
+
+    @Override
+    public AddToCartResponse addProductToCart(AddToCartRequest request) {
+        Product product = productRepo.findById(request.getProductId()).orElse(null);
+        if (product == null
+                || product.getProductStatus().equals(Const.PRODUCT_STATUS_DELETED)
+                || product.getProductStatus().equals(Const.PRODUCT_STATUS_OUT_OF_STOCK)
+        ){
+            return AddToCartResponse.builder().status("400").message("Sản phẩm không khả dụng").build();
+        }
+
+
+
+        return null;
+    }
+
+    private boolean checkIfAttributeIsContained(List<AddToCartRequest.Attribute> attributeList, Product product){
+        List<String> attributes = productAttributeRepo.findAllAttributeName(product.getId());
+        List<String> attributeNameList = attributeList.stream().map(AddToCartRequest.Attribute::getName).toList();
+        if(!new HashSet<>(attributes).containsAll(attributeNameList) || attributes.size() != attributeNameList.size()) return false;
+        return true;
+    }
+
+    private boolean checkIfAttributeValueIsExisted(AddToCartRequest.Attribute attribute, ProductAttribute productAttribute){
+        List<String> valueList = productAttribute.getAttributeValueList().stream().map(AttributeValue::getValue).toList();
+        return valueList.contains(attribute.getValue());
+    }
+
+    private int calculateAvailableQuantity(List<AddToCartRequest.Attribute> attributeList, Product product, int quantity){
+        int result = 0;
+
+        // Get all attribute value quantity of a product
+        for(int i = 0; i < Const.MAX_ATTRIBUTE_ALLOWED; i++){
+
+            ProductAttribute productAttribute = product.getProductAttributeList().get(i);
+            AddToCartRequest.Attribute inputAttribute = attributeList.get(i);
+
+            for(int j = 0; j < productAttribute.getAttributeValueList().size(); j++){
+                AttributeValue attributeValue = productAttribute.getAttributeValueList().get(j);
+                if(attributeValue.getValue().equals(inputAttribute.getValue())){
+
+                }
+            }
+
+        }
+
+        return result;
     }
 
     private List<ServiceCenter> getServiceCenterList(String type) {
