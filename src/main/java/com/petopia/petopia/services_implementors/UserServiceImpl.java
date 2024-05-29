@@ -48,11 +48,11 @@ public class UserServiceImpl implements UserService {
     private final PetImageRepo petImageRepo;
     private final ServiceCenterImageRepo serviceCenterImageRepo;
     private final ServiceImageRepo serviceImageRepo;
+    private final ProductRepo productRepo;
     private final FeedBackRepo feedBackRepo;
     private final SubstituteRepo substituteRepo;
     private final SubstituteStatusRepo substituteStatusRepo;
 
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public UserResponse getCurrentUserProfile() {
@@ -152,8 +152,6 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
-
     @Override
     public NotificationResponse viewNotification() {
         Account currentAcc = accountService.getCurrentLoggedAccount();
@@ -178,7 +176,6 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public HealthHistoryResponse getHealthHistoryList(HealthHistoryRequest request) {
@@ -250,7 +247,6 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public CreateAppointmentResponse createAppointment(CreateAppointmentRequest request, String type) {
@@ -418,8 +414,6 @@ public class UserServiceImpl implements UserService {
         return sum;
     }
 
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
-
     @Override
     public ServiceListResponse getServiceList(ServiceCenterRequest request) {
         ServiceCenter serviceCenter = serviceCenterRepo.findServiceCenterById(request.getCenterId()).orElse(null);
@@ -438,8 +432,6 @@ public class UserServiceImpl implements UserService {
                         .collect(Collectors.toList()))
                 .build();
     }
-
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public LoadServicePageResponse loadServicePage(String type) {
@@ -468,8 +460,6 @@ public class UserServiceImpl implements UserService {
                 .build();
 
     }
-
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public BlackListResponse blockUser(BlockAndUnblockUserRequest request) {
@@ -515,8 +505,6 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
-
     @Override
     public BlackListResponse unblockUser(BlockAndUnblockUserRequest request) {
         Account currentAcc = accountService.getCurrentLoggedAccount();
@@ -557,8 +545,6 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
-
     @Override
     public ServiceCenterDetailResponse getServiceCenterDetail(ServiceCenterRequest request) {
         ServiceCenter serviceCenter = serviceCenterRepo.findServiceCenterById(request.getCenterId()).orElse(null);
@@ -585,8 +571,6 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
-
     @Override
     public ServiceDetailResponse getServiceDetail(ServiceRequest request) {
         Services service = serviceRepo.findById(request.getServiceId()).orElse(null);
@@ -609,8 +593,6 @@ public class UserServiceImpl implements UserService {
                 )
                 .build();
     }
-
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public ViewOtherUserProfileResponse viewOtherUserProfile(ViewOtherUserProfileRequest request) {
@@ -672,6 +654,25 @@ public class UserServiceImpl implements UserService {
                 .users(listUserName)
                 .build();
 
+    }
+
+    @Override
+    public ProductReportResponse reportProduct(ProductReportRequest request) {
+        Product product = productRepo.findById(request.getProductId()).orElse(null);
+        if(product == null || product.getProductStatus().getStatus().equals(Const.PRODUCT_STATUS_DELETED)){
+            return ProductReportResponse.builder().status("400").message("Sản phẩm không tồn tại").build();
+        }
+
+        feedBackRepo.save(
+                Feedback.builder()
+                        .user(accountService.getCurrentLoggedAccount().getUser())
+                        .product(product)
+                        .isReported(true)
+                        .content(request.getContent())
+                        .rating(0)
+                        .build()
+        );
+        return ProductReportResponse.builder().status("200").message("Báo cáo sản phẩm thành công").build();
     }
 
     @Override

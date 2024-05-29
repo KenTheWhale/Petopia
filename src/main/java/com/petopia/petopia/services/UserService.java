@@ -38,6 +38,8 @@ public interface UserService {
 
     ServiceDetailResponse getServiceDetail(ServiceRequest request);
 
+    ProductReportResponse reportProduct(ProductReportRequest request);
+
     ViewOtherUserProfileResponse viewOtherUserProfile(ViewOtherUserProfileRequest request);
 
     FindOtherUserProfileResponse findOtherUserProfileResponse(FindOtherUserProfileRequest request);

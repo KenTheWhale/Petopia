@@ -1,11 +1,6 @@
 package com.petopia.petopia.controllers;
 
 import com.petopia.petopia.models.request_models.*;
-import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
-import com.petopia.petopia.models.request_models.HealthHistoryRequest;
-import com.petopia.petopia.models.request_models.ServiceRequest;
-import com.petopia.petopia.models.request_models.UserRequest;
-import com.petopia.petopia.models.request_models.*;
 import com.petopia.petopia.models.response_models.*;
 import com.petopia.petopia.services.AccountService;
 import com.petopia.petopia.services.SCMService;
@@ -31,7 +26,7 @@ public class UserController {
         return userService.getCurrentUserProfile();
     }
 
-    @GetMapping("/blackList")
+    @GetMapping("/blacklist")
     @PreAuthorize("hasAuthority('user:read')")
     public BlackListResponse viewBlackList(){
         return userService.viewBlackList();
@@ -117,7 +112,7 @@ public class UserController {
         return userService.unblockUser(request);
     }
 
-    @PostMapping("/cart-creation")
+    @PostMapping("/cart-create")
     @PreAuthorize("hasAuthority('user:create')")
     public void createCart(){
 
@@ -129,13 +124,13 @@ public class UserController {
 
     }
 
-    @PostMapping("/cart-updating")
+    @PostMapping("/cart-update")
     @PreAuthorize("hasAuthority('user:update')")
     public void updateCart(){
 
     }
 
-    @PostMapping("/cart-deletion")
+    @PostMapping("/cart-delete")
     @PreAuthorize("hasAuthority('user:delete')")
     public void deleteCart(){
 
@@ -153,12 +148,18 @@ public class UserController {
         return userService.findOtherUserProfileResponse(request);
     }
 
+    @PostMapping("/product-report")
+    @PreAuthorize("hasAuthority('user:create')")
+    public ProductReportResponse reportProduct(@RequestBody ProductReportRequest request){
+        return userService.reportProduct(request);
+    }
+
     @PostMapping("/feedback-list")
     @PreAuthorize("hasAuthority('user:read')")
     public ViewFeedbackListResponse viewFeedbackList(@RequestBody ViewFeedbackListRequest request) {
         return userService.viewFeedbackListResponse(request);
     }
-    @PostMapping("/viewOtherUserProfile")
+    @PostMapping("/other/profile")
     public ViewOtherUserProfileResponse viewOtherUserProfile(@RequestBody ViewOtherUserProfileRequest request) {
         return userService.viewOtherUserProfile(request);
     }
