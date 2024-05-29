@@ -48,4 +48,5 @@ public interface UserService {
 
     ViewShopProfileResponse viewShopProfile(ViewShopProfileRequest request);
 
+    AddToCartResponse addProductToCart(AddToCartRequest request);
 }

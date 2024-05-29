@@ -109,6 +109,12 @@ public class PetopiaApplication {
 
     private final ServiceReportStatusRepo serviceReportStatusRepo;
 
+    private final ProductAttributeRepo productAttributeRepo;
+
+    private final AttributeValueRepo attributeValueRepo;
+
+    private final AttributeComboRepo attributeComboRepo;
+
     public static void main(String[] args) {
         SpringApplication.run(PetopiaApplication.class, args);
     }
@@ -1212,9 +1218,7 @@ public class PetopiaApplication {
 //                                .productStatus(availableProduct)
 //                                .productCategory(category1)
 //                                .name("Hạt Tươi Taste Of The Wild Cho Chó Trưởng Thành")
-//                                .price(125000)
 //                                .soldQty(100)
-//                                .availableQty(50)
 //                                .rating(3)
 //                                .build()
 //                );
@@ -1224,10 +1228,8 @@ public class PetopiaApplication {
 //                                .shop(shop1)
 //                                .productStatus(availableProduct)
 //                                .productCategory(category2)
-//                                .name("Vòng Cổ Chó Mèo Có Chuông Dày 1cm	")
-//                                .price(15000)
+//                                .name("Vòng Cổ Chó Mèo Có Chuông Dày 1cm")
 //                                .soldQty(20)
-//                                .availableQty(100)
 //                                .rating(4)
 //                                .build()
 //                );
@@ -1238,9 +1240,7 @@ public class PetopiaApplication {
 //                                .productStatus(availableProduct)
 //                                .productCategory(category3)
 //                                .name("Cỏ Mèo Bạc Hà Catnip Cho Mèo")
-//                                .price(30000)
 //                                .soldQty(100)
-//                                .availableQty(50)
 //                                .rating(4)
 //                                .build()
 //                );
@@ -1251,10 +1251,305 @@ public class PetopiaApplication {
 //                                .productStatus(availableProduct)
 //                                .productCategory(category4)
 //                                .name("Áo Cho Chó Mèo Sơ Mi Trái Cây - Chuối Vàng")
-//                                .price(60000)
 //                                .soldQty(21)
-//                                .availableQty(30)
 //                                .rating(4)
+//                                .build()
+//                );
+//
+//                // init attribute---------------------------------------------------------------//
+//                ProductAttribute attribute1 = productAttributeRepo.save(
+//                        ProductAttribute.builder()
+//                                .name("Khối lượng")
+//                                .product(product1)
+//                                .build()
+//                );
+//
+//                ProductAttribute attribute2 = productAttributeRepo.save(
+//                        ProductAttribute.builder()
+//                                .name("Nguồn gốc")
+//                                .product(product1)
+//                                .build()
+//                );
+//
+//                ProductAttribute attribute3 = productAttributeRepo.save(
+//                        ProductAttribute.builder()
+//                                .name("Kích thước")
+//                                .product(product2)
+//                                .build()
+//                );
+//
+//                ProductAttribute attribute4 = productAttributeRepo.save(
+//                        ProductAttribute.builder()
+//                                .name("Màu sắc")
+//                                .product(product2)
+//                                .build()
+//                );
+//
+//                ProductAttribute attribute5 = productAttributeRepo.save(
+//                        ProductAttribute.builder()
+//                                .name("Khối lượng")
+//                                .product(product3)
+//                                .build()
+//                );
+//
+//                ProductAttribute attribute6 = productAttributeRepo.save(
+//                        ProductAttribute.builder()
+//                                .name("Màu sắc")
+//                                .product(product4)
+//                                .build()
+//                );
+//
+//                // init attribute value---------------------------------------------------------//
+//                AttributeValue value1 = attributeValueRepo.save(
+//                        AttributeValue.builder()
+//                                .value("100gr")
+//                                .productAttribute(attribute1)
+//                                .build()
+//                );
+//
+//                AttributeValue value2 = attributeValueRepo.save(
+//                        AttributeValue.builder()
+//                                .value("200gr")
+//                                .productAttribute(attribute1)
+//                                .build()
+//                );
+//
+//                AttributeValue value3 = attributeValueRepo.save(
+//                        AttributeValue.builder()
+//                                .value("Nhật Bản")
+//                                .productAttribute(attribute2)
+//                                .build()
+//                );
+//
+//                AttributeValue value4 = attributeValueRepo.save(
+//                        AttributeValue.builder()
+//                                .value("Úc")
+//                                .productAttribute(attribute2)
+//                                .build()
+//                );
+//
+//                AttributeValue value5 = attributeValueRepo.save(
+//                        AttributeValue.builder()
+//                                .value("M")
+//                                .productAttribute(attribute3)
+//                                .build()
+//                );
+//
+//                AttributeValue value6 = attributeValueRepo.save(
+//                        AttributeValue.builder()
+//                                .value("L")
+//                                .productAttribute(attribute3)
+//                                .build()
+//                );
+//
+//                AttributeValue value7 = attributeValueRepo.save(
+//                        AttributeValue.builder()
+//                                .value("Đỏ")
+//                                .productAttribute(attribute4)
+//                                .build()
+//                );
+//
+//                AttributeValue value8 = attributeValueRepo.save(
+//                        AttributeValue.builder()
+//                                .value("Vàng")
+//                                .productAttribute(attribute4)
+//                                .build()
+//                );
+//
+//                AttributeValue value9 = attributeValueRepo.save(
+//                        AttributeValue.builder()
+//                                .value("10gr")
+//                                .productAttribute(attribute5)
+//                                .build()
+//                );
+//
+//                AttributeValue value10 = attributeValueRepo.save(
+//                        AttributeValue.builder()
+//                                .value("20gr")
+//                                .productAttribute(attribute5)
+//                                .build()
+//                );
+//
+//                AttributeValue value11 = attributeValueRepo.save(
+//                        AttributeValue.builder()
+//                                .value("Chuối Vàng")
+//                                .productAttribute(attribute6)
+//                                .build()
+//                );
+//
+//                AttributeValue value12 = attributeValueRepo.save(
+//                        AttributeValue.builder()
+//                                .value("Mây Xanh")
+//                                .productAttribute(attribute6)
+//                                .build()
+//                );
+//
+//                // init attribute combo----------------------------------------------------//
+//                AttributeCombo combo1 = attributeComboRepo.save(
+//                        AttributeCombo.builder()
+//                                .product(product1)
+//                                .MAVId(value1.getId())
+//                                .MAN(attribute1.getName())
+//                                .MAVN(value1.getValue())
+//                                .SAVId(value3.getId())
+//                                .SAN(attribute2.getName())
+//                                .SAVN(value3.getValue())
+//                                .quantity(50)
+//                                .price(100000)
+//                                .build()
+//                );
+//
+//                AttributeCombo combo2 = attributeComboRepo.save(
+//                        AttributeCombo.builder()
+//                                .product(product1)
+//                                .MAVId(value1.getId())
+//                                .MAN(attribute1.getName())
+//                                .MAVN(value1.getValue())
+//                                .SAVId(value4.getId())
+//                                .SAN(attribute2.getName())
+//                                .SAVN(value4.getValue())
+//                                .quantity(50)
+//                                .price(100000)
+//                                .build()
+//                );
+//
+//                AttributeCombo combo3 = attributeComboRepo.save(
+//                        AttributeCombo.builder()
+//                                .product(product1)
+//                                .MAVId(value2.getId())
+//                                .MAN(attribute1.getName())
+//                                .MAVN(value2.getValue())
+//                                .SAVId(value3.getId())
+//                                .SAN(attribute2.getName())
+//                                .SAVN(value3.getValue())
+//                                .quantity(50)
+//                                .price(100000)
+//                                .build()
+//                );
+//
+//                AttributeCombo combo4 = attributeComboRepo.save(
+//                        AttributeCombo.builder()
+//                                .product(product1)
+//                                .MAVId(value2.getId())
+//                                .MAN(attribute1.getName())
+//                                .MAVN(value2.getValue())
+//                                .SAVId(value4.getId())
+//                                .SAN(attribute2.getName())
+//                                .SAVN(value4.getValue())
+//                                .quantity(50)
+//                                .price(100000)
+//                                .build()
+//                );
+//
+//                AttributeCombo combo5 = attributeComboRepo.save(
+//                        AttributeCombo.builder()
+//                                .product(product2)
+//                                .MAVId(value5.getId())
+//                                .MAN(attribute3.getName())
+//                                .MAVN(value5.getValue())
+//                                .SAVId(value7.getId())
+//                                .SAN(attribute4.getName())
+//                                .SAVN(value7.getValue())
+//                                .quantity(50)
+//                                .price(100000)
+//                                .build()
+//                );
+//
+//                AttributeCombo combo6 = attributeComboRepo.save(
+//                        AttributeCombo.builder()
+//                                .product(product2)
+//                                .MAVId(value5.getId())
+//                                .MAN(attribute3.getName())
+//                                .MAVN(value5.getValue())
+//                                .SAVId(value8.getId())
+//                                .SAN(attribute4.getName())
+//                                .SAVN(value8.getValue())
+//                                .quantity(50)
+//                                .price(100000)
+//                                .build()
+//                );
+//
+//                AttributeCombo combo7 = attributeComboRepo.save(
+//                        AttributeCombo.builder()
+//                                .product(product2)
+//                                .MAVId(value6.getId())
+//                                .MAN(attribute3.getName())
+//                                .MAVN(value6.getValue())
+//                                .SAVId(value7.getId())
+//                                .SAN(attribute4.getName())
+//                                .SAVN(value7.getValue())
+//                                .quantity(50)
+//                                .price(100000)
+//                                .build()
+//                );
+//
+//                AttributeCombo combo8 = attributeComboRepo.save(
+//                        AttributeCombo.builder()
+//                                .product(product2)
+//                                .MAVId(value6.getId())
+//                                .MAN(attribute3.getName())
+//                                .MAVN(value6.getValue())
+//                                .SAVId(value8.getId())
+//                                .SAN(attribute4.getName())
+//                                .SAVN(value8.getValue())
+//                                .quantity(50)
+//                                .price(100000)
+//                                .build()
+//                );
+//
+//                AttributeCombo combo9 = attributeComboRepo.save(
+//                        AttributeCombo.builder()
+//                                .product(product3)
+//                                .MAVId(value9.getId())
+//                                .MAN(attribute5.getName())
+//                                .MAVN(value9.getValue())
+//                                .SAVId(null)
+//                                .SAN("")
+//                                .SAVN("")
+//                                .quantity(50)
+//                                .price(100000)
+//                                .build()
+//                );
+//
+//                AttributeCombo combo10 = attributeComboRepo.save(
+//                        AttributeCombo.builder()
+//                                .product(product3)
+//                                .MAVId(value10.getId())
+//                                .MAN(attribute5.getName())
+//                                .MAVN(value10.getValue())
+//                                .SAVId(null)
+//                                .SAN("")
+//                                .SAVN("")
+//                                .quantity(50)
+//                                .price(100000)
+//                                .build()
+//                );
+//
+//                AttributeCombo combo11 = attributeComboRepo.save(
+//                        AttributeCombo.builder()
+//                                .product(product4)
+//                                .MAVId(value11.getId())
+//                                .MAN(attribute6.getName())
+//                                .MAVN(value11.getValue())
+//                                .SAVId(null)
+//                                .SAN("")
+//                                .SAVN("")
+//                                .quantity(50)
+//                                .price(100000)
+//                                .build()
+//                );
+//
+//                AttributeCombo combo12 = attributeComboRepo.save(
+//                        AttributeCombo.builder()
+//                                .product(product4)
+//                                .MAVId(value12.getId())
+//                                .MAN(attribute6.getName())
+//                                .MAVN(value12.getValue())
+//                                .SAVId(null)
+//                                .SAN("")
+//                                .SAVN("")
+//                                .quantity(50)
+//                                .price(100000)
 //                                .build()
 //                );
 //
@@ -1296,32 +1591,32 @@ public class PetopiaApplication {
 //                CartItem item1 = cartItemRepo.save(
 //                        CartItem.builder()
 //                                .cart(cart1)
-//                                .product(product1)
-//                                .productQty(5)
+//                                .attributeCombo(combo1)
+//                                .quantity(5)
 //                                .build()
 //                );
 //
 //                CartItem item2 = cartItemRepo.save(
 //                        CartItem.builder()
 //                                .cart(cart1)
-//                                .product(product2)
-//                                .productQty(10)
+//                                .attributeCombo(combo6)
+//                                .quantity(10)
 //                                .build()
 //                );
 //
 //                CartItem item3 = cartItemRepo.save(
 //                        CartItem.builder()
 //                                .cart(cart2)
-//                                .product(product3)
-//                                .productQty(2)
+//                                .attributeCombo(combo9)
+//                                .quantity(2)
 //                                .build()
 //                );
 //
 //                CartItem item4 = cartItemRepo.save(
 //                        CartItem.builder()
 //                                .cart(cart2)
-//                                .product(product4)
-//                                .productQty(1)
+//                                .attributeCombo(combo11)
+//                                .quantity(1)
 //                                .build()
 //                );
 //
@@ -1330,8 +1625,12 @@ public class PetopiaApplication {
 //                        OrderDetail.builder()
 //                                .order(order1)
 //                                .cartItem(item1)
-//                                .productName(item1.getProduct().getName())
-//                                .productPrice(item1.getProduct().getPrice())
+//                                .productName(item1.getAttributeCombo().getProduct().getName())
+//                                .comboPrice(item1.getAttributeCombo().getPrice())
+//                                .MAN(item1.getAttributeCombo().getMAN())
+//                                .MAVN(item1.getAttributeCombo().getMAVN())
+//                                .SAN(item1.getAttributeCombo().getSAN())
+//                                .SAVN(item1.getAttributeCombo().getSAVN())
 //                                .build()
 //                );
 //
@@ -1339,8 +1638,12 @@ public class PetopiaApplication {
 //                        OrderDetail.builder()
 //                                .order(order1)
 //                                .cartItem(item2)
-//                                .productName(item2.getProduct().getName())
-//                                .productPrice(item3.getProduct().getPrice())
+//                                .productName(item2.getAttributeCombo().getProduct().getName())
+//                                .comboPrice(item2.getAttributeCombo().getPrice())
+//                                .MAN(item2.getAttributeCombo().getMAN())
+//                                .MAVN(item2.getAttributeCombo().getMAVN())
+//                                .SAN(item2.getAttributeCombo().getSAN())
+//                                .SAVN(item2.getAttributeCombo().getSAVN())
 //                                .build()
 //                );
 //
@@ -1348,8 +1651,12 @@ public class PetopiaApplication {
 //                        OrderDetail.builder()
 //                                .order(order2)
 //                                .cartItem(item3)
-//                                .productName(item3.getProduct().getName())
-//                                .productPrice(item3.getProduct().getPrice())
+//                                .productName(item3.getAttributeCombo().getProduct().getName())
+//                                .comboPrice(item3.getAttributeCombo().getPrice())
+//                                .MAN(item3.getAttributeCombo().getMAN())
+//                                .MAVN(item3.getAttributeCombo().getMAVN())
+//                                .SAN(item3.getAttributeCombo().getSAN())
+//                                .SAVN(item3.getAttributeCombo().getSAVN())
 //                                .build()
 //                );
 //
@@ -1357,8 +1664,12 @@ public class PetopiaApplication {
 //                        OrderDetail.builder()
 //                                .order(order2)
 //                                .cartItem(item4)
-//                                .productName(item4.getProduct().getName())
-//                                .productPrice(item4.getProduct().getPrice())
+//                                .productName(item4.getAttributeCombo().getProduct().getName())
+//                                .comboPrice(item4.getAttributeCombo().getPrice())
+//                                .MAN(item4.getAttributeCombo().getMAN())
+//                                .MAVN(item4.getAttributeCombo().getMAVN())
+//                                .SAN(item4.getAttributeCombo().getSAN())
+//                                .SAVN(item4.getAttributeCombo().getSAVN())
 //                                .build()
 //                );
 //

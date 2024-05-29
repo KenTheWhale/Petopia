@@ -31,13 +31,8 @@ public class Product {
 
     private String name;
 
-    private double price;
-
     @Column(name = "`sold_quantity`")
     private int soldQty;
-
-    @Column(name = "`available_quantity`")
-    private int availableQty;
 
     private int rating;
 
@@ -47,9 +42,13 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     @ToString.Exclude
-    private List<CartItem> cartItemList;
+    private List<Feedback> feedbackList;
 
     @OneToMany(mappedBy = "product")
     @ToString.Exclude
-    private List<Feedback> feedbackList;
+    private List<ProductAttribute> productAttributeList;
+
+    @OneToMany(mappedBy = "product")
+    @ToString.Exclude
+    private List<AttributeCombo> attributeComboList;
 }
