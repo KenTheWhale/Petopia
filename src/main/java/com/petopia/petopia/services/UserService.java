@@ -48,4 +48,6 @@ public interface UserService {
 
     ViewShopProfileResponse viewShopProfile(ViewShopProfileRequest request);
 
+    SearchShopResponse searchShop(SearchShopRequest request);
+
 }

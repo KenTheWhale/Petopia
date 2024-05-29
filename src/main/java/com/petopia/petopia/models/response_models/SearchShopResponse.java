@@ -11,19 +11,18 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FindOtherUserProfileResponse {
+public class SearchShopResponse {
     private String status;
     private String message;
-    private int totalUsers;
-    private List<UserResponse> users;
+    private int totalShop;
+    private List<ShopResponse> shops;
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class UserResponse {
-        private String username;
-        private Integer userProfileId;
+    public static class ShopResponse {
+        private String name;
+        private Integer id;
     }
-
 }
