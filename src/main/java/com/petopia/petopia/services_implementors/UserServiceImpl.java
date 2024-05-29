@@ -640,6 +640,7 @@ public class UserServiceImpl implements UserService {
                         .build());
             }
         }
+        int totalUsers = listUserName.size();
         if (listUserName.isEmpty()) {
             message = "Không thể tìm thấy tài khoản với từ khóa " + request.getUserName();
             status = "400";
@@ -651,6 +652,7 @@ public class UserServiceImpl implements UserService {
                 .builder()
                 .status(status)
                 .message(message)
+                .totalUsers(totalUsers)
                 .users(listUserName)
                 .build();
 
@@ -659,7 +661,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ProductReportResponse reportProduct(ProductReportRequest request) {
         Product product = productRepo.findById(request.getProductId()).orElse(null);
-        if(product == null || product.getProductStatus().getStatus().equals(Const.PRODUCT_STATUS_DELETED)){
+        if (product == null || product.getProductStatus().getStatus().equals(Const.PRODUCT_STATUS_DELETED)) {
             return ProductReportResponse.builder().status("400").message("Sản phẩm không tồn tại").build();
         }
 
@@ -724,6 +726,40 @@ public class UserServiceImpl implements UserService {
                 .status(status)
                 .message(message)
                 .shop(shopResponse)
+                .build();
+    }
+
+    @Override
+    public SearchShopResponse searchShop(SearchShopRequest request) {
+        String message = "";
+        String status = "";
+
+        ArrayList<SearchShopResponse.ShopResponse> shopResponses = new ArrayList<>();
+
+        List<Shop> shops = shopRepo.findAll();
+        for (Shop shop : shops) {
+            if (shop.getName().contains(request.getShopName())) {
+                shopResponses.add(SearchShopResponse.ShopResponse
+                        .builder()
+                        .id(shop.getId())
+                        .name(shop.getName())
+                        .build());
+            }
+        }
+        int totalShop = shopResponses.size();
+        if (shopResponses.isEmpty()) {
+            message = "Không thể tìm thấy cửa hàng với từ khóa " + request.getShopName();
+            status = "400";
+        } else {
+            message = "Đã tìm thấy các cửa hàng với từ khóa : " + request.getShopName();
+            status = "200";
+        }
+        return SearchShopResponse
+                .builder()
+                .status(status)
+                .message(message)
+                .totalShop(totalShop)
+                .shops(shopResponses)
                 .build();
     }
 
