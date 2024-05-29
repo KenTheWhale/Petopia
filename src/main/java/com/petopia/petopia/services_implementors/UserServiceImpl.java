@@ -48,6 +48,7 @@ public class UserServiceImpl implements UserService {
     private final PetImageRepo petImageRepo;
     private final ServiceCenterImageRepo serviceCenterImageRepo;
     private final ServiceImageRepo serviceImageRepo;
+    private final ProductRepo productRepo;
     private final FeedBackRepo feedBackRepo;
     private final SubstituteRepo substituteRepo;
     private final SubstituteStatusRepo substituteStatusRepo;
@@ -57,52 +58,72 @@ public class UserServiceImpl implements UserService {
     public UserResponse getCurrentUserProfile() {
         Account currentAcc = accountService.getCurrentLoggedAccount();
         assert currentAcc != null;
-
-        Token accessToken = tokenRepo.findByAccount_IdAndType(currentAcc.getId(), Const.TOKEN_TYPE_ACCESS).orElse(null);
-        String accessTokenValue = accessToken != null ? accessToken.getValue() : "Không có access token";
-
+        if (currentAcc.getUser() != null) {
+            return UserResponse.builder()
+                    .status("200")
+                    .message("Lấy thông tin người dùng thành công")
+                    .id(currentAcc.getUser().getId())
+                    .name(currentAcc.getName())
+                    .gender(currentAcc.getUser().getGender())
+                    .address(currentAcc.getUser().getAddress())
+                    .phone(currentAcc.getUser().getPhone())
+                    .images(getUserImages(currentAcc.getUser()))
+                    .posts(getUserPosts(currentAcc.getUser()))
+                    .groups(getUserGroups(currentAcc.getUser()))
+                    .build();
+        }
         return UserResponse.builder()
-                .status("200")
-                .message("Lấy thông tin người dùng thành công")
-                .id(currentAcc.getUser().getId())
-                .gender(currentAcc.getUser().getGender())
-                .address(currentAcc.getUser().getAddress())
-                .phone(currentAcc.getUser().getPhone())
-                .imgLinkList(currentAcc.getUser().getUserImageList().stream()
-                        .map(userImage -> UserResponse.imgLinkResponse.builder()
-                                .link(userImage.getLink())
-                                .build())
-                        .collect(Collectors.toList()))
-                .groupList(currentAcc.getUser().getGroupList().stream()
-                        .map(group -> UserResponse.groupListResponse.builder()
-                                .groupName(group.getName())
-                                .imgLink(group.getGroupImageList().stream()
-                                        .map(groupImage -> groupImage.getLink())
-                                        .findFirst()
-                                        .orElse(null))
-                                .build())
-                        .collect(Collectors.toList()))
-                .postList(currentAcc.getUser().getPostList().stream()
-                        .map(post -> UserResponse.postListResponse.builder()
-                                .id(post.getId())
-                                .status(post.getPostStatus().getStatus())
-                                .content(post.getContent())
-                                .postDate(post.getPostDate())
-                                .postLikedUserList(post.getPostLikedUserList().stream()
-                                        .map(user -> UserResponse.PostLikedUserList.builder()
-                                                .id(user.getId())
-                                                .build())
-                                        .collect(Collectors.toList()))
-                                .build())
-                        .collect(Collectors.toList()))
-                .commentList(currentAcc.getUser().getCommentList().stream()
-                        .map(comment -> UserResponse.commentListResponse.builder()
-                                .id(comment.getId())
-                                .content(comment.getContent())
-                                .build())
-                        .collect(Collectors.toList()))
+                .status("400")
+                .message("Người dùng chưa có hồ sơ")
                 .build();
     }
+
+    private List<UserResponse.Image> getUserImages(User user) {
+        return user.getUserImageList().stream()
+                .map(image -> new UserResponse.Image(image.getLink()))
+                .collect(Collectors.toList());
+    }
+
+    private List<UserResponse.Group> getUserGroups(User user) {
+        return user.getGroupList().stream()
+                .map(group -> new UserResponse.Group(group.getName(), group.getGroupImageList().get(0).getLink()))
+                .collect(Collectors.toList());
+    }
+
+    private List<UserResponse.Post> getUserPosts(User user) {
+        return user.getPostList().stream()
+                .map(post -> UserResponse.Post.builder()
+                        .id(post.getId())
+                        .status(post.getPostStatus().getStatus())
+                        .content(post.getContent())
+                        .uploadDate(post.getPostDate())
+                        .images(getPostImages(post))
+                        .postLikedUsers(getPostLikedUser(post))
+                        .comments(getComment(post))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private List<UserResponse.Image> getPostImages(Post post) {
+        return post.getPostImageList().stream()
+                .map(image -> new UserResponse.Image(image.getLink()))
+                .collect(Collectors.toList());
+    }
+
+    private List<UserResponse.PostLikedUser> getPostLikedUser(Post post) {
+
+        return post.getPostLikedUserList().stream()
+                .map(user -> new UserResponse.PostLikedUser(user.getId(), userRepo.findUserById(user.getUserId()).getRealName(), userRepo.findUserById(user.getUserId()).getAccount().getAvatar()))
+                .toList();
+    }
+
+    private List<UserResponse.Comment> getComment(Post post) {
+        return post.getCommentList().stream()
+                .map(comment -> new UserResponse.Comment(comment.getUser().getRealName(), comment.getContent()))
+                .toList();
+    }
+
+    //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public BlackListResponse viewBlackList() {
@@ -633,6 +654,25 @@ public class UserServiceImpl implements UserService {
                 .users(listUserName)
                 .build();
 
+    }
+
+    @Override
+    public ProductReportResponse reportProduct(ProductReportRequest request) {
+        Product product = productRepo.findById(request.getProductId()).orElse(null);
+        if(product == null || product.getProductStatus().getStatus().equals(Const.PRODUCT_STATUS_DELETED)){
+            return ProductReportResponse.builder().status("400").message("Sản phẩm không tồn tại").build();
+        }
+
+        feedBackRepo.save(
+                Feedback.builder()
+                        .user(accountService.getCurrentLoggedAccount().getUser())
+                        .product(product)
+                        .isReported(true)
+                        .content(request.getContent())
+                        .rating(0)
+                        .build()
+        );
+        return ProductReportResponse.builder().status("200").message("Báo cáo sản phẩm thành công").build();
     }
 
     @Override
