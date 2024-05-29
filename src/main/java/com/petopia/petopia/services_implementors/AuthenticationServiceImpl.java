@@ -78,7 +78,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     }
                     return LoginResponse.builder()
                             .status("400")
-                            .message("Tài khoản này đã bị cấm")
+                            .message("Tài khoản này không khả dụng")
                             .account(
                                     LoginResponse.AccountResponse.builder()
                                             .status("")
