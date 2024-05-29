@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ViewOtherUserProfileRequest {
-    private int id;
+    private Integer id;
 }
