@@ -614,7 +614,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ViewOtherUserProfileResponse viewOtherUserProfile(ViewOtherUserProfileRequest request) {
-        return null;
+        String message;
+        String status;
+        ViewOtherUserProfileResponse.UserProfile userProfile = new ViewOtherUserProfileResponse.UserProfile();
+
+        User user = userRepo.findUserById(request.getId());
+        if (user != null) {
+            userProfile = ViewOtherUserProfileResponse.UserProfile.builder()
+                    .userName(user.getAccount().getName())
+                    .gender(user.getGender())
+                    .avatar(user.getAccount().getAvatar())
+                    .phoneNumber(user.getPhone())
+                    .address(user.getAddress())
+                    .build();
+            message = "Thành công tìm thấy hồ sơ người dùng";
+            status = "200";
+        } else {
+            message = "Người dùng chưa có hồ sơ";
+            status = "404";
+        }
+
+        return ViewOtherUserProfileResponse.builder()
+                .status(status)
+                .message(message)
+                .userProfile(userProfile)
+                .build();
     }
 
     @Override
@@ -630,7 +654,7 @@ public class UserServiceImpl implements UserService {
                 listUserName.add(FindOtherUserProfileResponse.UserResponse
                         .builder()
                         .username(user.getAccount().getName())
-                        .id(user.getId())
+                        .userProfileId(user.getId())
                         .build());
             }
         }
@@ -692,16 +716,16 @@ public class UserServiceImpl implements UserService {
                     .message("Hồ sơ người dùng cho tài khoản này đã tồn tại")
                     .build();
         }
-            User user = userRepo.save(
-                    User
-                            .builder()
-                            .gender(request.getGender())
-                            .realName(request.getRealName() == null ? "" : request.getRealName())
-                            .address(request.getAddress())
-                            .phone(request.getPhone())
-                            .account(account)
-                            .build()
-            );
+        User user = userRepo.save(
+                User
+                        .builder()
+                        .gender(request.getGender())
+                        .realName(request.getRealName() == null ? "" : request.getRealName())
+                        .address(request.getAddress())
+                        .phone(request.getPhone())
+                        .account(account)
+                        .build()
+        );
 
         return CreateUserProfileResponse.builder()
                 .address(user.getAddress())

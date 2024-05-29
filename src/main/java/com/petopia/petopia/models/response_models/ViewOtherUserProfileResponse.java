@@ -12,10 +12,19 @@ import lombok.NoArgsConstructor;
 public class ViewOtherUserProfileResponse {
     private String status;
     private String message;
+    UserProfile userProfile;
 
-    private String userName;
-    private String gender;
-    private String phoneNumber;
-    private String address;
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class UserProfile {
+        private String userName;
+        private String avatar;
+        private String gender;
+        private String phoneNumber;
+        private String address;
+    }
+
 
 }

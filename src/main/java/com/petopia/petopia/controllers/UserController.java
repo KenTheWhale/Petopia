@@ -158,4 +158,9 @@ public class UserController {
     public ViewFeedbackListResponse viewFeedbackList(@RequestBody ViewFeedbackListRequest request) {
         return userService.viewFeedbackListResponse(request);
     }
+    @PostMapping("/viewOtherUserProfile")
+    public ViewOtherUserProfileResponse viewOtherUserProfile(@RequestBody ViewOtherUserProfileRequest request) {
+        return userService.viewOtherUserProfile(request);
+    }
+
 }
