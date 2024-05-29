@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
     private final FeedBackRepo feedBackRepo;
     private final SubstituteRepo substituteRepo;
     private final SubstituteStatusRepo substituteStatusRepo;
-
+    private final ShopRepo shopRepo;
 
     @Override
     public UserResponse getCurrentUserProfile() {
@@ -575,8 +575,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ViewOtherUserProfileResponse viewOtherUserProfile(ViewOtherUserProfileRequest request) {
-        String message;
-        String status;
+        String message = "";
+        String status = "";
         ViewOtherUserProfileResponse.UserProfile userProfile = new ViewOtherUserProfileResponse.UserProfile();
 
         User user = userRepo.findUserById(request.getId());
@@ -656,6 +656,34 @@ public class UserServiceImpl implements UserService {
                 .builder()
                 .status("200")
                 .user(newListFeedback)
+                .build();
+    }
+
+    @Override
+    public ViewShopProfileResponse viewShopProfile(ViewShopProfileRequest request) {
+        String status = "";
+        String message = "";
+        ViewShopProfileResponse.Shop shopResponse = new ViewShopProfileResponse.Shop();
+        Shop shop = shopRepo.findShopsById(request.getShopId());
+        if (shop != null) {
+            shopResponse = ViewShopProfileResponse.Shop
+                    .builder()
+                    .name(shop.getName())
+                    .ownerName(shop.getAccount().getName())
+                    .rating(shop.getRating())
+                    .address(shop.getAddress())
+                    .build();
+            status = "200";
+            message = "Xem hồ sơ cửa hàng thành công";
+        } else {
+            status = "400";
+            message = "Không tìm thấy hồ sơ cửa hàng";
+        }
+        return ViewShopProfileResponse
+                .builder()
+                .status(status)
+                .message(message)
+                .shop(shopResponse)
                 .build();
     }
 

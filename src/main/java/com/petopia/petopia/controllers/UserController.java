@@ -158,9 +158,15 @@ public class UserController {
     public ViewFeedbackListResponse viewFeedbackList(@RequestBody ViewFeedbackListRequest request) {
         return userService.viewFeedbackListResponse(request);
     }
-    @PostMapping("/viewOtherUserProfile")
+    @PostMapping("/other-userprofile")
+    @PreAuthorize("hasAuthority('user:read')")
     public ViewOtherUserProfileResponse viewOtherUserProfile(@RequestBody ViewOtherUserProfileRequest request) {
         return userService.viewOtherUserProfile(request);
+    }
+    @PostMapping("/shop-profile")
+    @PreAuthorize("hasAuthority('user:read')")
+    public ViewShopProfileResponse viewShopProfileResponse(@RequestBody ViewShopProfileRequest request) {
+        return userService.viewShopProfile(request);
     }
 
 }

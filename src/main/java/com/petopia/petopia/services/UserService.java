@@ -44,4 +44,6 @@ public interface UserService {
 
     ViewFeedbackListResponse viewFeedbackListResponse(ViewFeedbackListRequest request);
 
+    ViewShopProfileResponse viewShopProfile(ViewShopProfileRequest request);
+
 }
