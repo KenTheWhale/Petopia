@@ -22,7 +22,7 @@ public class FindOtherUserProfileResponse {
     @Builder
     public static class UserResponse {
         private String username;
-        private Integer id;
+        private Integer userProfileId;
     }
 
 }

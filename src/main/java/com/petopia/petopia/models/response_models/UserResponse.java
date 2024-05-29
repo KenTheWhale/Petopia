@@ -1,10 +1,14 @@
 package com.petopia.petopia.models.response_models;
 
+import com.petopia.petopia.models.entity_models.Comment;
+import com.petopia.petopia.models.entity_models.PostImage;
+import com.petopia.petopia.models.entity_models.PostLikedUser;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -12,11 +16,30 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class UserResponse {
+
+    private String status;
+
+    private String message;
+
+    private Integer id;
+
+    private String name;
+
+    private String gender;
+
+    private String address;
+
+    private String phone;
+
+    private List<Image> images;
+    private List<Group> groups;
+    private List<Post> posts;
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class imgLinkResponse {
+    public static class Image {
         private String link;
     }
 
@@ -24,72 +47,41 @@ public class UserResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class groupListResponse {
-        private String groupName;
-        private String imgLink;
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class postListResponse {
-        private String id;
-    }
-
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class commentListResponse {
-        private String id;
-    }
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class petListResponse {
-        private String id;
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class orderListResponse {
-        private String id;
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class feedbackListResponse {
-        private String id;
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class blackListResponse {
-        private String id;
+    public static class Group {
         private String name;
-        private String imgLink;
+        private String avatar;
     }
 
-    private Integer id;
-    private String name;
-    private String gender;
-    private String address;
-    private String phone;
-    private List<imgLinkResponse> imgLinkList;
-    private List<groupListResponse> groupList;
-    private List<postListResponse> postList;
-    private List<commentListResponse> commentList;
-    private List<petListResponse> petList;
-    private List<orderListResponse> orderList;
-    private List<feedbackListResponse> feedbackList;
-    private List<blackListResponse> blackList;
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class Post {
+        private Integer id;
+        private String status;
+        private String content;
+        private LocalDateTime uploadDate;
+        private List<Image> images;
+        private List<PostLikedUser> postLikedUsers;
+        private List<Comment> comments;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class PostLikedUser {
+        private Integer id;
+        private String name;
+        private String avatar;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class Comment {
+        private String name;
+        private String content;
+    }
 }

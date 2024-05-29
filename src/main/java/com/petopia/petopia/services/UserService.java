@@ -10,7 +10,7 @@ import com.petopia.petopia.models.response_models.*;
 
 public interface UserService {
 
-    CurrentUserResponse getCurrentUserProfile();
+    UserResponse getCurrentUserProfile();
 
     BlackListResponse viewBlackList();
 
@@ -20,7 +20,7 @@ public interface UserService {
 
     PetListResponse getPetList();
 
-    CreateUserProfileResponse createUserProfile(int id, CreateUserProfileRequest request);
+    CreateUserProfileResponse createUserProfile(CreateUserProfileRequest request);
 
     UpdateUserProfileResponse updateUserProfile(UpdateUserProfileRequest request);
 

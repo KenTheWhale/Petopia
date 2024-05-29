@@ -27,7 +27,7 @@ public class UserController {
 
     @GetMapping("/user-profile")
     @PreAuthorize("hasAuthority('user:read')")
-    public CurrentUserResponse getCurrentUserProfile(){
+    public UserResponse getCurrentUserProfile(){
         return userService.getCurrentUserProfile();
     }
 
@@ -87,9 +87,8 @@ public class UserController {
 
     @PostMapping("/create-user-profile")
     public CreateUserProfileResponse createUserProfile(
-            @RequestParam("accountId") int accountId,
             @RequestBody CreateUserProfileRequest request) {
-         return userService.createUserProfile(accountId, request);
+         return userService.createUserProfile(request);
     }
     @PostMapping("/profile-update")
     public UpdateUserProfileResponse updateUserProfile( @RequestBody UpdateUserProfileRequest request) {
@@ -159,4 +158,15 @@ public class UserController {
     public ProductReportResponse reportProduct(@RequestBody ProductReportRequest request){
         return userService.reportProduct(request);
     }
+
+    @PostMapping("/feedback-list")
+    @PreAuthorize("hasAuthority('user:read')")
+    public ViewFeedbackListResponse viewFeedbackList(@RequestBody ViewFeedbackListRequest request) {
+        return userService.viewFeedbackListResponse(request);
+    }
+    @PostMapping("/viewOtherUserProfile")
+    public ViewOtherUserProfileResponse viewOtherUserProfile(@RequestBody ViewOtherUserProfileRequest request) {
+        return userService.viewOtherUserProfile(request);
+    }
+
 }
