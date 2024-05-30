@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 public class CreateAppointmentRequest {
 
-    private String petName;
+    private Integer petId;
 
     private Integer centerId;
 

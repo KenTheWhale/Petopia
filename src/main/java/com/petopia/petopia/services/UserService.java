@@ -52,4 +52,6 @@ public interface UserService {
 
     SearchShopResponse searchShop(SearchShopRequest request);
 
+    CreateProductResponse createProduct(CreateProductRequest request);
+
 }

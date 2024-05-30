@@ -54,6 +54,9 @@ public class UserServiceImpl implements UserService {
     private final SubstituteStatusRepo substituteStatusRepo;
     private final ShopRepo shopRepo;
     private final ProductAttributeRepo productAttributeRepo;
+    private final ProductCategoryRepo productCategoryRepo;
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public UserResponse getCurrentUserProfile() {
@@ -153,6 +156,8 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
     @Override
     public NotificationResponse viewNotification() {
         Account currentAcc = accountService.getCurrentLoggedAccount();
@@ -177,6 +182,7 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public HealthHistoryResponse getHealthHistoryList(HealthHistoryRequest request) {
@@ -248,6 +254,7 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public CreateAppointmentResponse createAppointment(CreateAppointmentRequest request, String type) {
@@ -258,7 +265,7 @@ public class UserServiceImpl implements UserService {
 
         String appointmentType = type.equals("health") ? Const.APPOINTMENT_TYPE_HEALTH : Const.APPOINTMENT_TYPE_SERVICE;
 
-        ServiceCenter serviceCenter = serviceCenterRepo.findServiceCenterById(request.getCenterId()).orElse(null);
+        ServiceCenter serviceCenter = serviceCenterRepo.findById(request.getCenterId()).orElse(null);
 
         List<Services> serviceList = new ArrayList<>();
 
@@ -272,7 +279,7 @@ public class UserServiceImpl implements UserService {
                     .message("Không thể tìm thấy trung tâm dịch vụ với id này")
                     .build();
         }
-        Pet pet = petRepo.findByNameAndUser_Account_Id(request.getPetName(), currentAcc.getId());
+        Pet pet = petRepo.findByIdAndUser_Account_Id(request.getPetId(), currentAcc.getId());
         if (pet == null) {
             return CreateAppointmentResponse.builder()
                     .status("400")
@@ -415,9 +422,11 @@ public class UserServiceImpl implements UserService {
         return sum;
     }
 
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
     @Override
     public ServiceListResponse getServiceList(ServiceCenterRequest request) {
-        ServiceCenter serviceCenter = serviceCenterRepo.findServiceCenterById(request.getCenterId()).orElse(null);
+        ServiceCenter serviceCenter = serviceCenterRepo.findById(request.getCenterId()).orElse(null);
         if (serviceCenter == null) {
             return ServiceListResponse.builder()
                     .status("400")
@@ -433,6 +442,8 @@ public class UserServiceImpl implements UserService {
                         .collect(Collectors.toList()))
                 .build();
     }
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public LoadServicePageResponse loadServicePage(String type) {
@@ -461,6 +472,8 @@ public class UserServiceImpl implements UserService {
                 .build();
 
     }
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public BlackListResponse blockUser(BlockAndUnblockUserRequest request) {
@@ -506,6 +519,8 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
     @Override
     public BlackListResponse unblockUser(BlockAndUnblockUserRequest request) {
         Account currentAcc = accountService.getCurrentLoggedAccount();
@@ -546,9 +561,11 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
     @Override
     public ServiceCenterDetailResponse getServiceCenterDetail(ServiceCenterRequest request) {
-        ServiceCenter serviceCenter = serviceCenterRepo.findServiceCenterById(request.getCenterId()).orElse(null);
+        ServiceCenter serviceCenter = serviceCenterRepo.findById(request.getCenterId()).orElse(null);
         if (serviceCenter == null) {
             return ServiceCenterDetailResponse.builder()
                     .status("400")
@@ -564,13 +581,17 @@ public class UserServiceImpl implements UserService {
                 .address(serviceCenter.getAddress())
                 .description(serviceCenter.getDescription())
                 .images(
-                        serviceCenterImageRepo.findAllImageByCenterId(serviceCenter.getId())
+                        serviceCenter.getServiceCenterImageList()
                                 .stream()
-                                .map(x -> ServiceCenterDetailResponse.ImageResponse.builder().link(x).build())
+                                .map(x -> ServiceCenterDetailResponse.Images.builder()
+                                        .link(x.getLink())
+                                        .build())
                                 .toList()
                 )
                 .build();
     }
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public ServiceDetailResponse getServiceDetail(ServiceRequest request) {
@@ -594,6 +615,8 @@ public class UserServiceImpl implements UserService {
                 )
                 .build();
     }
+
+    //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public ViewOtherUserProfileResponse viewOtherUserProfile(ViewOtherUserProfileRequest request) {
@@ -700,6 +723,64 @@ public class UserServiceImpl implements UserService {
                 .builder()
                 .status("200")
                 .user(newListFeedback)
+                .build();
+    }
+
+    @Override
+    public CreateProductResponse createProduct(CreateProductRequest request) {
+        Account account = accountService.getCurrentLoggedAccount();
+        assert account != null;
+        if(account.getShop() == null){
+            return CreateProductResponse.builder()
+                    .status("400")
+                    .message("Tài khoản này không phải là chủ cửa hàng")
+                    .build();
+        }
+
+        ProductCategory productCategory = productCategoryRepo.findByName(request.getName());
+        if(productCategory == null){
+            return CreateProductResponse.builder()
+                    .status("400")
+                    .message("Không tìm thấy danh mục sản phẩm này")
+                    .build();
+        }
+
+        Product product = Product.builder()
+                .name(request.getName())
+                .productCategory(productCategory)
+//                .price(request.getPrice())
+//                .availableQty(request.getAvailableQuantity())
+                .soldQty(0)
+                .rating(0)
+                .shop(account.getShop())
+                .build();
+
+        Product savedProduct = productRepo.save(product);
+
+        return CreateProductResponse.builder()
+                .status("200")
+                .message("Tạo sản phẩm thành công")
+                .id(savedProduct.getId())
+                .category(savedProduct.getProductCategory().getName())
+                .name(savedProduct.getName())
+//                .price(savedProduct.getPrice())
+//                .availableQuantity(savedProduct.getAvailableQty())
+                .soldQuantity(savedProduct.getSoldQty())
+                .rating(savedProduct.getRating())
+                .images(savedProduct.getProductImageList().stream()
+                        .map(image -> CreateProductResponse.Images.builder()
+                                .link(image.getLink())
+                                .build())
+                        .collect(Collectors.toList()))
+                .feedbacks(savedProduct.getFeedbackList().stream()
+                        .map(feedback -> CreateProductResponse.FeedBack.builder()
+                                .content(feedback.getContent())
+                                .build())
+                        .toList())
+                .shop(CreateProductResponse.Shop.builder()
+                        .id(savedProduct.getShop().getId())
+                        .name(savedProduct.getShop().getAccount().getName())
+                        .build())
                 .build();
     }
 

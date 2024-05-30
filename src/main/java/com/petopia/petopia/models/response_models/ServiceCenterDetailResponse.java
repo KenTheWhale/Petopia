@@ -11,13 +11,13 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ServiceCenterDetailResponse {
+public class    ServiceCenterDetailResponse {
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class ImageResponse{
+    public static class Images{
         private String link;
     }
 
@@ -35,5 +35,5 @@ public class ServiceCenterDetailResponse {
 
     private String description;
 
-    private List<ImageResponse> images;
+    private List<Images> images;
 }
