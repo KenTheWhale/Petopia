@@ -8,7 +8,6 @@ import java.util.Optional;
 
 public interface ServiceCenterRepo extends JpaRepository<ServiceCenter, Integer> {
 
-    Optional<ServiceCenter> findServiceCenterById(Integer id);
 
     //get all serviceCenter and sort by rating
     List<ServiceCenter> findAllByTypeAndServiceCenterStatus_StatusOrServiceCenterStatus_StatusOrderByRatingDesc(String type, String status, String status2);

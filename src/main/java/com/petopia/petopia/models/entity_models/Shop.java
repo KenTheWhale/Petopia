@@ -35,7 +35,6 @@ public class Shop {
     @ToString.Exclude
     private List<Product> productList;
 
-
     private LocalDateTime planPurchasedDate;
 
     private String name;

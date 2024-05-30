@@ -10,5 +10,5 @@ public interface PetRepo extends JpaRepository<Pet, Integer> {
     List<Pet> findAllByUser_Account_IdOrderById(Integer userID);
 
     //find Pet by petName and userId
-    Pet findByNameAndUser_Account_Id(String petName, Integer userId);
+    Pet findByIdAndUser_Account_Id(Integer id, Integer userId);
 }

@@ -160,6 +160,12 @@ public class UserController {
         return userService.viewFeedbackListResponse(request);
     }
 
+    @PostMapping("/product/create")
+    @PreAuthorize("hasAuthority('user:create')")
+    public CreateProductResponse createProduct(@RequestBody CreateProductRequest request) {
+        return userService.createProduct(request);
+    }
+
     @PostMapping("/other/profile")
     @PreAuthorize("hasAuthority('user:read')")
     public ViewOtherUserProfileResponse viewOtherUserProfile(@RequestBody ViewOtherUserProfileRequest request) {
