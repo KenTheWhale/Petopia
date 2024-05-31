@@ -44,7 +44,7 @@ public class UserController {
         return userService.getHealthHistoryList(request);
     }
 
-    @PostMapping("/pet-list")
+    @GetMapping("/pet-list")
     @PreAuthorize("hasAuthority('user:read')")
     public PetListResponse getPetListByUserId(){
         return userService.getPetList();
