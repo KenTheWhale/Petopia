@@ -16,12 +16,12 @@ public class AccountController {
 
     private final AccountService accountService;
 
-    @PostMapping("/refresh")
+    @GetMapping("/refresh")
     public RefreshResponse refresh(){
         return accountService.refresh();
     }
 
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public LogoutResponse logout(){
         return accountService.logout();
     }
