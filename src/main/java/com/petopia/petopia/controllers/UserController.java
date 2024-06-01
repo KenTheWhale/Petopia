@@ -68,13 +68,13 @@ public class UserController {
         return userService.createAppointment(request, "service");
     }
 
-    @PostMapping("/health-center-and-service-page")
+    @GetMapping("/health-center-and-service-page")
     @PreAuthorize("hasAuthority('user:read')")
     public LoadServicePageResponse loadHealthServicePage(){
         return userService.loadServicePage("health");
     }
 
-    @PostMapping("/service-center-and-service-page")
+    @GetMapping("/service-center-and-service-page")
     @PreAuthorize("hasAuthority('user:read')")
     public LoadServicePageResponse loadServiceServicePage(){
         return userService.loadServicePage("service");
@@ -112,31 +112,7 @@ public class UserController {
         return userService.unblockUser(request);
     }
 
-    @PostMapping("/cart-create")
-    @PreAuthorize("hasAuthority('user:create')")
-    public void createCart(){
-
-    }
-
-    @PostMapping("/cart-list")
-    @PreAuthorize("hasAuthority('user:read')")
-    public void getCart(){
-
-    }
-
-    @PostMapping("/cart-update")
-    @PreAuthorize("hasAuthority('user:update')")
-    public void updateCart(){
-
-    }
-
-    @PostMapping("/cart-delete")
-    @PreAuthorize("hasAuthority('user:delete')")
-    public void deleteCart(){
-
-    }
-
-    @PostMapping("/account/delete")
+    @GetMapping("/account/delete")
     @PreAuthorize("hasAuthority('user:delete')")
     public void accountDelete() {
          accountService.deleteAccount();
@@ -187,6 +163,24 @@ public class UserController {
     @PreAuthorize("hasAuthority('user:create')")
     public AddToCartResponse addProductToCart (@RequestBody AddToCartRequest request){
         return userService.addProductToCart(request);
+    }
+
+    @GetMapping("/cart/list")
+    @PreAuthorize("hasAuthority('user:read')")
+    public void getCart(){
+
+    }
+
+    @PostMapping("/cart/update")
+    @PreAuthorize("hasAuthority('user:update')")
+    public void updateCart(){
+
+    }
+
+    @GetMapping("/cart/delete")
+    @PreAuthorize("hasAuthority('user:delete')")
+    public void deleteCart(){
+
     }
 
 }

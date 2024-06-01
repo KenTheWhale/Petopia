@@ -2,20 +2,10 @@ package com.petopia.petopia.services_implementors;
 
 import com.petopia.petopia.enums.Const;
 import com.petopia.petopia.models.entity_models.*;
-import com.petopia.petopia.models.request_models.BlockAndUnblockUserRequest;
-import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
-import com.petopia.petopia.models.request_models.CreateUserProfileRequest;
-import com.petopia.petopia.models.request_models.HealthHistoryRequest;
-import com.petopia.petopia.models.request_models.ServiceRequest;
 import com.petopia.petopia.models.request_models.*;
 import com.petopia.petopia.models.response_models.*;
-import com.petopia.petopia.repositories.AccountRepo;
-import com.petopia.petopia.repositories.PetRepo;
-import com.petopia.petopia.repositories.ServiceReportRepo;
-import com.petopia.petopia.repositories.UserRepo;
 import com.petopia.petopia.repositories.*;
 import com.petopia.petopia.services.AccountService;
-import com.petopia.petopia.services.AuthenticationService;
 import com.petopia.petopia.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,8 +14,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,26 +27,25 @@ public class UserServiceImpl implements UserService {
     private final UserRepo userRepo;
     private final ServiceReportRepo serviceReportRepo;
     private final PetRepo petRepo;
-    private final AuthenticationService authenticationService;
-    private final AccountRepo accountRepo;
     private final AccountService accountService;
     private final AppointmentRepo appointmentRepo;
-    private final TokenRepo tokenRepo;
     private final NotificationRepo notificationRepo;
     private final ServiceCenterRepo serviceCenterRepo;
     private final AppointmentStatusRepo appointmentStatusRepo;
     private final ServiceRepo serviceRepo;
     private final BlackListRepo blackListRepo;
     private final PetImageRepo petImageRepo;
-    private final ServiceCenterImageRepo serviceCenterImageRepo;
     private final ServiceImageRepo serviceImageRepo;
     private final ProductRepo productRepo;
     private final FeedBackRepo feedBackRepo;
     private final SubstituteRepo substituteRepo;
     private final SubstituteStatusRepo substituteStatusRepo;
     private final ShopRepo shopRepo;
-    private final ProductAttributeRepo productAttributeRepo;
     private final ProductCategoryRepo productCategoryRepo;
+    private final CartRepo cartRepo;
+    private final AttributeComboRepo attributeComboRepo;
+    private final CartStatusRepo cartStatusRepo;
+    private final CartItemRepo cartItemRepo;
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -730,7 +721,7 @@ public class UserServiceImpl implements UserService {
     public CreateProductResponse createProduct(CreateProductRequest request) {
         Account account = accountService.getCurrentLoggedAccount();
         assert account != null;
-        if(account.getShop() == null){
+        if (account.getShop() == null) {
             return CreateProductResponse.builder()
                     .status("400")
                     .message("Tài khoản này không phải là chủ cửa hàng")
@@ -738,7 +729,7 @@ public class UserServiceImpl implements UserService {
         }
 
         ProductCategory productCategory = productCategoryRepo.findByName(request.getName());
-        if(productCategory == null){
+        if (productCategory == null) {
             return CreateProductResponse.builder()
                     .status("400")
                     .message("Không tìm thấy danh mục sản phẩm này")
@@ -848,50 +839,131 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AddToCartResponse addProductToCart(AddToCartRequest request) {
-        Product product = productRepo.findById(request.getProductId()).orElse(null);
-        if (product == null
-                || product.getProductStatus().equals(Const.PRODUCT_STATUS_DELETED)
-                || product.getProductStatus().equals(Const.PRODUCT_STATUS_OUT_OF_STOCK)
-        ){
-            return AddToCartResponse.builder().status("400").message("Sản phẩm không khả dụng").build();
+        String status = "400";
+        String message = addToCart(request);
+        if (message.isEmpty()) {
+            status = "200";
+            message = "Add to cart successfully";
         }
-
-
-
-        return null;
+        return AddToCartResponse.builder().status(status).message(message).build();
     }
 
-    private boolean checkIfAttributeIsContained(List<AddToCartRequest.Attribute> attributeList, Product product){
-        List<String> attributes = productAttributeRepo.findAllAttributeName(product.getId());
-        List<String> attributeNameList = attributeList.stream().map(AddToCartRequest.Attribute::getName).toList();
-        if(!new HashSet<>(attributes).containsAll(attributeNameList) || attributes.size() != attributeNameList.size()) return false;
+    private String addToCart(AddToCartRequest request) {
+        Product product = productRepo.findById(request.getProductId()).orElse(null);
+        if (product == null) return "Sản phẩm không tồn tại trong shop";
+        if (!checkIfAllAttributesAreFilled(request.getMainAttribute(), request.getSubAttribute(), product)) return "Phân loại không hợp lệ";
+
+        Account account = accountService.getCurrentLoggedAccount();
+        User user = account.getUser();
+        Cart cart = cartRepo.findByUser_IdAndCartStatus_Status(user.getId(), Const.CART_STATUS_ACTIVE).orElse(null);
+        if (cart != null) {
+            return controlCartFlow("update", request, user, cart);
+        }
+
+        return controlCartFlow("create", request, user, cart);
+    }
+
+    private boolean checkIfAllAttributesAreFilled(AddToCartRequest.Attribute mainAttribute, AddToCartRequest.Attribute subAttribute, Product product) {
+        return checkIfAttributeIsValid(mainAttribute, product) && checkIfAttributeIsValid(subAttribute, product);
+    }
+
+    private boolean checkIfAttributeIsValid(AddToCartRequest.Attribute attribute, Product product) {
+        List<String> attributeNameList = product.getProductAttributeList().stream().map(ProductAttribute::getName).toList();
+        ProductAttribute productAttribute = product.getProductAttributeList().get(attributeNameList.indexOf(attribute.getName().trim()));
+        if (productAttribute == null) return false;
+
+        List<String> attributeValueList = productAttribute.getAttributeValueList().stream().map(AttributeValue::getValue).toList();
+        if (!attributeValueList.contains(attribute.getValue().trim())) return false;
+
         return true;
     }
 
-    private boolean checkIfAttributeValueIsExisted(AddToCartRequest.Attribute attribute, ProductAttribute productAttribute){
-        List<String> valueList = productAttribute.getAttributeValueList().stream().map(AttributeValue::getValue).toList();
-        return valueList.contains(attribute.getValue());
+    private String controlCartFlow(String choice, AddToCartRequest request, User user, Cart cart) {
+        Product product = productRepo.findById(request.getProductId()).orElse(null);
+        assert product != null;
+        AttributeCombo combo = getAttributeCombo(request);
+        if (combo == null) return "Sản phẩm với phân loại đã chọn hiện không khả dụng";
+        if (!checkComboQuantity(request.getQuantity(), combo)) return "Số lượng lựa chọn không hợp lệ";
+
+
+        switch (choice) {
+            case "create":
+                return createCartFlow(request, user, combo);
+
+            default:
+                return updateCartFlow(request, user, combo, cart);
+        }
     }
 
-    private int calculateAvailableQuantity(List<AddToCartRequest.Attribute> attributeList, Product product, int quantity){
-        int result = 0;
+    private String createCartFlow(AddToCartRequest request, User user, AttributeCombo combo) {
+        Cart cart = cartRepo.save(
+                Cart.builder()
+                        .user(user)
+                        .cartStatus(cartStatusRepo.findByStatus(Const.CART_STATUS_ACTIVE))
+                        .build()
+        );
 
-        // Get all attribute value quantity of a product
-        for(int i = 0; i < Const.MAX_ATTRIBUTE_ALLOWED; i++){
+        cartItemRepo.save(
+                CartItem.builder()
+                        .cart(cart)
+                        .attributeCombo(combo)
+                        .quantity(request.getQuantity())
+                        .price(combo.getPrice())
+                        .build()
+        );
 
-            ProductAttribute productAttribute = product.getProductAttributeList().get(i);
-            AddToCartRequest.Attribute inputAttribute = attributeList.get(i);
+        return "";
+    }
 
-            for(int j = 0; j < productAttribute.getAttributeValueList().size(); j++){
-                AttributeValue attributeValue = productAttribute.getAttributeValueList().get(j);
-                if(attributeValue.getValue().equals(inputAttribute.getValue())){
+    private String updateCartFlow(AddToCartRequest request, User user, AttributeCombo combo, Cart cart) {
+        List<AttributeCombo> comboList = cart.getCartItemList().stream().map(
+                CartItem::getAttributeCombo
+        ).toList();
 
-                }
-            }
-
+        if(comboList.contains(combo)){
+            return updateCartFlowExistedCombo(request, user, combo, cart);
         }
+        return updateCartFlowNotExistedCombo(request, user, combo, cart);
+    }
 
-        return result;
+    private String updateCartFlowExistedCombo(AddToCartRequest request, User user, AttributeCombo combo, Cart cart){
+        CartItem item = new CartItem();
+        for(CartItem i: cart.getCartItemList()){
+            if(i.getAttributeCombo().equals(combo)){
+                item = i;
+                break;
+            }
+        }
+        if(!checkComboQuantity(request.getQuantity() + item.getQuantity(), combo)) return "Số lượng lựa chọn không hợp lệ";
+
+        item.setQuantity(request.getQuantity() + item.getQuantity());
+        cartItemRepo.save(item);
+        return "";
+    }
+
+    private String updateCartFlowNotExistedCombo(AddToCartRequest request, User user, AttributeCombo combo, Cart cart){
+        cartItemRepo.save(
+                CartItem.builder()
+                        .cart(cart)
+                        .attributeCombo(combo)
+                        .quantity(request.getQuantity())
+                        .price(combo.getPrice())
+                        .build()
+        );
+
+        return "";
+    }
+
+    private boolean checkComboQuantity(int inputQty, AttributeCombo combo) {
+        return inputQty <= combo.getQuantity();
+    }
+
+    private AttributeCombo getAttributeCombo(AddToCartRequest request) {
+        String MAN = request.getMainAttribute().getName();
+        String MAVN = request.getMainAttribute().getValue();
+        String SAN = request.getSubAttribute().getName();
+        String SAVN = request.getSubAttribute().getValue();
+        return attributeComboRepo.findByMANAndMAVNAndSANAndSAVN(MAN, MAVN, SAN, SAVN).orElse(null);
     }
 
     private List<ServiceCenter> getServiceCenterList(String type) {
@@ -963,7 +1035,7 @@ public class UserServiceImpl implements UserService {
         return account.getAccountStatus().getStatus().equals(Const.ACCOUNT_STATUS_ACTIVE);
     }
 
-    private boolean checkIfShopActiveOrClose(Shop shop){
+    private boolean checkIfShopActiveOrClose(Shop shop) {
         return shop.getShopStatus().getStatus().equals(Const.SHOP_STATUS_ACTIVE) || shop.getShopStatus().getStatus().equals(Const.SHOP_STATUS_CLOSED);
     }
 }

@@ -120,7 +120,7 @@ public class PetopiaApplication {
     }
 
 //    @Bean
-//    public CommandLineRunner initDate() {
+//    public CommandLineRunner initData() {
 //        return new CommandLineRunner() {
 //            @Override
 //            public void run(String... args) throws Exception {
@@ -1575,7 +1575,6 @@ public class PetopiaApplication {
 //                        Cart.builder()
 //                                .user(user1)
 //                                .cartStatus(deleteCart)
-//                                .totalPrice(775000)
 //                                .build()
 //                );
 //
@@ -1583,7 +1582,6 @@ public class PetopiaApplication {
 //                        Cart.builder()
 //                                .user(user2)
 //                                .cartStatus(deleteCart)
-//                                .totalPrice(120000)
 //                                .build()
 //                );
 //
@@ -1593,6 +1591,7 @@ public class PetopiaApplication {
 //                                .cart(cart1)
 //                                .attributeCombo(combo1)
 //                                .quantity(5)
+//                                .price(combo1.getPrice())
 //                                .build()
 //                );
 //
@@ -1601,6 +1600,7 @@ public class PetopiaApplication {
 //                                .cart(cart1)
 //                                .attributeCombo(combo6)
 //                                .quantity(10)
+//                                .price(combo6.getPrice())
 //                                .build()
 //                );
 //
@@ -1609,6 +1609,7 @@ public class PetopiaApplication {
 //                                .cart(cart2)
 //                                .attributeCombo(combo9)
 //                                .quantity(2)
+//                                .price(combo9.getPrice())
 //                                .build()
 //                );
 //
@@ -1617,6 +1618,7 @@ public class PetopiaApplication {
 //                                .cart(cart2)
 //                                .attributeCombo(combo11)
 //                                .quantity(1)
+//                                .price(combo11.getPrice())
 //                                .build()
 //                );
 //
