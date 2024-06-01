@@ -25,8 +25,6 @@ public class Cart {
     @JoinColumn(name = "`status_id`")
     private CartStatus cartStatus;
 
-    private float totalPrice;
-
     @OneToMany(mappedBy = "cart")
     @ToString.Exclude
     private List<CartItem> cartItemList;

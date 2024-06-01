@@ -23,5 +23,6 @@ public class AddToCartRequest {
 
     private int productId;
     private int quantity;
-    private List<Attribute> attributes;
+    private Attribute mainAttribute;
+    private Attribute subAttribute;
 }

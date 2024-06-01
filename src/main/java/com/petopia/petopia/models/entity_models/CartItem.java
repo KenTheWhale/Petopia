@@ -26,6 +26,8 @@ public class CartItem {
     @Column(name = "`product_quantity`")
     private int quantity;
 
+    private float price;
+
     @OneToOne(mappedBy = "cartItem", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
     private OrderDetail orderDetail;
