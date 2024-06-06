@@ -843,7 +843,7 @@ public class UserServiceImpl implements UserService {
         String message = addToCart(request);
         if (message.isEmpty()) {
             status = "200";
-            message = "Add to cart successfully";
+            message = "Thêm sản phẩm vào giỏ hàng thành công";
         }
         return AddToCartResponse.builder().status(status).message(message).build();
     }

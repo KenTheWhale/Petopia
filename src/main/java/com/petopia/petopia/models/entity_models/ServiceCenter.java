@@ -57,4 +57,8 @@ public class ServiceCenter {
     private double rating;
 
     private String type;
+
+    @OneToMany(mappedBy = "serviceCenter")
+    @ToString.Exclude
+    private List<TimeSlot> timeSlotList;
 }
