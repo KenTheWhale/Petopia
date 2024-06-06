@@ -21,9 +21,12 @@ public class ProductAttribute {
 
     @OneToMany(mappedBy = "productAttribute")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<AttributeValue> attributeValueList;
 
     @ManyToOne
     @JoinColumn(name = "`product_id`")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Product product;
 }

@@ -27,4 +27,7 @@ public interface AppointmentRepo extends JpaRepository<Appointment, Integer> {
     );
 
     Optional<Appointment> findByIdAndCenterId(Integer appointmentId, Integer centerId);
+
+    @Query("SELECT COUNT(a) FROM Appointment a WHERE a.date = :dateTime")
+    int countByDate(@Param("dateTime") LocalDateTime dateTime);
 }

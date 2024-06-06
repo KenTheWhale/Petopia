@@ -21,6 +21,7 @@ public class Shop {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "`owner_id`")
+    @EqualsAndHashCode.Exclude
     private Account account;
 
     @ManyToOne

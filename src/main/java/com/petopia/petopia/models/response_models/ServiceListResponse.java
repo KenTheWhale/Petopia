@@ -24,6 +24,7 @@ public class ServiceListResponse {
         private int id;
         private String serviceName;
         private String serviceType;
+        private String location;
         private double servicePrice;
     }
 }

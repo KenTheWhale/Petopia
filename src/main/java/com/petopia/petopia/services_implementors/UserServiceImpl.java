@@ -14,10 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,6 +41,8 @@ public class UserServiceImpl implements UserService {
     private final ShopRepo shopRepo;
     private final ProductCategoryRepo productCategoryRepo;
     private final AttributeComboRepo attributeComboRepo;
+    private final AttributeValueRepo attributeValueRepo;
+    private final ProductAttributeRepo productAttributeRepo;
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -248,15 +248,10 @@ public class UserServiceImpl implements UserService {
     public CreateAppointmentResponse createAppointment(CreateAppointmentRequest request, String type) {
         Account currentAcc = accountService.getCurrentLoggedAccount();
         assert currentAcc != null;
-
         AppointmentStatus appointmentStatus = appointmentStatusRepo.findByStatus(Const.APPOINTMENT_STATUS_PENDING);
-
         String appointmentType = type.equals("health") ? Const.APPOINTMENT_TYPE_HEALTH : Const.APPOINTMENT_TYPE_SERVICE;
-
         ServiceCenter serviceCenter = serviceCenterRepo.findById(request.getCenterId()).orElse(null);
-
         List<Services> serviceList = new ArrayList<>();
-
         for (Integer id : request.getServiceId()) {
             Optional<Services> sv = serviceRepo.findById(id);
             serviceList.add(sv.get());
@@ -298,10 +293,8 @@ public class UserServiceImpl implements UserService {
                 substituteList.add(substitute);
                 appointment.setSubstituteList(substituteList);
             }
-
             Appointment savedAppointment = appointmentRepo.save(appointment);
             savedAppointment.setServicesList(serviceList);
-
             if (!savedAppointment.getSubstituteList().isEmpty()) {
                 List<Substitute> savedSubstitutes = savedAppointment.getSubstituteList();
                 substituteRepo.saveAll(savedSubstitutes);
@@ -344,7 +337,6 @@ public class UserServiceImpl implements UserService {
                     .extraInformation(request.getExtraInformation())
                     .location(serviceCenter.getAddress())
                     .build();
-
             if (!request.getSubstituteName().isEmpty() && !request.getSubstitutePhone().isEmpty()) {
                 Substitute substitute = Substitute.builder()
                         .name(request.getSubstituteName())
@@ -355,10 +347,8 @@ public class UserServiceImpl implements UserService {
                 substituteList.add(substitute);
                 appointment.setSubstituteList(substituteList);
             }
-
             Appointment savedAppointment = appointmentRepo.save(appointment);
             savedAppointment.setServicesList(serviceList);
-
             if (!savedAppointment.getSubstituteList().isEmpty()) {
                 List<Substitute> savedSubstitutes = savedAppointment.getSubstituteList();
                 substituteRepo.saveAll(savedSubstitutes);
@@ -426,7 +416,7 @@ public class UserServiceImpl implements UserService {
                 .status("200")
                 .message("Lấy danh sách dịch vụ thành công")
                 .serviceList(serviceCenter.getServicesList().stream()
-                        .map(service -> new ServiceListResponse.ServiceList(service.getId(), service.getName(), service.getServiceCenter().getType(), service.getFee()))
+                        .map(service -> new ServiceListResponse.ServiceList(service.getId(), service.getName(), service.getServiceCenter().getType(), service.getLocation(), service.getFee()))
                         .collect(Collectors.toList()))
                 .build();
     }
@@ -495,7 +485,6 @@ public class UserServiceImpl implements UserService {
         return BlackListResponse.builder()
                 .status("200")
                 .message("Chặn người dùng thành công")
-                //return the black list
                 .blockedUsers(blockedUserList.stream()
                         .map(user -> BlackListResponse.BlockedUser.builder()
                                 .id(blockedUser.getId())
@@ -530,7 +519,6 @@ public class UserServiceImpl implements UserService {
                     .message("Người dùng không nằm trong danh sách chặn")
                     .build();
         }
-        //delete the unblock user from the black list
         blackListRepo.deleteByBlockedUserIdAndUser_Id(request.getBlockUserId(), currentAcc.getUser().getId());
 
         List<BlackList> blockedUserList = new ArrayList<>();
@@ -674,7 +662,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ProductReportResponse reportProduct(ProductReportRequest request) {
         Product product = productRepo.findById(request.getProductId()).orElse(null);
-        if (product == null || product.getProductStatus().getStatus().equals(Const.PRODUCT_STATUS_DELETED)) {
+        if (product == null) {
             return ProductReportResponse.builder().status("400").message("Sản phẩm không tồn tại").build();
         }
 
@@ -716,16 +704,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CreateProductResponse createProduct(CreateProductRequest request) {
-        Account account = accountService.getCurrentLoggedAccount();
-        assert account != null;
-        if (account.getShop() == null) {
+        List<Feedback> feedbackList = new ArrayList<>();
+
+        Account currentAccount = accountService.getCurrentLoggedAccount();
+        assert currentAccount != null;
+        if (currentAccount.getShop() == null) {
             return CreateProductResponse.builder()
                     .status("400")
                     .message("Tài khoản này không phải là chủ cửa hàng")
                     .build();
         }
 
-        ProductCategory productCategory = productCategoryRepo.findByName(request.getName());
+        ProductCategory productCategory = productCategoryRepo.findById(request.getCategoryId()).orElse(null);
         if (productCategory == null) {
             return CreateProductResponse.builder()
                     .status("400")
@@ -734,16 +724,26 @@ public class UserServiceImpl implements UserService {
         }
 
         Product product = Product.builder()
-                .name(request.getName())
+                .shop(currentAccount.getShop())
                 .productCategory(productCategory)
-//                .price(request.getPrice())
-//                .availableQty(request.getAvailableQuantity())
+                .name(request.getName())
                 .soldQty(0)
                 .rating(0)
-                .shop(account.getShop())
+                .feedbackList(feedbackList)
                 .build();
 
         Product savedProduct = productRepo.save(product);
+        //add product image
+        List<ProductImage> productImages = addProductImages(request.getImages(), product);
+        product.setProductImageList(productImages);
+        //add attribute
+        List<ProductAttribute> listAtt = addAttributes(request, product);
+        product.setProductAttributeList(listAtt);
+        //add attribute combo
+        List<AttributeCombo> listAttCombos = addAttributeCombos(request, product, listAtt);
+        product.setAttributeComboList(listAttCombos);
+
+
 
         return CreateProductResponse.builder()
                 .status("200")
@@ -751,26 +751,128 @@ public class UserServiceImpl implements UserService {
                 .id(savedProduct.getId())
                 .category(savedProduct.getProductCategory().getName())
                 .name(savedProduct.getName())
-//                .price(savedProduct.getPrice())
-//                .availableQuantity(savedProduct.getAvailableQty())
-                .soldQuantity(savedProduct.getSoldQty())
-                .rating(savedProduct.getRating())
-                .images(savedProduct.getProductImageList().stream()
-                        .map(image -> CreateProductResponse.Images.builder()
-                                .link(image.getLink())
-                                .build())
-                        .collect(Collectors.toList()))
-                .feedbacks(savedProduct.getFeedbackList().stream()
-                        .map(feedback -> CreateProductResponse.FeedBack.builder()
-                                .content(feedback.getContent())
-                                .build())
-                        .toList())
-                .shop(CreateProductResponse.Shop.builder()
-                        .id(savedProduct.getShop().getId())
-                        .name(savedProduct.getShop().getAccount().getName())
-                        .build())
+                .images(getProductImage(savedProduct))
+                .shop(currentAccount.getShop().getName())
+                .attributeCombos(getAttributeCombos(listAttCombos))
                 .build();
     }
+
+    private List<CreateProductResponse.AttributeCombou> getAttributeCombos(List<AttributeCombo> attributeCombos) {
+        return attributeCombos.stream()
+                .map(combo -> CreateProductResponse.AttributeCombou.builder()
+                        .mainAttributeValue(combo.getMAVN())
+                        .subAttributeValue(combo.getSAVN())
+                        .price(combo.getPrice())
+                        .stockQuantity(combo.getQuantity())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private List<CreateProductResponse.Images> getProductImage(Product product){
+        return product.getProductImageList().stream()
+                .map(image -> CreateProductResponse.Images.builder().link(image.getLink()).build())
+                .collect(Collectors.toList());
+    }
+
+    private List<ProductImage> addProductImages(List<String> imageLinks, Product product) {
+        List<ProductImage> productImages = new ArrayList<>();
+        for (String link : imageLinks) {
+            ProductImage productImage = ProductImage.builder()
+                    .link(link)
+                    .product(product)
+                    .build();
+            productImages.add(productImage);
+        }
+        return productImages;
+    }
+
+    private List<ProductAttribute> addAttributes(CreateProductRequest request, Product product){
+        List<ProductAttribute> productAttributes = new ArrayList<>();
+        addAttribute(request.getMainAttributeName(), request.getMainAttributeValues(), product, productAttributes);
+        if(request.getSubAttributeName() != null && !request.getSubAttributeName().isEmpty()){
+            addAttribute(request.getSubAttributeName(), request.getSubAttributeValues(), product, productAttributes);
+        }
+        return productAttributes;
+    }
+
+    private void addAttribute(String attributeName, List<CreateProductRequest.Value> values, Product product, List<ProductAttribute> productAttributes) {
+        ProductAttribute attribute = ProductAttribute.builder()
+                .name(attributeName)
+                .product(product)
+                .build();
+        productAttributeRepo.save(attribute);
+        List<AttributeValue> attributeValues = new ArrayList<>();
+        for (CreateProductRequest.Value valueDTO : values) {
+            AttributeValue attributeValue = AttributeValue.builder()
+                    .value(valueDTO.getValueName())
+                    .productAttribute(attribute)
+                    .build();
+            attributeValueRepo.save(attributeValue);
+            attributeValues.add(attributeValue);
+        }
+        attribute.setAttributeValueList(attributeValues);
+        productAttributes.add(attribute);
+    }
+
+    private List<AttributeCombo> addAttributeCombos(CreateProductRequest request, Product product, List<ProductAttribute> productAttributes) {
+        List<AttributeCombo> savedAttributeCombos = new ArrayList<>();
+        if (productAttributes.size() >= 2) {
+            ProductAttribute mainAttribute = productAttributes.get(0);
+            ProductAttribute subAttribute = productAttributes.get(1);
+
+            Map<String, AttributeValue> mainAttributeValueMap = mainAttribute.getAttributeValueList().stream()
+                    .collect(Collectors.toMap(AttributeValue::getValue, Function.identity()));
+            Map<String, AttributeValue> subAttributeValueMap = subAttribute.getAttributeValueList().stream()
+                    .collect(Collectors.toMap(AttributeValue::getValue, Function.identity()));
+
+            for (CreateProductRequest.AttributeCombou comboRequest : request.getAttributeCombos()) {
+                AttributeValue mainValue = mainAttributeValueMap.get(comboRequest.getMainAttributeValue());
+                AttributeValue subValue = subAttributeValueMap.get(comboRequest.getSubAttributeValue());
+
+                if (mainValue != null && subValue != null) {
+                    AttributeCombo combo = AttributeCombo.builder()
+                            .product(product)
+                            .MAVId(mainValue.getId())
+                            .MAN(mainAttribute.getName())
+                            .MAVN(mainValue.getValue())
+                            .SAVId(subValue.getId())
+                            .SAN(subAttribute.getName())
+                            .SAVN(subValue.getValue())
+                            .quantity(comboRequest.getStockQuantity())
+                            .price(comboRequest.getPrice())
+                            .build();
+                    savedAttributeCombos.add(attributeComboRepo.save(combo));
+                }
+            }
+        } else if (productAttributes.size() == 1) {
+            ProductAttribute mainAttribute = productAttributes.get(0);
+            Map<String, AttributeValue> mainAttributeValueMap = mainAttribute.getAttributeValueList().stream()
+                    .collect(Collectors.toMap(AttributeValue::getValue, Function.identity()));
+
+            for (CreateProductRequest.AttributeCombou comboRequest : request.getAttributeCombos()) {
+                AttributeValue mainValue = mainAttributeValueMap.get(comboRequest.getMainAttributeValue());
+
+                if (mainValue != null) {
+                    AttributeCombo combo = AttributeCombo.builder()
+                            .product(product)
+                            .MAVId(mainValue.getId())
+                            .MAN(mainAttribute.getName())
+                            .MAVN(mainValue.getValue())
+                            .SAVId(null)
+                            .SAN(null)
+                            .SAVN(null)
+                            .quantity(comboRequest.getStockQuantity())
+                            .price(comboRequest.getPrice())
+                            .build();
+                    savedAttributeCombos.add(attributeComboRepo.save(combo));
+                }
+            }
+        }
+
+        return savedAttributeCombos;
+    }
+
+    //---------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public ViewShopProfileResponse viewShopProfile(ViewShopProfileRequest request) {

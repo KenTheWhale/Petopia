@@ -50,6 +50,9 @@ public class ServiceCenter {
     @ToString.Exclude
     private List<ServiceCenterImage> serviceCenterImageList;
 
+    @OneToMany(mappedBy = "serviceCenter")
+    private List<TimeSlot> timeSlots;
+
     private String website;
 
     private String address;

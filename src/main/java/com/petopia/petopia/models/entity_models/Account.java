@@ -45,6 +45,7 @@ public class Account implements UserDetails {
 
     @OneToOne(mappedBy = "account")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Shop shop;
 
     @OneToOne(mappedBy = "account")
