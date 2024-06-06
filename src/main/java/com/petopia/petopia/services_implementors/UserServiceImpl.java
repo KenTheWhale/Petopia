@@ -42,10 +42,7 @@ public class UserServiceImpl implements UserService {
     private final SubstituteStatusRepo substituteStatusRepo;
     private final ShopRepo shopRepo;
     private final ProductCategoryRepo productCategoryRepo;
-    private final CartRepo cartRepo;
     private final AttributeComboRepo attributeComboRepo;
-    private final CartStatusRepo cartStatusRepo;
-    private final CartItemRepo cartItemRepo;
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -836,136 +833,6 @@ public class UserServiceImpl implements UserService {
                 .shops(shopResponses)
                 .build();
     }
-
-    @Override
-    public AddToCartResponse addProductToCart(AddToCartRequest request) {
-        String status = "400";
-        String message = addToCart(request);
-        if (message.isEmpty()) {
-            status = "200";
-            message = "Thêm sản phẩm vào giỏ hàng thành công";
-        }
-        return AddToCartResponse.builder().status(status).message(message).build();
-    }
-
-    private String addToCart(AddToCartRequest request) {
-        Product product = productRepo.findById(request.getProductId()).orElse(null);
-        if (product == null) return "Sản phẩm không tồn tại trong shop";
-        if (!checkIfAllAttributesAreFilled(request.getMainAttribute(), request.getSubAttribute(), product)) return "Phân loại không hợp lệ";
-
-        Account account = accountService.getCurrentLoggedAccount();
-        User user = account.getUser();
-        Cart cart = cartRepo.findByUser_IdAndCartStatus_Status(user.getId(), Const.CART_STATUS_ACTIVE).orElse(null);
-        if (cart != null) {
-            return controlCartFlow("update", request, user, cart);
-        }
-
-        return controlCartFlow("create", request, user, cart);
-    }
-
-    private boolean checkIfAllAttributesAreFilled(AddToCartRequest.Attribute mainAttribute, AddToCartRequest.Attribute subAttribute, Product product) {
-        return checkIfAttributeIsValid(mainAttribute, product) && checkIfAttributeIsValid(subAttribute, product);
-    }
-
-    private boolean checkIfAttributeIsValid(AddToCartRequest.Attribute attribute, Product product) {
-        List<String> attributeNameList = product.getProductAttributeList().stream().map(ProductAttribute::getName).toList();
-        ProductAttribute productAttribute = product.getProductAttributeList().get(attributeNameList.indexOf(attribute.getName().trim()));
-        if (productAttribute == null) return false;
-
-        List<String> attributeValueList = productAttribute.getAttributeValueList().stream().map(AttributeValue::getValue).toList();
-        if (!attributeValueList.contains(attribute.getValue().trim())) return false;
-
-        return true;
-    }
-
-    private String controlCartFlow(String choice, AddToCartRequest request, User user, Cart cart) {
-        Product product = productRepo.findById(request.getProductId()).orElse(null);
-        assert product != null;
-        AttributeCombo combo = getAttributeCombo(request);
-        if (combo == null) return "Sản phẩm với phân loại đã chọn hiện không khả dụng";
-        if (!checkComboQuantity(request.getQuantity(), combo)) return "Số lượng lựa chọn không hợp lệ";
-
-
-        switch (choice) {
-            case "create":
-                return createCartFlow(request, user, combo);
-
-            default:
-                return updateCartFlow(request, user, combo, cart);
-        }
-    }
-
-    private String createCartFlow(AddToCartRequest request, User user, AttributeCombo combo) {
-        Cart cart = cartRepo.save(
-                Cart.builder()
-                        .user(user)
-                        .cartStatus(cartStatusRepo.findByStatus(Const.CART_STATUS_ACTIVE))
-                        .build()
-        );
-
-        cartItemRepo.save(
-                CartItem.builder()
-                        .cart(cart)
-                        .attributeCombo(combo)
-                        .quantity(request.getQuantity())
-                        .price(combo.getPrice())
-                        .build()
-        );
-
-        return "";
-    }
-
-    private String updateCartFlow(AddToCartRequest request, User user, AttributeCombo combo, Cart cart) {
-        List<AttributeCombo> comboList = cart.getCartItemList().stream().map(
-                CartItem::getAttributeCombo
-        ).toList();
-
-        if(comboList.contains(combo)){
-            return updateCartFlowExistedCombo(request, user, combo, cart);
-        }
-        return updateCartFlowNotExistedCombo(request, user, combo, cart);
-    }
-
-    private String updateCartFlowExistedCombo(AddToCartRequest request, User user, AttributeCombo combo, Cart cart){
-        CartItem item = new CartItem();
-        for(CartItem i: cart.getCartItemList()){
-            if(i.getAttributeCombo().equals(combo)){
-                item = i;
-                break;
-            }
-        }
-        if(!checkComboQuantity(request.getQuantity() + item.getQuantity(), combo)) return "Số lượng lựa chọn không hợp lệ";
-
-        item.setQuantity(request.getQuantity() + item.getQuantity());
-        cartItemRepo.save(item);
-        return "";
-    }
-
-    private String updateCartFlowNotExistedCombo(AddToCartRequest request, User user, AttributeCombo combo, Cart cart){
-        cartItemRepo.save(
-                CartItem.builder()
-                        .cart(cart)
-                        .attributeCombo(combo)
-                        .quantity(request.getQuantity())
-                        .price(combo.getPrice())
-                        .build()
-        );
-
-        return "";
-    }
-
-    private boolean checkComboQuantity(int inputQty, AttributeCombo combo) {
-        return inputQty <= combo.getQuantity();
-    }
-
-    private AttributeCombo getAttributeCombo(AddToCartRequest request) {
-        String MAN = request.getMainAttribute().getName();
-        String MAVN = request.getMainAttribute().getValue();
-        String SAN = request.getSubAttribute().getName();
-        String SAVN = request.getSubAttribute().getValue();
-        return attributeComboRepo.findByMANAndMAVNAndSANAndSAVN(MAN, MAVN, SAN, SAVN).orElse(null);
-    }
-
     private List<ServiceCenter> getServiceCenterList(String type) {
         return serviceCenterRepo.findAllByTypeAndServiceCenterStatus_StatusOrServiceCenterStatus_StatusOrderByRatingDesc(type, Const.SERVICE_CENTER_STATUS_ACTIVE, Const.SERVICE_CENTER_STATUS_CLOSED);
     }

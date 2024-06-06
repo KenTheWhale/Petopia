@@ -159,28 +159,4 @@ public class UserController {
         return userService.searchShop(request);
     }
 
-    @PostMapping("/cart/add")
-    @PreAuthorize("hasAuthority('user:create')")
-    public AddToCartResponse addProductToCart (@RequestBody AddToCartRequest request){
-        return userService.addProductToCart(request);
-    }
-
-    @GetMapping("/cart/list")
-    @PreAuthorize("hasAuthority('user:read')")
-    public void getCart(){
-
-    }
-
-    @PostMapping("/cart/update")
-    @PreAuthorize("hasAuthority('user:update')")
-    public void updateCart(){
-
-    }
-
-    @GetMapping("/cart/delete")
-    @PreAuthorize("hasAuthority('user:delete')")
-    public void deleteCart(){
-
-    }
-
 }
