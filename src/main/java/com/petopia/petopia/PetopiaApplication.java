@@ -31,8 +31,6 @@ public class PetopiaApplication {
 
     private final AppointmentStatusRepo appointmentStatusRepo;
 
-    private final OrderStatusRepo orderStatusRepo;
-
     private final PlanStatusRepo planStatusRepo;
 
     private final ShopStatusRepo shopStatusRepo;
@@ -71,11 +69,7 @@ public class PetopiaApplication {
 
     private final ServiceReportRepo serviceReportRepo;
 
-    private final OrderRepo orderRepo;
-
     private final FeedBackRepo feedBackRepo;
-
-    private final OrderDetailRepo orderDetailRepo;
 
     private final ShopRepo shopRepo;
 
@@ -88,12 +82,6 @@ public class PetopiaApplication {
     private final ProductCategoryRepo productCategoryRepo;
 
     private final NotificationRepo notificationRepo;
-
-    private final CartStatusRepo cartStatusRepo;
-
-    private final CartItemRepo cartItemRepo;
-
-    private final CartRepo cartRepo;
 
     private final GroupManagerRepo groupManagerRepo;
 
@@ -114,6 +102,10 @@ public class PetopiaApplication {
     private final AttributeValueRepo attributeValueRepo;
 
     private final AttributeComboRepo attributeComboRepo;
+
+    private final TimeSlotRepo timeSlotRepo;
+
+    private final TimeSlotStatusRepo timeSlotStatusRepo;
 
     public static void main(String[] args) {
         SpringApplication.run(PetopiaApplication.class, args);
@@ -160,12 +152,10 @@ public class PetopiaApplication {
 //                GroupStatus bannedGroup = groupStatusRepo.save(
 //                        GroupStatus.builder().status(Const.GROUP_STATUS_BANNED).build()
 //                );
-//                ;
 //
 //                GroupStatus deletedGroup = groupStatusRepo.save(
 //                        GroupStatus.builder().status(Const.GROUP_STATUS_DELETED).build()
 //                );
-//                ;
 //
 //                // init post status
 //                PostStatus publicPost = postStatusRepo.save(
@@ -175,17 +165,14 @@ public class PetopiaApplication {
 //                PostStatus onlyFriendPost = postStatusRepo.save(
 //                        PostStatus.builder().status(Const.POST_STATUS_ONLY_FRIEND).build()
 //                );
-//                ;
 //
 //                PostStatus onlyMePost = postStatusRepo.save(
 //                        PostStatus.builder().status(Const.POST_STATUS_ONLY_ME).build()
 //                );
-//                ;
 //
 //                PostStatus deletedPost = postStatusRepo.save(
 //                        PostStatus.builder().status(Const.POST_STATUS_DELETED).build()
 //                );
-//                ;
 //
 //                // init appointment status
 //                AppointmentStatus pendingAppointment = appointmentStatusRepo.save(
@@ -195,42 +182,14 @@ public class PetopiaApplication {
 //                AppointmentStatus confirmedAppointment = appointmentStatusRepo.save(
 //                        AppointmentStatus.builder().status(Const.APPOINTMENT_STATUS_CONFIRMED).build()
 //                );
-//                ;
 //
 //                AppointmentStatus cancelledAppointment = appointmentStatusRepo.save(
 //                        AppointmentStatus.builder().status(Const.APPOINTMENT_STATUS_CANCELLED).build()
 //                );
-//                ;
 //
 //                AppointmentStatus successfulAppointment = appointmentStatusRepo.save(
 //                        AppointmentStatus.builder().status(Const.APPOINTMENT_STATUS_SUCCESSFUL).build()
 //                );
-//                ;
-//
-//                // init order status
-//                OrderStatus processingOrder = orderStatusRepo.save(
-//                        OrderStatus.builder().status(Const.ORDER_STATUS_PROCESSING).build()
-//                );
-//
-//                OrderStatus confirmedOrder = orderStatusRepo.save(
-//                        OrderStatus.builder().status(Const.ORDER_STATUS_CONFIRMED).build()
-//                );
-//                ;
-//
-//                OrderStatus deliveringOrder = orderStatusRepo.save(
-//                        OrderStatus.builder().status(Const.ORDER_STATUS_DELIVERING).build()
-//                );
-//                ;
-//
-//                OrderStatus successfulOrder = orderStatusRepo.save(
-//                        OrderStatus.builder().status(Const.ORDER_STATUS_SUCCESSFUL).build()
-//                );
-//                ;
-//
-//                OrderStatus cancelledOrder = orderStatusRepo.save(
-//                        OrderStatus.builder().status(Const.ORDER_STATUS_CANCELLED).build()
-//                );
-//                ;
 //
 //                // init plan status
 //                PlanStatus activePlan = planStatusRepo.save(
@@ -240,7 +199,6 @@ public class PetopiaApplication {
 //                PlanStatus inactivePlan = planStatusRepo.save(
 //                        PlanStatus.builder().status(Const.PLAN_STATUS_INACTIVE).build()
 //                );
-//                ;
 //
 //                // init shop status
 //                ShopStatus activeShop = shopStatusRepo.save(
@@ -250,17 +208,14 @@ public class PetopiaApplication {
 //                ShopStatus closedShop = shopStatusRepo.save(
 //                        ShopStatus.builder().status(Const.SHOP_STATUS_CLOSED).build()
 //                );
-//                ;
 //
 //                ShopStatus bannedShop = shopStatusRepo.save(
 //                        ShopStatus.builder().status(Const.SHOP_STATUS_BANNED).build()
 //                );
-//                ;
 //
 //                ShopStatus deletedShop = shopStatusRepo.save(
 //                        ShopStatus.builder().status(Const.SHOP_STATUS_DELETED).build()
 //                );
-//                ;
 //
 //                // init product status
 //                ProductStatus availableProduct = productStatusRepo.save(
@@ -270,12 +225,10 @@ public class PetopiaApplication {
 //                ProductStatus outOfStockProduct = productStatusRepo.save(
 //                        ProductStatus.builder().status(Const.PRODUCT_STATUS_OUT_OF_STOCK).build()
 //                );
-//                ;
 //
 //                ProductStatus deletedProduct = productStatusRepo.save(
 //                        ProductStatus.builder().status(Const.PRODUCT_STATUS_DELETED).build()
 //                );
-//                ;
 //
 //                // init payment method
 //                PaymentMethod VNPayMethod = paymentMethodRepo.save(
@@ -312,15 +265,6 @@ public class PetopiaApplication {
 //                        ServiceCenterStatus.builder().status(Const.SERVICE_CENTER_STATUS_DELETED).build()
 //                );
 //
-//                // init cart status
-//                CartStatus activeCart = cartStatusRepo.save(
-//                        CartStatus.builder().status(Const.CART_STATUS_ACTIVE).build()
-//                );
-//
-//                CartStatus deleteCart = cartStatusRepo.save(
-//                        CartStatus.builder().status(Const.CART_STATUS_DELETE).build()
-//                );
-//
 //				// init substitute status
 //				SubstituteStatus activeSubstitute = substituteStatusRepo.save(
 //                        SubstituteStatus.builder().status(Const.SUBSTITUTE_STATUS_ACTIVE).build()
@@ -336,6 +280,15 @@ public class PetopiaApplication {
 //
 //                ServiceReportStatus confirmedServiceReport = serviceReportStatusRepo.save(
 //                        ServiceReportStatus.builder().status(Const.SERVICE_REPORT_STATUS_CONFIRMED).build()
+//                );
+//
+//                // init time slot status
+//                TimeSlotStatus openTimeSlot = timeSlotStatusRepo.save(
+//                        TimeSlotStatus.builder().status(Const.TIME_SLOT_STATUS_OPEN).build()
+//                );
+//
+//                TimeSlotStatus closeTimeSlot = timeSlotStatusRepo.save(
+//                        TimeSlotStatus.builder().status(Const.TIME_SLOT_STATUS_CLOSE).build()
 //                );
 //
 //                // init account-------------------------------------------------------------------------//
@@ -1550,128 +1503,6 @@ public class PetopiaApplication {
 //                                .SAVN("")
 //                                .quantity(50)
 //                                .price(100000)
-//                                .build()
-//                );
-//
-//                // init order--------------------------------------------------------------//
-//                Order order1 = orderRepo.save(
-//                        Order.builder()
-//                                .paymentMethod(VNPayMethod)
-//                                .orderStatus(confirmedOrder)
-//                                .orderDate(LocalDateTime.now().minusWeeks(7))
-//                                .build()
-//                );
-//
-//                Order order2 = orderRepo.save(
-//                        Order.builder()
-//                                .paymentMethod(VNPayMethod)
-//                                .orderStatus(successfulOrder)
-//                                .orderDate(LocalDateTime.now().minusWeeks(1))
-//                                .build()
-//                );
-//
-//                // init cart-------------------------------------------------------------//
-//                Cart cart1 = cartRepo.save(
-//                        Cart.builder()
-//                                .user(user1)
-//                                .cartStatus(deleteCart)
-//                                .build()
-//                );
-//
-//                Cart cart2 = cartRepo.save(
-//                        Cart.builder()
-//                                .user(user2)
-//                                .cartStatus(deleteCart)
-//                                .build()
-//                );
-//
-//                // init cart item--------------------------------------------------------//
-//                CartItem item1 = cartItemRepo.save(
-//                        CartItem.builder()
-//                                .cart(cart1)
-//                                .attributeCombo(combo1)
-//                                .quantity(5)
-//                                .price(combo1.getPrice())
-//                                .build()
-//                );
-//
-//                CartItem item2 = cartItemRepo.save(
-//                        CartItem.builder()
-//                                .cart(cart1)
-//                                .attributeCombo(combo6)
-//                                .quantity(10)
-//                                .price(combo6.getPrice())
-//                                .build()
-//                );
-//
-//                CartItem item3 = cartItemRepo.save(
-//                        CartItem.builder()
-//                                .cart(cart2)
-//                                .attributeCombo(combo9)
-//                                .quantity(2)
-//                                .price(combo9.getPrice())
-//                                .build()
-//                );
-//
-//                CartItem item4 = cartItemRepo.save(
-//                        CartItem.builder()
-//                                .cart(cart2)
-//                                .attributeCombo(combo11)
-//                                .quantity(1)
-//                                .price(combo11.getPrice())
-//                                .build()
-//                );
-//
-//                // init order detail-----------------------------------------------------//
-//                OrderDetail detail1 = orderDetailRepo.save(
-//                        OrderDetail.builder()
-//                                .order(order1)
-//                                .cartItem(item1)
-//                                .productName(item1.getAttributeCombo().getProduct().getName())
-//                                .comboPrice(item1.getAttributeCombo().getPrice())
-//                                .MAN(item1.getAttributeCombo().getMAN())
-//                                .MAVN(item1.getAttributeCombo().getMAVN())
-//                                .SAN(item1.getAttributeCombo().getSAN())
-//                                .SAVN(item1.getAttributeCombo().getSAVN())
-//                                .build()
-//                );
-//
-//                OrderDetail detail2 = orderDetailRepo.save(
-//                        OrderDetail.builder()
-//                                .order(order1)
-//                                .cartItem(item2)
-//                                .productName(item2.getAttributeCombo().getProduct().getName())
-//                                .comboPrice(item2.getAttributeCombo().getPrice())
-//                                .MAN(item2.getAttributeCombo().getMAN())
-//                                .MAVN(item2.getAttributeCombo().getMAVN())
-//                                .SAN(item2.getAttributeCombo().getSAN())
-//                                .SAVN(item2.getAttributeCombo().getSAVN())
-//                                .build()
-//                );
-//
-//                OrderDetail detail3 = orderDetailRepo.save(
-//                        OrderDetail.builder()
-//                                .order(order2)
-//                                .cartItem(item3)
-//                                .productName(item3.getAttributeCombo().getProduct().getName())
-//                                .comboPrice(item3.getAttributeCombo().getPrice())
-//                                .MAN(item3.getAttributeCombo().getMAN())
-//                                .MAVN(item3.getAttributeCombo().getMAVN())
-//                                .SAN(item3.getAttributeCombo().getSAN())
-//                                .SAVN(item3.getAttributeCombo().getSAVN())
-//                                .build()
-//                );
-//
-//                OrderDetail detail4 = orderDetailRepo.save(
-//                        OrderDetail.builder()
-//                                .order(order2)
-//                                .cartItem(item4)
-//                                .productName(item4.getAttributeCombo().getProduct().getName())
-//                                .comboPrice(item4.getAttributeCombo().getPrice())
-//                                .MAN(item4.getAttributeCombo().getMAN())
-//                                .MAVN(item4.getAttributeCombo().getMAVN())
-//                                .SAN(item4.getAttributeCombo().getSAN())
-//                                .SAVN(item4.getAttributeCombo().getSAVN())
 //                                .build()
 //                );
 //

@@ -24,11 +24,6 @@ public class Const {
     public final static String APPOINTMENT_TYPE_SERVICE = "dịch vụ";
     public final static String SERVICE_CENTER_TYPE_HEALTH = "sức khỏe";
     public final static String SERVICE_CENTER_TYPE_SERVICE = "dịch vụ";
-    public final static String ORDER_STATUS_PROCESSING = "đang xử lý";
-    public final static String ORDER_STATUS_CONFIRMED = "đã xác nhận";
-    public final static String ORDER_STATUS_DELIVERING = "đang vận chuyển";
-    public final static String ORDER_STATUS_SUCCESSFUL = "đã hoàn thành";
-    public final static String ORDER_STATUS_CANCELLED = "đã hủy";
     public final static String PLAN_STATUS_ACTIVE = "Hoạt động";
     public final static String PLAN_STATUS_INACTIVE = "Ngừng hoạt động";
     public final static String SHOP_STATUS_ACTIVE = "hoạt động";
@@ -52,9 +47,8 @@ public class Const {
     public final static String PET_GENDER_FEMALE = "cái";
     public final static String HUMAN_GENDER_MALE = "nam";
     public final static String HUMAN_GENDER_FEMALE = "nữ";
-    public final static String CART_STATUS_ACTIVE = "đang hoạt động";
-    public final static String CART_STATUS_DELETE = "đã bị xóa";
     public final static String SUBSTITUTE_STATUS_ACTIVE = "đang tồn tại";
     public final static String SUBSTITUTE_STATUS_DELETE = "đã bị xóa";
-    public final static Integer MAX_ATTRIBUTE_ALLOWED = 2;
+    public final static String TIME_SLOT_STATUS_OPEN = "đang hoạt động";
+    public final static String TIME_SLOT_STATUS_CLOSE = "tạm ngừng";
 }

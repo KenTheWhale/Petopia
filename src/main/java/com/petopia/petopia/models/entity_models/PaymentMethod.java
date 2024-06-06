@@ -21,9 +21,5 @@ public class PaymentMethod {
 
     @OneToMany(mappedBy = "paymentMethod")
     @ToString.Exclude
-    private List<Order> orderList;
-
-    @OneToMany(mappedBy = "paymentMethod")
-    @ToString.Exclude
     private List<Appointment> appointmentList;
 }

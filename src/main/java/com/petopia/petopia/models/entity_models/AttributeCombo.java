@@ -42,8 +42,4 @@ public class AttributeCombo {
     private int quantity;
 
     private float price;
-
-    @OneToMany(mappedBy = "attributeCombo")
-    @ToString.Exclude
-    private List<CartItem> cartItemList;
 }

@@ -52,10 +52,6 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     @ToString.Exclude
-    private List<Cart> cartList;
-
-    @OneToMany(mappedBy = "user")
-    @ToString.Exclude
     private List<Feedback> feedbackList;
 
     @OneToMany(mappedBy = "user")
