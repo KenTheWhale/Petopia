@@ -10,20 +10,16 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "`product_attribute`")
-public class ProductAttribute {
+@Table(name = "`time_slot_status`")
+public class TimeSlotStatus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String name;
+    private String status;
 
-    @OneToMany(mappedBy = "productAttribute")
+    @OneToMany(mappedBy = "timeSlotStatus")
     @ToString.Exclude
-    private List<AttributeValue> attributeValueList;
-
-    @ManyToOne
-    @JoinColumn(name = "`product_id`")
-    private Product product;
+    private List<TimeSlot> timeSlotList;
 }

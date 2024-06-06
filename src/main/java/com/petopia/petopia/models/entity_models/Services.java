@@ -25,8 +25,6 @@ public class Services {
     @JoinColumn(name = "`sc_id`")
     private ServiceCenter serviceCenter;
 
-    private String location;
-
     private String name;
 
     private String description;

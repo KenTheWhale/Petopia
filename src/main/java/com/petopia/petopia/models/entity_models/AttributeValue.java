@@ -1,7 +1,10 @@
 package com.petopia.petopia.models.entity_models;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
@@ -19,6 +22,5 @@ public class AttributeValue {
 
     @ManyToOne
     @JoinColumn(name = "`attribute_id`")
-    @ToString.Exclude
     private ProductAttribute productAttribute;
 }

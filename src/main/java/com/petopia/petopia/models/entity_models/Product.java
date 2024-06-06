@@ -22,6 +22,10 @@ public class Product {
     private Shop shop;
 
     @ManyToOne
+    @JoinColumn(name = "`status_id`")
+    private ProductStatus productStatus;
+
+    @ManyToOne
     @JoinColumn(name = "`cate_id`")
     private ProductCategory productCategory;
 
