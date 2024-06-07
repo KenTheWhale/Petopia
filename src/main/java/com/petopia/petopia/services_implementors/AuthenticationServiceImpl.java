@@ -5,6 +5,7 @@ import com.petopia.petopia.enums.Role;
 import com.petopia.petopia.models.entity_models.Account;
 import com.petopia.petopia.models.entity_models.AccountStatus;
 import com.petopia.petopia.models.entity_models.Token;
+import com.petopia.petopia.models.entity_models.User;
 import com.petopia.petopia.models.request_models.CreateAccountRequest;
 import com.petopia.petopia.models.request_models.LoginRequest;
 import com.petopia.petopia.models.response_models.CreateAccountResponse;
@@ -60,6 +61,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         Token accessToken = tokenService.createNewAccessToken(account);
                         tokenService.createNewRefreshToken(account);
 
+                        String address = "";
+
+                        switch (account.getRole()){
+                            case USER: address = account.getUser().getAddress(); break;
+                            case SHOP_OWNER: address = account.getShop().getAddress(); break;
+                            case SERVICE_CENTER_MANAGER: address = account.getServiceCenter().getAddress(); break;
+                            case SERVICE_PROVIDER: address = account.getServiceProvider().getServiceCenter().getAddress(); break;
+                        }
+
                         return LoginResponse.builder()
                                 .status("200")
                                 .message("Đăng nhập thành công")
@@ -71,6 +81,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                                                 .role(account.getRole().name())
                                                 .avatar(account.getAvatar())
                                                 .background(account.getBackground())
+                                                .address(address)
                                                 .accessToken(accessToken.getValue())
                                                 .build()
                                 )
@@ -87,6 +98,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                                             .role("")
                                             .avatar("")
                                             .background("")
+                                            .address("")
                                             .accessToken("")
                                             .build()
                             )
@@ -103,6 +115,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                                         .role("")
                                         .avatar("")
                                         .background("")
+                                        .address("")
                                         .accessToken("")
                                         .build()
                         )
@@ -119,6 +132,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                                     .role("")
                                     .avatar("")
                                     .background("")
+                                    .address("")
                                     .accessToken("")
                                     .build()
                     )
@@ -135,6 +149,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                                 .role("")
                                 .avatar("")
                                 .background("")
+                                .address("")
                                 .accessToken("")
                                 .build()
                 )
