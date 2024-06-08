@@ -21,5 +21,6 @@ public class PaymentMethod {
 
     @OneToMany(mappedBy = "paymentMethod")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Appointment> appointmentList;
 }

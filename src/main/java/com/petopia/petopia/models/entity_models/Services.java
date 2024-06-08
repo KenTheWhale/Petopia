@@ -31,6 +31,7 @@ public class Services {
 
     @OneToMany(mappedBy = "services")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<ServiceImage> serviceImageList;
 
     private double fee;
@@ -42,5 +43,6 @@ public class Services {
 
     @ManyToMany(mappedBy = "servicesList")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Appointment> appointmentList;
 }

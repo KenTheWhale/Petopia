@@ -21,5 +21,6 @@ public class PostStatus {
 
     @OneToMany(mappedBy = "postStatus")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Post> postList;
 }

@@ -37,14 +37,17 @@ public class Post {
 
     @OneToMany(mappedBy = "post")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<PostImage> postImageList;
 
     @OneToMany(mappedBy = "post")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<PostLikedUser> postLikedUserList;
 
     @OneToMany(mappedBy = "post")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Comment> commentList;
 
 }

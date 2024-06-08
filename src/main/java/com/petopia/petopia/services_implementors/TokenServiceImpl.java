@@ -1,6 +1,7 @@
 package com.petopia.petopia.services_implementors;
 
 import com.petopia.petopia.enums.Const;
+import com.petopia.petopia.models.entity_models.Account;
 import com.petopia.petopia.models.entity_models.Token;
 import com.petopia.petopia.services.JWTService;
 import com.petopia.petopia.services.TokenService;

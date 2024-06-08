@@ -25,7 +25,7 @@ public class CreateAppointmentRequest {
 
     private String extraInformation;
 
-    private String servicePlace;
+    private boolean onSite;
 
     private String phone;
 

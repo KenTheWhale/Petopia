@@ -29,13 +29,13 @@ public class CreateProductResponse {
 
     private String productStatus;
 
-    private List<AttributeCombou> attributeCombos;
+    private List<AttributeCombo> attributeCombos;
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class AttributeCombou {
+    public static class AttributeCombo {
 
         private String mainAttributeValue;
 
@@ -68,7 +68,5 @@ public class CreateProductResponse {
         private String link;
 
     }
-
-
 
 }

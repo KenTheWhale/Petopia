@@ -33,6 +33,7 @@ public class Shop {
 
     @OneToMany(mappedBy = "shop")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Product> productList;
 
     private LocalDateTime planPurchasedDate;

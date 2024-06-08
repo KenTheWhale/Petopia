@@ -21,6 +21,7 @@ public class ProductAttribute {
 
     @OneToMany(mappedBy = "productAttribute")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<AttributeValue> attributeValueList;
 
     @ManyToOne

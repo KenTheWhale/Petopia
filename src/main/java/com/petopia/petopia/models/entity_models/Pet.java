@@ -40,9 +40,11 @@ public class Pet {
 
     @OneToMany(mappedBy = "pet")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<PetImage> petImageList;
 
     @OneToMany(mappedBy = "pet")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Appointment> appointmentList;
 }

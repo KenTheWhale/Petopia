@@ -25,5 +25,6 @@ public class Notification {
 
     @OneToMany(mappedBy = "notification")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<NotificationImage> notificationImageList;
 }

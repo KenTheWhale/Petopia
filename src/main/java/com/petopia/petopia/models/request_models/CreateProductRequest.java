@@ -27,7 +27,7 @@ public class CreateProductRequest {
 
     private List<Value> subAttributeValues;
 
-    List<AttributeCombou> attributeCombos;
+    List<AttributeCombo> attributeCombos;
 
     @Data
     @AllArgsConstructor
@@ -41,7 +41,7 @@ public class CreateProductRequest {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class AttributeCombou {
+    public static class AttributeCombo {
         private String mainAttributeValue;
         private String subAttributeValue;
         private float price;

@@ -14,8 +14,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,10 +41,6 @@ public class UserServiceImpl implements UserService {
     private final SubstituteRepo substituteRepo;
     private final SubstituteStatusRepo substituteStatusRepo;
     private final ShopRepo shopRepo;
-    private final ProductCategoryRepo productCategoryRepo;
-    private final AttributeComboRepo attributeComboRepo;
-    private final AttributeValueRepo attributeValueRepo;
-    private final ProductAttributeRepo productAttributeRepo;
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -255,6 +253,12 @@ public class UserServiceImpl implements UserService {
         for (Integer id : request.getServiceId()) {
             Optional<Services> sv = serviceRepo.findById(id);
             serviceList.add(sv.get());
+            if (request.isOnSite() != sv.get().isCanBeDoneOnSite()) {
+                return CreateAppointmentResponse.builder()
+                        .status("400")
+                        .message("Dịch vụ" + sv.get().getName() + "không hỗ trợ tại nơi khách hàng")
+                        .build();
+            }
         }
         if (serviceCenter == null) {
             return CreateAppointmentResponse.builder()
@@ -271,7 +275,7 @@ public class UserServiceImpl implements UserService {
         }
 
 
-        if (request.getServicePlace().trim().equalsIgnoreCase("nhà riêng")) {
+        if (!request.isOnSite()) {
             Appointment appointment = Appointment.builder()
                     .pet(pet)
                     .serviceProvider(null)
@@ -281,6 +285,7 @@ public class UserServiceImpl implements UserService {
                     .type(appointmentType)
                     .extraInformation(request.getExtraInformation())
                     .location(currentAcc.getUser().getAddress())
+                    .centerId(request.getCenterId())
                     .build();
 
             if (!request.getSubstituteName().isEmpty() && !request.getSubstitutePhone().isEmpty()) {
@@ -326,7 +331,7 @@ public class UserServiceImpl implements UserService {
                                     .build()
                     )
                     .build();
-        } else if (request.getServicePlace().trim().equalsIgnoreCase("trung tâm")) {
+        } else {
             Appointment appointment = Appointment.builder()
                     .pet(pet)
                     .serviceProvider(null)
@@ -336,6 +341,7 @@ public class UserServiceImpl implements UserService {
                     .type(appointmentType)
                     .extraInformation(request.getExtraInformation())
                     .location(serviceCenter.getAddress())
+                    .centerId(request.getCenterId())
                     .build();
             if (!request.getSubstituteName().isEmpty() && !request.getSubstitutePhone().isEmpty()) {
                 Substitute substitute = Substitute.builder()
@@ -353,6 +359,8 @@ public class UserServiceImpl implements UserService {
                 List<Substitute> savedSubstitutes = savedAppointment.getSubstituteList();
                 substituteRepo.saveAll(savedSubstitutes);
             }
+            ServiceCenter sc = serviceCenterRepo.findById(savedAppointment.getCenterId()).orElse(null);
+            assert sc != null;
             return CreateAppointmentResponse.builder()
                     .status("200")
                     .message("Tạo lịch hẹn thành công")
@@ -361,7 +369,7 @@ public class UserServiceImpl implements UserService {
                                     .petName(savedAppointment.getPet().getName())
                                     .status(Const.APPOINTMENT_STATUS_PENDING)
                                     .date(request.getDateTime())
-                                    .location(savedAppointment.getServiceProvider().getServiceCenter().getAddress())
+                                    .location(sc.getAddress())
                                     .services(serviceList.stream()
                                             .map(service -> CreateAppointmentResponse.Servicee.builder()
                                                     .id(service.getId())
@@ -379,11 +387,6 @@ public class UserServiceImpl implements UserService {
                                     .fee(savedAppointment.getFee())
                                     .build()
                     )
-                    .build();
-        } else {
-            return CreateAppointmentResponse.builder()
-                    .status("400")
-                    .message("Địa điểm không hợp lệ")
                     .build();
         }
     }
@@ -416,7 +419,7 @@ public class UserServiceImpl implements UserService {
                 .status("200")
                 .message("Lấy danh sách dịch vụ thành công")
                 .serviceList(serviceCenter.getServicesList().stream()
-                        .map(service -> new ServiceListResponse.ServiceList(service.getId(), service.getName(), service.getServiceCenter().getType(), service.getLocation(), service.getFee()))
+                        .map(service -> new ServiceListResponse.Service(service.getId(), service.getName(), service.getServiceCenter().getType(), service.isCanBeDoneOnSite(), service.getFee()))
                         .collect(Collectors.toList()))
                 .build();
     }
@@ -485,6 +488,7 @@ public class UserServiceImpl implements UserService {
         return BlackListResponse.builder()
                 .status("200")
                 .message("Chặn người dùng thành công")
+                //return the black list
                 .blockedUsers(blockedUserList.stream()
                         .map(user -> BlackListResponse.BlockedUser.builder()
                                 .id(blockedUser.getId())
@@ -519,6 +523,7 @@ public class UserServiceImpl implements UserService {
                     .message("Người dùng không nằm trong danh sách chặn")
                     .build();
         }
+        //delete the unblock user from the black list
         blackListRepo.deleteByBlockedUserIdAndUser_Id(request.getBlockUserId(), currentAcc.getUser().getId());
 
         List<BlackList> blockedUserList = new ArrayList<>();
@@ -662,7 +667,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ProductReportResponse reportProduct(ProductReportRequest request) {
         Product product = productRepo.findById(request.getProductId()).orElse(null);
-        if (product == null) {
+        if (product == null || product.getProductStatus().getStatus().equals(Const.PRODUCT_STATUS_DELETED)) {
             return ProductReportResponse.builder().status("400").message("Sản phẩm không tồn tại").build();
         }
 
@@ -702,177 +707,6 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    @Override
-    public CreateProductResponse createProduct(CreateProductRequest request) {
-        List<Feedback> feedbackList = new ArrayList<>();
-
-        Account currentAccount = accountService.getCurrentLoggedAccount();
-        assert currentAccount != null;
-        if (currentAccount.getShop() == null) {
-            return CreateProductResponse.builder()
-                    .status("400")
-                    .message("Tài khoản này không phải là chủ cửa hàng")
-                    .build();
-        }
-
-        ProductCategory productCategory = productCategoryRepo.findById(request.getCategoryId()).orElse(null);
-        if (productCategory == null) {
-            return CreateProductResponse.builder()
-                    .status("400")
-                    .message("Không tìm thấy danh mục sản phẩm này")
-                    .build();
-        }
-
-        Product product = Product.builder()
-                .shop(currentAccount.getShop())
-                .productCategory(productCategory)
-                .name(request.getName())
-                .soldQty(0)
-                .rating(0)
-                .feedbackList(feedbackList)
-                .build();
-
-        Product savedProduct = productRepo.save(product);
-        //add product image
-        List<ProductImage> productImages = addProductImages(request.getImages(), product);
-        product.setProductImageList(productImages);
-        //add attribute
-        List<ProductAttribute> listAtt = addAttributes(request, product);
-        product.setProductAttributeList(listAtt);
-        //add attribute combo
-        List<AttributeCombo> listAttCombos = addAttributeCombos(request, product, listAtt);
-        product.setAttributeComboList(listAttCombos);
-
-
-
-        return CreateProductResponse.builder()
-                .status("200")
-                .message("Tạo sản phẩm thành công")
-                .id(savedProduct.getId())
-                .category(savedProduct.getProductCategory().getName())
-                .name(savedProduct.getName())
-                .images(getProductImage(savedProduct))
-                .shop(currentAccount.getShop().getName())
-                .attributeCombos(getAttributeCombos(listAttCombos))
-                .build();
-    }
-
-    private List<CreateProductResponse.AttributeCombou> getAttributeCombos(List<AttributeCombo> attributeCombos) {
-        return attributeCombos.stream()
-                .map(combo -> CreateProductResponse.AttributeCombou.builder()
-                        .mainAttributeValue(combo.getMAVN())
-                        .subAttributeValue(combo.getSAVN())
-                        .price(combo.getPrice())
-                        .stockQuantity(combo.getQuantity())
-                        .build())
-                .collect(Collectors.toList());
-    }
-
-    private List<CreateProductResponse.Images> getProductImage(Product product){
-        return product.getProductImageList().stream()
-                .map(image -> CreateProductResponse.Images.builder().link(image.getLink()).build())
-                .collect(Collectors.toList());
-    }
-
-    private List<ProductImage> addProductImages(List<String> imageLinks, Product product) {
-        List<ProductImage> productImages = new ArrayList<>();
-        for (String link : imageLinks) {
-            ProductImage productImage = ProductImage.builder()
-                    .link(link)
-                    .product(product)
-                    .build();
-            productImages.add(productImage);
-        }
-        return productImages;
-    }
-
-    private List<ProductAttribute> addAttributes(CreateProductRequest request, Product product){
-        List<ProductAttribute> productAttributes = new ArrayList<>();
-        addAttribute(request.getMainAttributeName(), request.getMainAttributeValues(), product, productAttributes);
-        if(request.getSubAttributeName() != null && !request.getSubAttributeName().isEmpty()){
-            addAttribute(request.getSubAttributeName(), request.getSubAttributeValues(), product, productAttributes);
-        }
-        return productAttributes;
-    }
-
-    private void addAttribute(String attributeName, List<CreateProductRequest.Value> values, Product product, List<ProductAttribute> productAttributes) {
-        ProductAttribute attribute = ProductAttribute.builder()
-                .name(attributeName)
-                .product(product)
-                .build();
-        productAttributeRepo.save(attribute);
-        List<AttributeValue> attributeValues = new ArrayList<>();
-        for (CreateProductRequest.Value valueDTO : values) {
-            AttributeValue attributeValue = AttributeValue.builder()
-                    .value(valueDTO.getValueName())
-                    .productAttribute(attribute)
-                    .build();
-            attributeValueRepo.save(attributeValue);
-            attributeValues.add(attributeValue);
-        }
-        attribute.setAttributeValueList(attributeValues);
-        productAttributes.add(attribute);
-    }
-
-    private List<AttributeCombo> addAttributeCombos(CreateProductRequest request, Product product, List<ProductAttribute> productAttributes) {
-        List<AttributeCombo> savedAttributeCombos = new ArrayList<>();
-        if (productAttributes.size() >= 2) {
-            ProductAttribute mainAttribute = productAttributes.get(0);
-            ProductAttribute subAttribute = productAttributes.get(1);
-
-            Map<String, AttributeValue> mainAttributeValueMap = mainAttribute.getAttributeValueList().stream()
-                    .collect(Collectors.toMap(AttributeValue::getValue, Function.identity()));
-            Map<String, AttributeValue> subAttributeValueMap = subAttribute.getAttributeValueList().stream()
-                    .collect(Collectors.toMap(AttributeValue::getValue, Function.identity()));
-
-            for (CreateProductRequest.AttributeCombou comboRequest : request.getAttributeCombos()) {
-                AttributeValue mainValue = mainAttributeValueMap.get(comboRequest.getMainAttributeValue());
-                AttributeValue subValue = subAttributeValueMap.get(comboRequest.getSubAttributeValue());
-
-                if (mainValue != null && subValue != null) {
-                    AttributeCombo combo = AttributeCombo.builder()
-                            .product(product)
-                            .MAVId(mainValue.getId())
-                            .MAN(mainAttribute.getName())
-                            .MAVN(mainValue.getValue())
-                            .SAVId(subValue.getId())
-                            .SAN(subAttribute.getName())
-                            .SAVN(subValue.getValue())
-                            .quantity(comboRequest.getStockQuantity())
-                            .price(comboRequest.getPrice())
-                            .build();
-                    savedAttributeCombos.add(attributeComboRepo.save(combo));
-                }
-            }
-        } else if (productAttributes.size() == 1) {
-            ProductAttribute mainAttribute = productAttributes.get(0);
-            Map<String, AttributeValue> mainAttributeValueMap = mainAttribute.getAttributeValueList().stream()
-                    .collect(Collectors.toMap(AttributeValue::getValue, Function.identity()));
-
-            for (CreateProductRequest.AttributeCombou comboRequest : request.getAttributeCombos()) {
-                AttributeValue mainValue = mainAttributeValueMap.get(comboRequest.getMainAttributeValue());
-
-                if (mainValue != null) {
-                    AttributeCombo combo = AttributeCombo.builder()
-                            .product(product)
-                            .MAVId(mainValue.getId())
-                            .MAN(mainAttribute.getName())
-                            .MAVN(mainValue.getValue())
-                            .SAVId(null)
-                            .SAN(null)
-                            .SAVN(null)
-                            .quantity(comboRequest.getStockQuantity())
-                            .price(comboRequest.getPrice())
-                            .build();
-                    savedAttributeCombos.add(attributeComboRepo.save(combo));
-                }
-            }
-        }
-
-        return savedAttributeCombos;
-    }
-
-    //---------------------------------------------------------------------------------------------------------------------------------------
 
     @Override
     public ViewShopProfileResponse viewShopProfile(ViewShopProfileRequest request) {
@@ -935,6 +769,7 @@ public class UserServiceImpl implements UserService {
                 .shops(shopResponses)
                 .build();
     }
+
     private List<ServiceCenter> getServiceCenterList(String type) {
         return serviceCenterRepo.findAllByTypeAndServiceCenterStatus_StatusOrServiceCenterStatus_StatusOrderByRatingDesc(type, Const.SERVICE_CENTER_STATUS_ACTIVE, Const.SERVICE_CENTER_STATUS_CLOSED);
     }

@@ -35,6 +35,8 @@ public class PetopiaApplication {
 
     private final ShopStatusRepo shopStatusRepo;
 
+    private final ProductStatusRepo productStatusRepo;
+
     private final PaymentMethodRepo paymentMethodRepo;
 
     private final PasswordEncoder passwordEncoder;
@@ -213,6 +215,19 @@ public class PetopiaApplication {
 
                 ShopStatus deletedShop = shopStatusRepo.save(
                         ShopStatus.builder().status(Const.SHOP_STATUS_DELETED).build()
+                );
+
+                // init product status
+                ProductStatus availableProduct = productStatusRepo.save(
+                        ProductStatus.builder().status(Const.PRODUCT_STATUS_AVAILABLE).build()
+                );
+
+                ProductStatus outOfStockProduct = productStatusRepo.save(
+                        ProductStatus.builder().status(Const.PRODUCT_STATUS_OUT_OF_STOCK).build()
+                );
+
+                ProductStatus deletedProduct = productStatusRepo.save(
+                        ProductStatus.builder().status(Const.PRODUCT_STATUS_DELETED).build()
                 );
 
                 // init payment method
@@ -1153,6 +1168,7 @@ public class PetopiaApplication {
                 Product product1 = productRepo.save(
                         Product.builder()
                                 .shop(shop1)
+                                .productStatus(availableProduct)
                                 .productCategory(category1)
                                 .name("Hạt Tươi Taste Of The Wild Cho Chó Trưởng Thành")
                                 .soldQty(100)
@@ -1163,6 +1179,7 @@ public class PetopiaApplication {
                 Product product2 = productRepo.save(
                         Product.builder()
                                 .shop(shop1)
+                                .productStatus(availableProduct)
                                 .productCategory(category2)
                                 .name("Vòng Cổ Chó Mèo Có Chuông Dày 1cm")
                                 .soldQty(20)
@@ -1173,6 +1190,7 @@ public class PetopiaApplication {
                 Product product3 = productRepo.save(
                         Product.builder()
                                 .shop(shop1)
+                                .productStatus(availableProduct)
                                 .productCategory(category3)
                                 .name("Cỏ Mèo Bạc Hà Catnip Cho Mèo")
                                 .soldQty(100)
@@ -1183,6 +1201,7 @@ public class PetopiaApplication {
                 Product product4 = productRepo.save(
                         Product.builder()
                                 .shop(shop1)
+                                .productStatus(availableProduct)
                                 .productCategory(category4)
                                 .name("Áo Cho Chó Mèo Sơ Mi Trái Cây - Chuối Vàng")
                                 .soldQty(21)

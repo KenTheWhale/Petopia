@@ -1,5 +1,8 @@
 package com.petopia.petopia.models.response_models;
 
+import com.petopia.petopia.models.entity_models.Comment;
+import com.petopia.petopia.models.entity_models.PostImage;
+import com.petopia.petopia.models.entity_models.PostLikedUser;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

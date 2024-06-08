@@ -21,5 +21,6 @@ public class SubstituteStatus {
 
     @OneToMany(mappedBy = "substituteStatus")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Substitute> substituteList;
 }

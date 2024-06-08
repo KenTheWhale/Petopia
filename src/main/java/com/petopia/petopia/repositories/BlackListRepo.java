@@ -1,5 +1,6 @@
 package com.petopia.petopia.repositories;
 
+import com.petopia.petopia.models.entity_models.BlackList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 

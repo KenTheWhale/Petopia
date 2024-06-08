@@ -32,10 +32,12 @@ public class ServiceCenter {
 
     @OneToMany(mappedBy = "serviceCenter")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<ServiceProvider> serviceProviderList;
 
     @OneToMany(mappedBy = "serviceCenter")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Services> servicesList;
 
     private LocalDateTime planPurchasedDate;
@@ -48,6 +50,7 @@ public class ServiceCenter {
 
     @OneToMany(mappedBy = "serviceCenter")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<ServiceCenterImage> serviceCenterImageList;
 
     private String website;
@@ -60,5 +63,6 @@ public class ServiceCenter {
 
     @OneToMany(mappedBy = "serviceCenter")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<TimeSlot> timeSlotList;
 }

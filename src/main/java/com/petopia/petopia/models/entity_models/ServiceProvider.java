@@ -23,6 +23,7 @@ public class ServiceProvider {
 
     @OneToMany(mappedBy = "serviceProvider")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Appointment> appointmentList;
 
     @ManyToOne

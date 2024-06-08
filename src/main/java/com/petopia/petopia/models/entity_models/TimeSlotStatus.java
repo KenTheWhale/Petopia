@@ -21,5 +21,6 @@ public class TimeSlotStatus {
 
     @OneToMany(mappedBy = "timeSlotStatus")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<TimeSlot> timeSlotList;
 }
