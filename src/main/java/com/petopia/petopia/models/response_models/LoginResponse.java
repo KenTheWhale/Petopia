@@ -28,6 +28,8 @@ public class LoginResponse {
 
         private String background;
 
+        private String address;
+
         private String accessToken;
     }
 
