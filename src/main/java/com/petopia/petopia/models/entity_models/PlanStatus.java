@@ -21,9 +21,11 @@ public class PlanStatus {
 
     @OneToMany(mappedBy = "planStatus")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<ShopPlan> shopPlanList;
 
     @OneToMany(mappedBy = "planStatus")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<ServiceCenterPlan> serviceCenterPlanList;
 }

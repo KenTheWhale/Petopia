@@ -33,22 +33,27 @@ public class Account implements UserDetails {
 
     @OneToMany(mappedBy = "account")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Token> tokenList;
 
     @OneToOne(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private User user;
 
     @OneToOne(mappedBy = "account", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private ServiceProvider serviceProvider;
 
     @OneToOne(mappedBy = "account")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Shop shop;
 
     @OneToOne(mappedBy = "account")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private ServiceCenter serviceCenter;
 
     private String avatar;

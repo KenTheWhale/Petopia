@@ -1,10 +1,5 @@
 package com.petopia.petopia.services;
 
-import com.petopia.petopia.models.request_models.BlockAndUnblockUserRequest;
-import com.petopia.petopia.models.request_models.CreateAppointmentRequest;
-import com.petopia.petopia.models.request_models.CreateUserProfileRequest;
-import com.petopia.petopia.models.request_models.HealthHistoryRequest;
-import com.petopia.petopia.models.request_models.ServiceRequest;
 import com.petopia.petopia.models.request_models.*;
 import com.petopia.petopia.models.response_models.*;
 
@@ -50,6 +45,6 @@ public interface UserService {
 
     SearchShopResponse searchShop(SearchShopRequest request);
 
-    CreateProductResponse createProduct(CreateProductRequest request);
+
 
 }

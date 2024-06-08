@@ -21,5 +21,6 @@ public class GroupStatus {
 
     @OneToMany(mappedBy = "groupStatus")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Group> groupList;
 }

@@ -38,17 +38,21 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<ProductImage> productImageList;
 
     @OneToMany(mappedBy = "product")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Feedback> feedbackList;
 
     @OneToMany(mappedBy = "product")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<ProductAttribute> productAttributeList;
 
     @OneToMany(mappedBy = "product")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<AttributeCombo> attributeComboList;
 }

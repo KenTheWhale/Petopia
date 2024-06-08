@@ -21,5 +21,6 @@ public class TokenStatus {
 
     @OneToMany(mappedBy = "tokenStatus")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Token> tokenList;
 }

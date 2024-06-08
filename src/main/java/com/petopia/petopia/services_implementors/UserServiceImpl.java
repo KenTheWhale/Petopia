@@ -41,8 +41,6 @@ public class UserServiceImpl implements UserService {
     private final SubstituteRepo substituteRepo;
     private final SubstituteStatusRepo substituteStatusRepo;
     private final ShopRepo shopRepo;
-    private final ProductCategoryRepo productCategoryRepo;
-    private final AttributeComboRepo attributeComboRepo;
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -248,18 +246,19 @@ public class UserServiceImpl implements UserService {
     public CreateAppointmentResponse createAppointment(CreateAppointmentRequest request, String type) {
         Account currentAcc = accountService.getCurrentLoggedAccount();
         assert currentAcc != null;
-
         AppointmentStatus appointmentStatus = appointmentStatusRepo.findByStatus(Const.APPOINTMENT_STATUS_PENDING);
-
         String appointmentType = type.equals("health") ? Const.APPOINTMENT_TYPE_HEALTH : Const.APPOINTMENT_TYPE_SERVICE;
-
         ServiceCenter serviceCenter = serviceCenterRepo.findById(request.getCenterId()).orElse(null);
-
         List<Services> serviceList = new ArrayList<>();
-
         for (Integer id : request.getServiceId()) {
             Optional<Services> sv = serviceRepo.findById(id);
             serviceList.add(sv.get());
+            if (request.isOnSite() != sv.get().isCanBeDoneOnSite()) {
+                return CreateAppointmentResponse.builder()
+                        .status("400")
+                        .message("Dịch vụ" + sv.get().getName() + "không hỗ trợ tại nơi khách hàng")
+                        .build();
+            }
         }
         if (serviceCenter == null) {
             return CreateAppointmentResponse.builder()
@@ -276,7 +275,7 @@ public class UserServiceImpl implements UserService {
         }
 
 
-        if (request.getServicePlace().trim().equalsIgnoreCase("nhà riêng")) {
+        if (!request.isOnSite()) {
             Appointment appointment = Appointment.builder()
                     .pet(pet)
                     .serviceProvider(null)
@@ -286,6 +285,7 @@ public class UserServiceImpl implements UserService {
                     .type(appointmentType)
                     .extraInformation(request.getExtraInformation())
                     .location(currentAcc.getUser().getAddress())
+                    .centerId(request.getCenterId())
                     .build();
 
             if (!request.getSubstituteName().isEmpty() && !request.getSubstitutePhone().isEmpty()) {
@@ -298,10 +298,8 @@ public class UserServiceImpl implements UserService {
                 substituteList.add(substitute);
                 appointment.setSubstituteList(substituteList);
             }
-
             Appointment savedAppointment = appointmentRepo.save(appointment);
             savedAppointment.setServicesList(serviceList);
-
             if (!savedAppointment.getSubstituteList().isEmpty()) {
                 List<Substitute> savedSubstitutes = savedAppointment.getSubstituteList();
                 substituteRepo.saveAll(savedSubstitutes);
@@ -333,7 +331,7 @@ public class UserServiceImpl implements UserService {
                                     .build()
                     )
                     .build();
-        } else if (request.getServicePlace().trim().equalsIgnoreCase("trung tâm")) {
+        } else {
             Appointment appointment = Appointment.builder()
                     .pet(pet)
                     .serviceProvider(null)
@@ -343,8 +341,8 @@ public class UserServiceImpl implements UserService {
                     .type(appointmentType)
                     .extraInformation(request.getExtraInformation())
                     .location(serviceCenter.getAddress())
+                    .centerId(request.getCenterId())
                     .build();
-
             if (!request.getSubstituteName().isEmpty() && !request.getSubstitutePhone().isEmpty()) {
                 Substitute substitute = Substitute.builder()
                         .name(request.getSubstituteName())
@@ -355,14 +353,14 @@ public class UserServiceImpl implements UserService {
                 substituteList.add(substitute);
                 appointment.setSubstituteList(substituteList);
             }
-
             Appointment savedAppointment = appointmentRepo.save(appointment);
             savedAppointment.setServicesList(serviceList);
-
             if (!savedAppointment.getSubstituteList().isEmpty()) {
                 List<Substitute> savedSubstitutes = savedAppointment.getSubstituteList();
                 substituteRepo.saveAll(savedSubstitutes);
             }
+            ServiceCenter sc = serviceCenterRepo.findById(savedAppointment.getCenterId()).orElse(null);
+            assert sc != null;
             return CreateAppointmentResponse.builder()
                     .status("200")
                     .message("Tạo lịch hẹn thành công")
@@ -371,7 +369,7 @@ public class UserServiceImpl implements UserService {
                                     .petName(savedAppointment.getPet().getName())
                                     .status(Const.APPOINTMENT_STATUS_PENDING)
                                     .date(request.getDateTime())
-                                    .location(savedAppointment.getServiceProvider().getServiceCenter().getAddress())
+                                    .location(sc.getAddress())
                                     .services(serviceList.stream()
                                             .map(service -> CreateAppointmentResponse.Servicee.builder()
                                                     .id(service.getId())
@@ -389,11 +387,6 @@ public class UserServiceImpl implements UserService {
                                     .fee(savedAppointment.getFee())
                                     .build()
                     )
-                    .build();
-        } else {
-            return CreateAppointmentResponse.builder()
-                    .status("400")
-                    .message("Địa điểm không hợp lệ")
                     .build();
         }
     }
@@ -426,7 +419,7 @@ public class UserServiceImpl implements UserService {
                 .status("200")
                 .message("Lấy danh sách dịch vụ thành công")
                 .serviceList(serviceCenter.getServicesList().stream()
-                        .map(service -> new ServiceListResponse.ServiceList(service.getId(), service.getName(), service.getServiceCenter().getType(), service.getFee()))
+                        .map(service -> new ServiceListResponse.Service(service.getId(), service.getName(), service.getServiceCenter().getType(), service.isCanBeDoneOnSite(), service.getFee()))
                         .collect(Collectors.toList()))
                 .build();
     }
@@ -714,63 +707,6 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    @Override
-    public CreateProductResponse createProduct(CreateProductRequest request) {
-        Account account = accountService.getCurrentLoggedAccount();
-        assert account != null;
-        if (account.getShop() == null) {
-            return CreateProductResponse.builder()
-                    .status("400")
-                    .message("Tài khoản này không phải là chủ cửa hàng")
-                    .build();
-        }
-
-        ProductCategory productCategory = productCategoryRepo.findByName(request.getName());
-        if (productCategory == null) {
-            return CreateProductResponse.builder()
-                    .status("400")
-                    .message("Không tìm thấy danh mục sản phẩm này")
-                    .build();
-        }
-
-        Product product = Product.builder()
-                .name(request.getName())
-                .productCategory(productCategory)
-//                .price(request.getPrice())
-//                .availableQty(request.getAvailableQuantity())
-                .soldQty(0)
-                .rating(0)
-                .shop(account.getShop())
-                .build();
-
-        Product savedProduct = productRepo.save(product);
-
-        return CreateProductResponse.builder()
-                .status("200")
-                .message("Tạo sản phẩm thành công")
-                .id(savedProduct.getId())
-                .category(savedProduct.getProductCategory().getName())
-                .name(savedProduct.getName())
-//                .price(savedProduct.getPrice())
-//                .availableQuantity(savedProduct.getAvailableQty())
-                .soldQuantity(savedProduct.getSoldQty())
-                .rating(savedProduct.getRating())
-                .images(savedProduct.getProductImageList().stream()
-                        .map(image -> CreateProductResponse.Images.builder()
-                                .link(image.getLink())
-                                .build())
-                        .collect(Collectors.toList()))
-                .feedbacks(savedProduct.getFeedbackList().stream()
-                        .map(feedback -> CreateProductResponse.FeedBack.builder()
-                                .content(feedback.getContent())
-                                .build())
-                        .toList())
-                .shop(CreateProductResponse.Shop.builder()
-                        .id(savedProduct.getShop().getId())
-                        .name(savedProduct.getShop().getAccount().getName())
-                        .build())
-                .build();
-    }
 
     @Override
     public ViewShopProfileResponse viewShopProfile(ViewShopProfileRequest request) {
@@ -833,6 +769,7 @@ public class UserServiceImpl implements UserService {
                 .shops(shopResponses)
                 .build();
     }
+
     private List<ServiceCenter> getServiceCenterList(String type) {
         return serviceCenterRepo.findAllByTypeAndServiceCenterStatus_StatusOrServiceCenterStatus_StatusOrderByRatingDesc(type, Const.SERVICE_CENTER_STATUS_ACTIVE, Const.SERVICE_CENTER_STATUS_CLOSED);
     }

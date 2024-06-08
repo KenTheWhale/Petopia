@@ -36,6 +36,7 @@ public class Appointment {
 
     @ManyToMany(mappedBy = "appointmentList")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Substitute> substituteList;
 
     private LocalDateTime date;
@@ -53,6 +54,7 @@ public class Appointment {
 
     @OneToOne(mappedBy = "appointment", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private ServiceReport serviceReport;
 
     @ManyToMany

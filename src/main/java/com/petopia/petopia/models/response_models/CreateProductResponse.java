@@ -23,21 +23,29 @@ public class CreateProductResponse {
 
     private String name;
 
-    private double price;
-
-    private int availableQuantity;
-
-    private int soldQuantity;
-
-    private int rating;
-
     private List<Images> images;
 
-    private List<FeedBack> feedbacks;
-
-    private Shop shop;
+    private String shop;
 
     private String productStatus;
+
+    private List<AttributeCombo> attributeCombos;
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class AttributeCombo {
+
+        private String mainAttributeValue;
+
+        private String subAttributeValue;
+
+        private float price;
+
+        private int stockQuantity;
+
+    }
 
     @Data
     @AllArgsConstructor
@@ -58,18 +66,6 @@ public class CreateProductResponse {
     public static class Images {
 
         private String link;
-
-    }
-
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Builder
-    public static class FeedBack {
-
-        private String content;
-
-        private String userName;
 
     }
 

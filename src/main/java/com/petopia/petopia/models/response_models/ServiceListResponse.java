@@ -14,16 +14,17 @@ import java.util.List;
 public class ServiceListResponse {
     private String status;
     private String message;
-    private List<ServiceList> serviceList;
+    private List<Service> serviceList;
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    public static class ServiceList {
+    public static class Service {
         private int id;
-        private String serviceName;
-        private String serviceType;
-        private double servicePrice;
+        private String name;
+        private String type;
+        private boolean onSite;
+        private double price;
     }
 }

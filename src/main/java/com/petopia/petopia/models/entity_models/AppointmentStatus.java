@@ -21,5 +21,6 @@ public class AppointmentStatus {
 
     @OneToMany(mappedBy = "appointmentStatus")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Appointment> appointmentList;
 }

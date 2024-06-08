@@ -29,13 +29,16 @@ public class Group {
 
     @OneToMany(mappedBy = "group")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<GroupManager> groupManagerList;
 
     @OneToMany(mappedBy = "group")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<GroupMember> groupMemberList;
 
     @OneToMany(mappedBy = "group")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<GroupImage> groupImageList;
 }

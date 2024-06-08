@@ -19,6 +19,7 @@ public class ServiceCenterPlan {
 
     @OneToMany(mappedBy = "serviceCenterPlan")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<ServiceCenter> serviceCenterList;
 
     @ManyToOne

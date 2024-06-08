@@ -21,5 +21,6 @@ public class ProductStatus {
 
     @OneToMany(mappedBy = "productStatus")
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private List<Product> productList ;
 }
