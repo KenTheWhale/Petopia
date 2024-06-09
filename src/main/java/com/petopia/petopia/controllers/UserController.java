@@ -8,6 +8,7 @@ import com.petopia.petopia.services.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -153,6 +154,18 @@ public class UserController {
     @PreAuthorize("hasAuthority('user:read')")
     public SearchShopResponse searchShopResponse(@RequestBody SearchShopRequest request) {
         return userService.searchShop(request);
+    }
+
+    @GetMapping("/product/page")
+    @PreAuthorize("hasAuthority('user:read')")
+    public ViewProductPageResponse viewProductPageResponse(){
+        return userService.viewProductPageResponse();
+    }
+
+    @PostMapping("/product/detail")
+    @PreAuthorize("hasAuthority('user:read')")
+    public ViewProductDetailResponse viewProductDetailResponse(@RequestBody ViewProductDetailRequest request) {
+        return userService.viewProductDetail(request);
     }
 
 }
