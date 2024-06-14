@@ -14,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @SpringBootApplication
@@ -63,7 +62,7 @@ public class PetopiaApplication {
 
     private final ServiceCenterRepo serviceCenterRepo;
 
-    private final ServiceCenterPlanRepo serviceCenterPlanRepo;
+    private final BusinessPlanRepo businessPlanRepo;
 
     private final AppointmentRepo appointmentRepo;
 
@@ -76,8 +75,6 @@ public class PetopiaApplication {
     private final ProductRepo productRepo;
 
     private final ServiceRepo serviceRepo;
-
-    private final ShopPlanRepo shopPlanRepo;
 
     private final ProductCategoryRepo productCategoryRepo;
 
@@ -106,6 +103,8 @@ public class PetopiaApplication {
     private final TimeSlotRepo timeSlotRepo;
 
     private final TimeSlotStatusRepo timeSlotStatusRepo;
+
+    private final PlanTypeRepo planTypeRepo;
 
     public static void main(String[] args) {
         SpringApplication.run(PetopiaApplication.class, args);
@@ -289,6 +288,19 @@ public class PetopiaApplication {
 //
 //                TimeSlotStatus closeTimeSlot = timeSlotStatusRepo.save(
 //                        TimeSlotStatus.builder().status(Const.TIME_SLOT_STATUS_CLOSE).build()
+//                );
+//
+//                // init plan type
+//                PlanType shopType = planTypeRepo.save(
+//                        PlanType.builder().type(Const.BUSINESS_PLAN_TYPE_SHOP).build()
+//                );
+//
+//                PlanType healthType = planTypeRepo.save(
+//                        PlanType.builder().type(Const.BUSINESS_PLAN_TYPE_HEALTH).build()
+//                );
+//
+//                PlanType serviceType = planTypeRepo.save(
+//                        PlanType.builder().type(Const.BUSINESS_PLAN_TYPE_SERVICE).build()
 //                );
 //
 //                // init account-------------------------------------------------------------------------//
@@ -568,23 +580,25 @@ public class PetopiaApplication {
 //
 //                // init service center plan-----------------------------------------------------------//
 //
-//                ServiceCenterPlan scPlan1 = serviceCenterPlanRepo.save(
-//                        ServiceCenterPlan.builder()
+//                BusinessPlan scPlan1 = businessPlanRepo.save(
+//                        BusinessPlan.builder()
 //                                .planStatus(activePlan)
 //                                .name("PetVip1")
 //                                .fee(3000000)
 //                                .duration(150)
 //                                .description("Gói VIP thú cưng")
+//                                .planType(serviceType)
 //                                .build()
 //                );
 //
-//                ServiceCenterPlan scPlan2 = serviceCenterPlanRepo.save(
-//                        ServiceCenterPlan.builder()
+//                BusinessPlan scPlan2 = businessPlanRepo.save(
+//                        BusinessPlan.builder()
 //                                .planStatus(activePlan)
 //                                .name("PetVip2")
 //                                .fee(5000000)
 //                                .duration(300)
 //                                .description("Gói VIP thú cưng")
+//                                .planType(healthType)
 //                                .build()
 //                );
 //
@@ -593,7 +607,7 @@ public class PetopiaApplication {
 //                ServiceCenter sc1 = serviceCenterRepo.save(
 //                        ServiceCenter.builder()
 //                                .account(scmAcc1)
-//                                .serviceCenterPlan(scPlan1)
+//                                .businessPlan(scPlan1)
 //                                .serviceCenterStatus(activeServiceCenter)
 //                                .planPurchasedDate(LocalDateTime.now().minusWeeks(2))
 //                                .name("Mèo Spa")
@@ -609,7 +623,7 @@ public class PetopiaApplication {
 //                ServiceCenter sc2 = serviceCenterRepo.save(
 //                        ServiceCenter.builder()
 //                                .account(scmAcc2)
-//                                .serviceCenterPlan(scPlan2)
+//                                .businessPlan(scPlan2)
 //                                .serviceCenterStatus(activeServiceCenter)
 //                                .planPurchasedDate(LocalDateTime.now().minusDays(28))
 //                                .name("Puppy Mart")
@@ -1094,23 +1108,25 @@ public class PetopiaApplication {
 //                );
 //
 //                // init shop plan------------------------------------------------------------------//
-//                ShopPlan shopPlan1 = shopPlanRepo.save(
-//                        ShopPlan.builder()
+//                BusinessPlan shopPlan1 = businessPlanRepo.save(
+//                        BusinessPlan.builder()
 //                                .planStatus(activePlan)
 //                                .name("PetVip1")
 //                                .fee(450000)
 //                                .duration(150)
 //                                .description("Gói VIP 1")
+//                                .planType(shopType)
 //                                .build()
 //                );
 //
-//                ShopPlan shopPlan2 = shopPlanRepo.save(
-//                        ShopPlan.builder()
+//                BusinessPlan shopPlan2 = businessPlanRepo.save(
+//                        BusinessPlan.builder()
 //                                .planStatus(activePlan)
 //                                .name("PetVip2")
 //                                .fee(700000)
 //                                .duration(360)
 //                                .description("Gói VIP 2")
+//                                .planType(shopType)
 //                                .build()
 //                );
 //
@@ -1118,7 +1134,7 @@ public class PetopiaApplication {
 //                Shop shop1 = shopRepo.save(
 //                        Shop.builder()
 //                                .account(shopAcc1)
-//                                .shopPlan(shopPlan1)
+//                                .businessPlan(shopPlan1)
 //                                .shopStatus(activeShop)
 //                                .planPurchasedDate(LocalDateTime.now().minusWeeks(5))
 //                                .name("Pet Station")
@@ -1130,7 +1146,7 @@ public class PetopiaApplication {
 //                Shop shop2 = shopRepo.save(
 //                        Shop.builder()
 //                                .account(shopAcc2)
-//                                .shopPlan(shopPlan2)
+//                                .businessPlan(shopPlan2)
 //                                .shopStatus(activeShop)
 //                                .planPurchasedDate(LocalDateTime.now().minusMonths(2))
 //                                .name("Paddiers")
