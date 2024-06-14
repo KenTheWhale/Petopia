@@ -24,7 +24,7 @@ public class ServiceCenter {
 
     @ManyToOne
     @JoinColumn(name = "`plan_id`")
-    private ServiceCenterPlan serviceCenterPlan;
+    private BusinessPlan businessPlan;
 
     @ManyToOne
     @JoinColumn(name = "status_id")
