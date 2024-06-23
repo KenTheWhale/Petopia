@@ -8,9 +8,9 @@ import com.petopia.petopia.models.entity_models.Token;
 import com.petopia.petopia.models.entity_models.User;
 import com.petopia.petopia.models.request_models.CreateAccountRequest;
 import com.petopia.petopia.models.request_models.LoginRequest;
-import com.petopia.petopia.models.response_models.CreateAccountResponse;
-import com.petopia.petopia.models.response_models.LoginResponse;
-import com.petopia.petopia.models.response_models.RefreshResponse;
+import com.petopia.petopia.models.request_models.ResetPasswordRequest;
+import com.petopia.petopia.models.request_models.SendOtpRequest;
+import com.petopia.petopia.models.response_models.*;
 import com.petopia.petopia.repositories.AccountRepo;
 import com.petopia.petopia.repositories.AccountStatusRepo;
 import com.petopia.petopia.repositories.TokenRepo;
@@ -19,11 +19,18 @@ import com.petopia.petopia.services.JWTService;
 import com.petopia.petopia.services.TokenService;
 import com.petopia.petopia.services.TokenStatusService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.mail.javamail.JavaMailSender;
+import io.jsonwebtoken.*;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -45,29 +52,42 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final AccountStatusRepo accountStatusRepo;
 
+    private final JavaMailSender mailSender;
+
+    private static final long OTP_VALID_DURATION = 5 * 60 * 1000;
+
+
     @Override
     public LoginResponse login(LoginRequest request) {
-        if(checkIfStringIsValid(request.getEmail()) && checkIfStringIsValid(request.getPassword())){
-            if(checkIfMailIsValid(request.getEmail())){
+        if (checkIfStringIsValid(request.getEmail()) && checkIfStringIsValid(request.getPassword())) {
+            if (checkIfMailIsValid(request.getEmail())) {
                 Account account = accountRepo.findByEmail(request.getEmail()).orElse(null);
-                if(account != null && passwordEncoder.matches(request.getPassword(), account.getPassword())){
-                    if(account.getAccountStatus().getStatus().equals(Const.ACCOUNT_STATUS_ACTIVE)){
+                if (account != null && passwordEncoder.matches(request.getPassword(), account.getPassword())) {
+                    if (account.getAccountStatus().getStatus().equals(Const.ACCOUNT_STATUS_ACTIVE)) {
                         Token oldAccess = tokenRepo.findByAccount_IdAndTokenStatus_StatusAndType(account.getId(), Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_ACCESS).orElse(null);
                         Token oldRefresh = tokenRepo.findByAccount_IdAndTokenStatus_StatusAndType(account.getId(), Const.TOKEN_STATUS_ACTIVE, Const.TOKEN_TYPE_REFRESH).orElse(null);
 
-                        if(oldAccess != null) tokenStatusService.applyExpiredStatus(oldAccess);
-                        if(oldRefresh != null) tokenStatusService.applyExpiredStatus(oldRefresh);
+                        if (oldAccess != null) tokenStatusService.applyExpiredStatus(oldAccess);
+                        if (oldRefresh != null) tokenStatusService.applyExpiredStatus(oldRefresh);
 
                         Token accessToken = tokenService.createNewAccessToken(account);
                         tokenService.createNewRefreshToken(account);
 
                         String address = "";
 
-                        switch (account.getRole()){
-                            case USER: address = account.getUser().getAddress(); break;
-                            case SHOP_OWNER: address = account.getShop().getAddress(); break;
-                            case SERVICE_CENTER_MANAGER: address = account.getServiceCenter().getAddress(); break;
-                            case SERVICE_PROVIDER: address = account.getServiceProvider().getServiceCenter().getAddress(); break;
+                        switch (account.getRole()) {
+                            case USER:
+                                address = account.getUser().getAddress();
+                                break;
+                            case SHOP_OWNER:
+                                address = account.getShop().getAddress();
+                                break;
+                            case SERVICE_CENTER_MANAGER:
+                                address = account.getServiceCenter().getAddress();
+                                break;
+                            case SERVICE_PROVIDER:
+                                address = account.getServiceProvider().getServiceCenter().getAddress();
+                                break;
                         }
 
                         return LoginResponse.builder()
@@ -156,7 +176,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .build();
     }
 
-    private boolean checkIfStringIsValid(String value){
+    private boolean checkIfStringIsValid(String value) {
         return value != null && !value.trim().isEmpty();
     }
 
@@ -176,8 +196,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .build();
         }
 
-        if(!checkIfMailIsValid(request.getEmail())){
-            return  CreateAccountResponse.builder()
+        if (!checkIfMailIsValid(request.getEmail())) {
+            return CreateAccountResponse.builder()
                     .status("400")
                     .message("Email không hợp lệ")
                     .build();
@@ -203,4 +223,103 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .message("Tạo tài khoản thành công")
                 .build();
     }
+
+    @Override
+    public SendOTPResponse sendOTP(SendOtpRequest request) {
+        Account account = accountRepo.findByEmail(request.getEmail()).orElse(null);
+        if (account == null) {
+            return SendOTPResponse
+                    .builder()
+                    .status("400")
+                    .message("Không tìm thấy tài khoản với email" + request.getEmail())
+                    .build();
+        } else {
+            String otp = generateOTP(account);
+            sendOTPEmail(account.getEmail(), otp);
+            return SendOTPResponse
+                    .builder()
+                    .status("200")
+                    .message("Đã gửi OTP đến gmail " + request.getEmail())
+                    .build();
+        }
+    }
+
+    @Override
+    public ResetPasswordResponse resetPassword(ResetPasswordRequest request) {
+        Account account = accountRepo.findByEmail(request.getEmail()).orElse(null);
+        if (account == null) {
+            return ResetPasswordResponse
+                    .builder()
+                    .status("400")
+                    .message("Không tìm thấy tài khoản với email " + request.getEmail())
+                    .build();
+        } else {
+            String otp = generateOTP(account);
+
+            if (otp.equals(request.getOtp().trim())) {
+                if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+                    return ResetPasswordResponse
+                            .builder()
+                            .status("400")
+                            .message("Mật khẩu xác nhận không trùng khớp")
+                            .build();
+                }
+                account.setPassword(passwordEncoder.encode(request.getNewPassword()));
+                accountRepo.save(account);
+                return ResetPasswordResponse
+                        .builder()
+                        .status("200")
+                        .message("Đã đặt lại mật khẩu thành công cho email " + request.getEmail())
+                        .build();
+            }
+            return ResetPasswordResponse
+                    .builder()
+                    .status("400")
+                    .message("OTP không chính xác")
+                    .build();
+
+        }
+    }
+
+
+    public static String generateOTP(Account account) {
+        long currentTimeMillis = System.currentTimeMillis();
+        long otpValidity = currentTimeMillis / OTP_VALID_DURATION;
+
+        String data = account.getEmail() + otpValidity;
+        String hash = hashData(data);
+
+        long otp = Math.abs(hash.hashCode()) % 1000000;
+
+        return String.format("%06d", otp);
+    }
+
+    private static String hashData(String data) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(data.getBytes(StandardCharsets.UTF_8));
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) {
+                    hexString.append('0');
+                }
+                hexString.append(hex);
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error generating OTP", e);
+        }
+    }
+
+    public void sendOTPEmail(String toEmail, String otp) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toEmail);
+        message.setSubject("MÃ OPT CỦA BẠN");
+        message.setText("Mã OTP của bạn là: " + otp + ". OTP sẽ có hiệu lực trong vòng 1 phút");
+
+        mailSender.send(message);
+    }
+
+
 }

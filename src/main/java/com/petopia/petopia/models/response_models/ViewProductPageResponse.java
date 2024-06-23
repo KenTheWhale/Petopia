@@ -21,11 +21,11 @@ public class ViewProductPageResponse{
     @NoArgsConstructor
     @Builder
     public static class ProductsResponse{
-        String name;
-        String categoryName;
-        float price;
-        Integer soldQuantity;
-        float rating;
+        private String name;
+        private String categoryName;
+        private float price;
+        private Integer soldQuantity;
+        private float rating;
 
     }
 }

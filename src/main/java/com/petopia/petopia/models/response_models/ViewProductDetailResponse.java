@@ -66,8 +66,8 @@ public class ViewProductDetailResponse {
     @NoArgsConstructor
     @Builder
     public static class AttributeCom {
-        String name;
-        String value;
+        private String name;
+        private String value;
     }
 
     @Data
