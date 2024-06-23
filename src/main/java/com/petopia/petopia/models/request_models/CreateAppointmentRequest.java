@@ -6,7 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Data
@@ -29,8 +31,9 @@ public class CreateAppointmentRequest {
 
     private String phone;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
-    private LocalDateTime dateTime;
+    private LocalDate date;
+
+    private Integer slotId;
 
     private List<Integer> serviceId;
 
