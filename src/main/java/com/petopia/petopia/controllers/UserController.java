@@ -68,6 +68,12 @@ public class UserController {
         return userService.createAppointment(request, "service");
     }
 
+    @PostMapping("/time-slot/get")
+    @PreAuthorize("hasAuthority('user:read')")
+    public TimeSlotResponse getTimeSlot(@RequestBody TimeSlotRequest request){
+        return userService.getTimeSlot(request);
+    }
+
     @GetMapping("/health-center-and-service-page")
     @PreAuthorize("hasAuthority('user:read')")
     public LoadServicePageResponse loadHealthServicePage(){

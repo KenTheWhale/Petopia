@@ -15,6 +15,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,6 +43,7 @@ public class UserServiceImpl implements UserService {
     private final SubstituteRepo substituteRepo;
     private final SubstituteStatusRepo substituteStatusRepo;
     private final ShopRepo shopRepo;
+    private final TimeSlotRepo timeSlotRepo;
     private final AttributeComboRepo attributeComboRepo;
     private final ProductImageRepo productImageRepo;
 
@@ -273,13 +279,21 @@ public class UserServiceImpl implements UserService {
                     .build();
         }
 
+        TimeSlot timeSlot = timeSlotRepo.findById(request.getSlotId()).orElse(null);
+        assert timeSlot != null;
+        if(timeSlot.getTimeSlotStatus().getStatus().equals(Const.TIME_SLOT_STATUS_CLOSE)){
+            return CreateAppointmentResponse.builder()
+                    .status("400")
+                    .message("Khung giờ đã bận")
+                    .build();
+        }
 
         if (!request.isOnSite()) {
             Appointment appointment = Appointment.builder()
                     .pet(pet)
                     .serviceProvider(null)
                     .appointmentStatus(appointmentStatus)
-                    .date(request.getDateTime())
+                    .date(LocalDateTime.of(request.getDate(), timeSlot.getStartTime()))
                     .fee(calculateSumOfFees(request))
                     .type(appointmentType)
                     .extraInformation(request.getExtraInformation())
@@ -310,7 +324,7 @@ public class UserServiceImpl implements UserService {
                             CreateAppointmentResponse.appointmentDraft.builder()
                                     .petName(savedAppointment.getPet().getName())
                                     .status(Const.APPOINTMENT_STATUS_PENDING)
-                                    .date(request.getDateTime())
+                                    .date(savedAppointment.getDate())
                                     .location(savedAppointment.getPet().getUser().getAddress())
                                     .services(serviceList.stream()
                                             .map(service -> CreateAppointmentResponse.Servicee.builder()
@@ -335,7 +349,7 @@ public class UserServiceImpl implements UserService {
                     .pet(pet)
                     .serviceProvider(null)
                     .appointmentStatus(appointmentStatus)
-                    .date(request.getDateTime())
+                    .date(LocalDateTime.of(request.getDate(), timeSlot.getStartTime()))
                     .fee(calculateSumOfFees(request))
                     .type(appointmentType)
                     .extraInformation(request.getExtraInformation())
@@ -367,7 +381,7 @@ public class UserServiceImpl implements UserService {
                             CreateAppointmentResponse.appointmentDraft.builder()
                                     .petName(savedAppointment.getPet().getName())
                                     .status(Const.APPOINTMENT_STATUS_PENDING)
-                                    .date(request.getDateTime())
+                                    .date(savedAppointment.getDate())
                                     .location(sc.getAddress())
                                     .services(serviceList.stream()
                                             .map(service -> CreateAppointmentResponse.Servicee.builder()
@@ -400,6 +414,27 @@ public class UserServiceImpl implements UserService {
             }
         }
         return sum;
+    }
+
+    @Override
+    public TimeSlotResponse getTimeSlot(TimeSlotRequest request) {
+        List<TimeSlot> timeSlot = timeSlotRepo.findAllByServiceCenter_Id(request.getCenterId());
+        if (timeSlot != null) {
+            return TimeSlotResponse.builder()
+                    .status("200")
+                    .message("Lấy khung giờ thành công")
+                    .timeSlots(timeSlot.stream()
+                            .map(slot -> TimeSlotResponse.TimeSlot.builder()
+                                    .id(slot.getId())
+                                    .name(slot.getName())
+                                    .startTime(slot.getStartTime().toString())
+                                    .endTime(slot.getEndTime().toString())
+                                    .status(slot.getTimeSlotStatus().getStatus())
+                                    .build())
+                            .toList())
+                    .build();
+        }
+        return null;
     }
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -768,6 +803,8 @@ public class UserServiceImpl implements UserService {
                 .shops(shopResponses)
                 .build();
     }
+
+
 
     private List<ServiceCenter> getServiceCenterList(String type) {
         return serviceCenterRepo.findAllByTypeAndServiceCenterStatus_StatusOrServiceCenterStatus_StatusOrderByRatingDesc(type, Const.SERVICE_CENTER_STATUS_ACTIVE, Const.SERVICE_CENTER_STATUS_CLOSED);
