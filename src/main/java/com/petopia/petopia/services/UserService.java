@@ -47,5 +47,10 @@ public interface UserService {
     SearchShopResponse searchShop(SearchShopRequest request);
 
     TimeSlotResponse getTimeSlot(TimeSlotRequest request);
+    ViewProductPageResponse viewProductPageResponse();
+
+    ViewProductDetailResponse viewProductDetail(ViewProductDetailRequest request);
+
+
 
 }

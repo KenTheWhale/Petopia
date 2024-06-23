@@ -161,4 +161,16 @@ public class UserController {
         return userService.searchShop(request);
     }
 
+    @GetMapping("/product/page")
+    @PreAuthorize("hasAuthority('user:read')")
+    public ViewProductPageResponse viewProductPageResponse(){
+        return userService.viewProductPageResponse();
+    }
+
+    @PostMapping("/product/detail")
+    @PreAuthorize("hasAuthority('user:read')")
+    public ViewProductDetailResponse viewProductDetailResponse(@RequestBody ViewProductDetailRequest request) {
+        return userService.viewProductDetail(request);
+    }
+
 }
