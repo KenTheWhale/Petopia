@@ -34,7 +34,7 @@ public class Product {
     @Column(name = "`sold_quantity`")
     private int soldQty;
 
-    private int rating;
+    private float rating;
 
     @OneToMany(mappedBy = "product")
     @ToString.Exclude

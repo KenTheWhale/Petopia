@@ -14,10 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,6 +38,8 @@ public class UserServiceImpl implements UserService {
     private final SubstituteRepo substituteRepo;
     private final SubstituteStatusRepo substituteStatusRepo;
     private final ShopRepo shopRepo;
+    private final AttributeComboRepo attributeComboRepo;
+    private final ProductImageRepo productImageRepo;
 
     //--------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -828,6 +827,239 @@ public class UserServiceImpl implements UserService {
                 .build();
 
     }
+    @Override
+    public ViewProductPageResponse viewProductPageResponse() {
+        String status = "";
+        String message = "";
+        ArrayList<ViewProductPageResponse.ProductsResponse> productsResponses = new ArrayList<>();
+        List<Product> products = productRepo.findAll();
+
+        if (products.isEmpty()) {
+            status = "400";
+            message = "Không có danh sách sản phẩm nào trong kho";
+        } else {
+            status = "200";
+            message = "Thành công trả về trang danh sách sản phẩm";
+        }
+
+        for (Product product : products) {
+            float currenPrice = getMinAttributeComboPrice(product.getId());
+            if (!checkProductDeletedOrNot(product)) {
+                productsResponses.add(ViewProductPageResponse.ProductsResponse
+                        .builder()
+                        .name(product.getName())
+                        .categoryName(product.getProductCategory().getName())
+                        .price(currenPrice)
+                        .soldQuantity(product.getSoldQty())
+                        .rating(product.getRating())
+                        .build());
+            }
+        }
+        return ViewProductPageResponse
+                .builder()
+                .status(status)
+                .message(message)
+                .productsResponses(productsResponses)
+                .build();
+    }
+
+    @Override
+    public ViewProductDetailResponse viewProductDetail(ViewProductDetailRequest request) {
+        String productStatus = "";
+
+        ViewProductDetailResponse.ProductDetail productDetail = new ViewProductDetailResponse.ProductDetail();
+        Product product = productRepo.findProductById(request.getProductId());
+
+        // Lấy danh sách phản hồi của sản phẩm
+        List<Feedback> listFeedback = feedBackRepo.findAllByProduct_Id(request.getProductId());
+        List<ViewProductDetailResponse.UserFeedBack> userFeedBacks = new ArrayList<>();
+
+        for (Feedback feedback : listFeedback) {
+            if (!feedback.isReported()) {
+                ViewProductDetailResponse.UserFeedBack userFeedback = ViewProductDetailResponse.UserFeedBack.builder()
+                        .avatar(feedback.getUser().getAccount().getAvatar())
+                        .username(feedback.getUser().getAccount().getName())
+                        .content(feedback.getContent())
+                        .rating(feedback.getRating())
+                        .build();
+                userFeedBacks.add(userFeedback);
+            }
+        }
+
+        if (product != null) {
+            Map<String, Set<String>> productAttributes = new LinkedHashMap<>();
+            List<AttributeCombo> attributeCombos = attributeComboRepo.findAllByProduct_Id(request.getProductId());
+            List<ViewProductDetailResponse.Combo> combos = new ArrayList<>();
+            int totalQuantity = 0;
+
+            for (AttributeCombo attributeCombo : attributeCombos) {
+                String mainAttributeName = attributeCombo.getMAN();
+                String mainAttributeValue = attributeCombo.getMAVN();
+                String subAttributeName = attributeCombo.getSAN();
+                String subAttributeValue = attributeCombo.getSAVN();
+
+                Set<String> mainAttributeValues = productAttributes.getOrDefault(mainAttributeName, new LinkedHashSet<>());
+                mainAttributeValues.add(mainAttributeValue);
+                productAttributes.put(mainAttributeName, mainAttributeValues);
+
+                Set<String> subAttributeValues = productAttributes.getOrDefault(subAttributeName, new LinkedHashSet<>());
+                subAttributeValues.add(subAttributeValue);
+                productAttributes.put(subAttributeName, subAttributeValues);
+
+                int comboQuantity = attributeCombo.getQuantity();
+                totalQuantity += comboQuantity;
+
+                String comboStatus;
+                if (comboQuantity > 0) {
+                    comboStatus = Const.PRODUCT_STATUS_AVAILABLE;
+                } else {
+                    comboStatus = Const.PRODUCT_STATUS_OUT_OF_STOCK;
+                }
+
+                ViewProductDetailResponse.Combo combo = ViewProductDetailResponse.Combo.builder()
+                        .mainAttribute(new ViewProductDetailResponse.AttributeCom(mainAttributeName, mainAttributeValue))
+                        .subAttribute(new ViewProductDetailResponse.AttributeCom(subAttributeName, subAttributeValue))
+                        .price(attributeCombo.getPrice())
+                        .comboStatus(comboStatus)
+                        .quantity(comboQuantity)
+                        .build();
+                combos.add(combo);
+            }
+
+            if (totalQuantity > 0) {
+                productStatus = Const.PRODUCT_STATUS_AVAILABLE;
+            } else {
+                productStatus = Const.PRODUCT_STATUS_OUT_OF_STOCK;
+            }
+
+            Map<String, List<String>> attributesResponse = new LinkedHashMap<>();
+            for (Map.Entry<String, Set<String>> entry : productAttributes.entrySet()) {
+                attributesResponse.put(entry.getKey(), new ArrayList<>(entry.getValue()));
+            }
+
+            double averageRating = calculateProductAverageRating(listFeedback);
+            double shopAverageRating = calculateShopAverageRating(product.getShop().getId());
+            int totalProduct = countProductInShop(product.getShop().getId());
+
+            ViewProductDetailResponse.DetailResponse detailResponse = ViewProductDetailResponse.DetailResponse.builder()
+                    .imgLink(getProductImages(product))
+                    .name(product.getName())
+                    .rating(product.getRating())
+                    .soldQuantity(product.getSoldQty())
+                    .productAttributes(attributesResponse)
+                    .attributeCombos(combos)
+                    .productStatus(productStatus)
+                    .build();
+
+            ViewProductDetailResponse.Shop shop = ViewProductDetailResponse.Shop.builder()
+                    .name(product.getShop().getName())
+                    .shopRating(product.getShop().getRating())
+                    .totalProduct(totalProduct)
+                    .build();
+
+            productDetail = ViewProductDetailResponse.ProductDetail.builder()
+                    .detailResponse(detailResponse)
+                    .shop(shop)
+                    .userFeedBacks(userFeedBacks)
+                    .build();
+
+            return ViewProductDetailResponse.builder()
+                    .status("200")
+                    .message("Đã trả về chi tiết sản phẩm thành công")
+                    .productDetails(productDetail)
+                    .build();
+        }
+
+        return ViewProductDetailResponse.builder()
+                .status("400")
+                .message("Thất bại trong việc trả về chi tiết sản phẩm")
+                .build();
+    }
+
+    private double calculateProductAverageRating(List<Feedback> feedbacks) {
+        double totalRating = 0;
+        int feedbackCount = 0;
+
+        for (Feedback feedback : feedbacks) {
+            if (!feedback.isReported()) {
+                totalRating += feedback.getRating();
+                feedbackCount++;
+            }
+        }
+
+        if (feedbackCount == 0) {
+            return 0;
+        }
+        return totalRating / feedbackCount;
+    }
+
+    private int countProductInShop(int shopId){
+        int count = 0;
+        List<Product> products = productRepo.findAllByShopId(shopId);
+        for(Product product : products){
+            if(product.getShop().getId() == shopId){
+                count++;
+            }
+        }
+        return count;
+    }
+
+
+    private List<ViewProductDetailResponse.Image> getProductImages(Product product) {
+        List<ViewProductDetailResponse.Image> images = new ArrayList<>();
+        List<ProductImage> productImages = productImageRepo.findAllByProduct(product);
+
+        for (ProductImage productImage : productImages) {
+            ViewProductDetailResponse.Image image = ViewProductDetailResponse.Image.builder()
+                    .link(productImage.getLink())
+                    .build();
+            images.add(image);
+        }
+
+        return images;
+    }
+    private double calculateShopAverageRating(int shopId) {
+        List<Product> shopProducts = productRepo.findAllByShopId(shopId);
+        double totalRating = 0;
+        int productCount = 0;
+
+        for (Product shopProduct : shopProducts) {
+            totalRating += shopProduct.getRating();
+            productCount++;
+        }
+
+        if (productCount == 0) {
+            return 0;
+        }
+        return totalRating / productCount;
+    }
+
+
+
+    private Float getMinAttributeComboPrice(int productId) {
+        List<AttributeCombo> attributeCombos = attributeComboRepo.findAllByProduct_Id(productId);
+
+        if (attributeCombos.isEmpty()) {
+            return null;
+        }
+
+        float minPriceCombo = attributeCombos.get(0).getPrice();
+
+        for (AttributeCombo attributeCombo : attributeCombos) {
+            float currentPrice = attributeCombo.getPrice();
+            if (currentPrice < minPriceCombo) {
+                minPriceCombo = currentPrice;
+            }
+        }
+
+        return minPriceCombo;
+    }
+
+    private boolean checkProductDeletedOrNot(Product product) {
+        return product.getProductStatus().getStatus().equals(Const.PRODUCT_STATUS_DELETED);
+    }
+
+
 
 
     private Page<ServiceReport> getPaginationHealthReportListByPetId(int pageNo, Integer petID, String sort) {

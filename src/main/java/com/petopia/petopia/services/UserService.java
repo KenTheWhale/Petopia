@@ -45,6 +45,10 @@ public interface UserService {
 
     SearchShopResponse searchShop(SearchShopRequest request);
 
+    ViewProductPageResponse viewProductPageResponse();
+
+    ViewProductDetailResponse viewProductDetail(ViewProductDetailRequest request);
+
 
 
 }
