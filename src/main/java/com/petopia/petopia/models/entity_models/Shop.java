@@ -25,7 +25,7 @@ public class Shop {
 
     @ManyToOne
     @JoinColumn(name = "`planId`")
-    private ShopPlan shopPlan;
+    private BusinessPlan businessPlan;
 
     @ManyToOne
     @JoinColumn(name = "`status_id`")

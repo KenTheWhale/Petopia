@@ -1,5 +1,6 @@
 package com.petopia.petopia.services;
 
+import com.petopia.petopia.models.entity_models.TimeSlot;
 import com.petopia.petopia.models.request_models.*;
 import com.petopia.petopia.models.response_models.*;
 
@@ -43,6 +44,7 @@ public interface UserService {
 
     SearchShopResponse searchShop(SearchShopRequest request);
 
+    TimeSlotResponse getTimeSlot(TimeSlotRequest request);
     ViewProductPageResponse viewProductPageResponse();
 
     ViewProductDetailResponse viewProductDetail(ViewProductDetailRequest request);

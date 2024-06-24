@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -63,7 +64,7 @@ public class PetopiaApplication {
 
     private final ServiceCenterRepo serviceCenterRepo;
 
-    private final ServiceCenterPlanRepo serviceCenterPlanRepo;
+    private final BusinessPlanRepo businessPlanRepo;
 
     private final AppointmentRepo appointmentRepo;
 
@@ -76,8 +77,6 @@ public class PetopiaApplication {
     private final ProductRepo productRepo;
 
     private final ServiceRepo serviceRepo;
-
-    private final ShopPlanRepo shopPlanRepo;
 
     private final ProductCategoryRepo productCategoryRepo;
 
@@ -106,6 +105,8 @@ public class PetopiaApplication {
     private final TimeSlotRepo timeSlotRepo;
 
     private final TimeSlotStatusRepo timeSlotStatusRepo;
+
+    private final PlanTypeRepo planTypeRepo;
 
     public static void main(String[] args) {
         SpringApplication.run(PetopiaApplication.class, args);
@@ -289,6 +290,19 @@ public class PetopiaApplication {
 //
 //                TimeSlotStatus closeTimeSlot = timeSlotStatusRepo.save(
 //                        TimeSlotStatus.builder().status(Const.TIME_SLOT_STATUS_CLOSE).build()
+//                );
+//
+//                // init plan type
+//                PlanType shopType = planTypeRepo.save(
+//                        PlanType.builder().type(Const.BUSINESS_PLAN_TYPE_SHOP).build()
+//                );
+//
+//                PlanType healthType = planTypeRepo.save(
+//                        PlanType.builder().type(Const.BUSINESS_PLAN_TYPE_HEALTH).build()
+//                );
+//
+//                PlanType serviceType = planTypeRepo.save(
+//                        PlanType.builder().type(Const.BUSINESS_PLAN_TYPE_SERVICE).build()
 //                );
 //
 //                // init account-------------------------------------------------------------------------//
@@ -568,23 +582,25 @@ public class PetopiaApplication {
 //
 //                // init service center plan-----------------------------------------------------------//
 //
-//                ServiceCenterPlan scPlan1 = serviceCenterPlanRepo.save(
-//                        ServiceCenterPlan.builder()
+//                BusinessPlan scPlan1 = businessPlanRepo.save(
+//                        BusinessPlan.builder()
 //                                .planStatus(activePlan)
 //                                .name("PetVip1")
 //                                .fee(3000000)
 //                                .duration(150)
 //                                .description("Gói VIP thú cưng")
+//                                .planType(serviceType)
 //                                .build()
 //                );
 //
-//                ServiceCenterPlan scPlan2 = serviceCenterPlanRepo.save(
-//                        ServiceCenterPlan.builder()
+//                BusinessPlan scPlan2 = businessPlanRepo.save(
+//                        BusinessPlan.builder()
 //                                .planStatus(activePlan)
 //                                .name("PetVip2")
 //                                .fee(5000000)
 //                                .duration(300)
 //                                .description("Gói VIP thú cưng")
+//                                .planType(healthType)
 //                                .build()
 //                );
 //
@@ -593,7 +609,7 @@ public class PetopiaApplication {
 //                ServiceCenter sc1 = serviceCenterRepo.save(
 //                        ServiceCenter.builder()
 //                                .account(scmAcc1)
-//                                .serviceCenterPlan(scPlan1)
+//                                .businessPlan(scPlan1)
 //                                .serviceCenterStatus(activeServiceCenter)
 //                                .planPurchasedDate(LocalDateTime.now().minusWeeks(2))
 //                                .name("Mèo Spa")
@@ -609,7 +625,7 @@ public class PetopiaApplication {
 //                ServiceCenter sc2 = serviceCenterRepo.save(
 //                        ServiceCenter.builder()
 //                                .account(scmAcc2)
-//                                .serviceCenterPlan(scPlan2)
+//                                .businessPlan(scPlan2)
 //                                .serviceCenterStatus(activeServiceCenter)
 //                                .planPurchasedDate(LocalDateTime.now().minusDays(28))
 //                                .name("Puppy Mart")
@@ -1048,6 +1064,97 @@ public class PetopiaApplication {
 //                                .build()
 //                );
 //
+//                //init time slot-----------------------------------------------------------------//
+//                TimeSlot timeSlot1 = timeSlotRepo.save(
+//                        TimeSlot.builder()
+//                                .serviceCenter(sc1)
+//                                .timeSlotStatus(openTimeSlot)
+//                                .name("Morning Slot")
+//                                .startTime(LocalTime.of(9, 0))  // 9:00 AM
+//                                .endTime(LocalTime.of(12, 0))   // 12:00 PM
+//                                .build()
+//                );
+//
+//                TimeSlot timeSlot2 = timeSlotRepo.save(
+//                        TimeSlot.builder()
+//                                .serviceCenter(sc1)
+//                                .timeSlotStatus(openTimeSlot)
+//                                .name("Afternoon Slot")
+//                                .startTime(LocalTime.of(13, 0))  // 1:00 PM
+//                                .endTime(LocalTime.of(17, 0))    // 5:00 PM
+//                                .build()
+//                );
+//
+//                TimeSlot timeSlot3 = timeSlotRepo.save(
+//                        TimeSlot.builder()
+//                                .serviceCenter(sc1)
+//                                .timeSlotStatus(closeTimeSlot)
+//                                .name("Evening Slot")
+//                                .startTime(LocalTime.of(18, 0))  // 6:00 PM
+//                                .endTime(LocalTime.of(21, 0))    // 9:00 PM
+//                                .build()
+//                );
+//
+//                TimeSlot timeSlot4 = timeSlotRepo.save(
+//                        TimeSlot.builder()
+//                                .serviceCenter(sc1)
+//                                .timeSlotStatus(openTimeSlot)
+//                                .name("Late Morning Slot")
+//                                .startTime(LocalTime.of(10, 0))  // 10:00 AM
+//                                .endTime(LocalTime.of(13, 0))    // 1:00 PM
+//                                .build()
+//                );
+//
+//                TimeSlot timeSlot5 = timeSlotRepo.save(
+//                        TimeSlot.builder()
+//                                .serviceCenter(sc1)
+//                                .timeSlotStatus(openTimeSlot)
+//                                .name("Early Evening Slot")
+//                                .startTime(LocalTime.of(16, 0))  // 4:00 PM
+//                                .endTime(LocalTime.of(19, 0))    // 7:00 PM
+//                                .build()
+//                );
+//
+//                TimeSlot timeSlot6 = timeSlotRepo.save(
+//                        TimeSlot.builder()
+//                                .serviceCenter(sc2)
+//                                .timeSlotStatus(openTimeSlot)
+//                                .name("Morning Slot")
+//                                .startTime(LocalTime.of(8, 0))  // 8:00 AM
+//                                .endTime(LocalTime.of(11, 0))   // 11:00 AM
+//                                .build()
+//                );
+//
+//                TimeSlot timeSlot7 = timeSlotRepo.save(
+//                        TimeSlot.builder()
+//                                .serviceCenter(sc2)
+//                                .timeSlotStatus(openTimeSlot)
+//                                .name("Afternoon Slot")
+//                                .startTime(LocalTime.of(12, 0))  // 12:00 PM
+//                                .endTime(LocalTime.of(15, 0))    // 3:00 PM
+//                                .build()
+//                );
+//
+//                TimeSlot timeSlot8 = timeSlotRepo.save(
+//                        TimeSlot.builder()
+//                                .serviceCenter(sc2)
+//                                .timeSlotStatus(openTimeSlot)
+//                                .name("Morning Slot")
+//                                .startTime(LocalTime.of(7, 0))  // 7:00 AM
+//                                .endTime(LocalTime.of(10, 0))   // 10:00 AM
+//                                .build()
+//                );
+//
+//                TimeSlot timeSlot9 = timeSlotRepo.save(
+//                        TimeSlot.builder()
+//                                .serviceCenter(sc2)
+//                                .timeSlotStatus(openTimeSlot)
+//                                .name("Evening Slot")
+//                                .startTime(LocalTime.of(17, 0))  // 5:00 PM
+//                                .endTime(LocalTime.of(20, 0))    // 8:00 PM
+//                                .build()
+//                );
+//
 //                // init service report-----------------------------------------------------//
 //                ServiceReport report1 = serviceReportRepo.save(
 //                        ServiceReport.builder()
@@ -1094,23 +1201,25 @@ public class PetopiaApplication {
 //                );
 //
 //                // init shop plan------------------------------------------------------------------//
-//                ShopPlan shopPlan1 = shopPlanRepo.save(
-//                        ShopPlan.builder()
+//                BusinessPlan shopPlan1 = businessPlanRepo.save(
+//                        BusinessPlan.builder()
 //                                .planStatus(activePlan)
 //                                .name("PetVip1")
 //                                .fee(450000)
 //                                .duration(150)
 //                                .description("Gói VIP 1")
+//                                .planType(shopType)
 //                                .build()
 //                );
 //
-//                ShopPlan shopPlan2 = shopPlanRepo.save(
-//                        ShopPlan.builder()
+//                BusinessPlan shopPlan2 = businessPlanRepo.save(
+//                        BusinessPlan.builder()
 //                                .planStatus(activePlan)
 //                                .name("PetVip2")
 //                                .fee(700000)
 //                                .duration(360)
 //                                .description("Gói VIP 2")
+//                                .planType(shopType)
 //                                .build()
 //                );
 //
@@ -1118,7 +1227,7 @@ public class PetopiaApplication {
 //                Shop shop1 = shopRepo.save(
 //                        Shop.builder()
 //                                .account(shopAcc1)
-//                                .shopPlan(shopPlan1)
+//                                .businessPlan(shopPlan1)
 //                                .shopStatus(activeShop)
 //                                .planPurchasedDate(LocalDateTime.now().minusWeeks(5))
 //                                .name("Pet Station")
@@ -1130,7 +1239,7 @@ public class PetopiaApplication {
 //                Shop shop2 = shopRepo.save(
 //                        Shop.builder()
 //                                .account(shopAcc2)
-//                                .shopPlan(shopPlan2)
+//                                .businessPlan(shopPlan2)
 //                                .shopStatus(activeShop)
 //                                .planPurchasedDate(LocalDateTime.now().minusMonths(2))
 //                                .name("Paddiers")
