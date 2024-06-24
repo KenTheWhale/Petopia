@@ -54,4 +54,7 @@ public class Const {
     public final static String BUSINESS_PLAN_TYPE_SHOP = "cửa hàng";
     public final static String BUSINESS_PLAN_TYPE_HEALTH = "y tế";
     public final static String BUSINESS_PLAN_TYPE_SERVICE = "dịch vụ";
+    public final static String CREATOR_QUOC = "Creator: Quốc";
+    public final static String CREATOR_HUY = "Creator: Huy";
+    public final static String CREATOR_TRIEU = "Creator: Triều";
 }
