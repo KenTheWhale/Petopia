@@ -39,10 +39,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("/send/otp")
+    @Operation(description = Const.CREATOR_HUY)
     public SendOTPResponse sendOTP(@RequestBody SendOtpRequest request){
         return authenticationService.sendOTP(request);
     }
     @PostMapping("/reset/password")
+    @Operation(description = Const.CREATOR_HUY)
     public ResetPasswordResponse resetPassword(@RequestBody ResetPasswordRequest request){
         return authenticationService.resetPassword(request);
     }

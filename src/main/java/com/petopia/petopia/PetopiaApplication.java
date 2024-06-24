@@ -1064,6 +1064,97 @@ public class PetopiaApplication {
 //                                .build()
 //                );
 //
+//                //init time slot-----------------------------------------------------------------//
+//                TimeSlot timeSlot1 = timeSlotRepo.save(
+//                        TimeSlot.builder()
+//                                .serviceCenter(sc1)
+//                                .timeSlotStatus(openTimeSlot)
+//                                .name("Morning Slot")
+//                                .startTime(LocalTime.of(9, 0))  // 9:00 AM
+//                                .endTime(LocalTime.of(12, 0))   // 12:00 PM
+//                                .build()
+//                );
+//
+//                TimeSlot timeSlot2 = timeSlotRepo.save(
+//                        TimeSlot.builder()
+//                                .serviceCenter(sc1)
+//                                .timeSlotStatus(openTimeSlot)
+//                                .name("Afternoon Slot")
+//                                .startTime(LocalTime.of(13, 0))  // 1:00 PM
+//                                .endTime(LocalTime.of(17, 0))    // 5:00 PM
+//                                .build()
+//                );
+//
+//                TimeSlot timeSlot3 = timeSlotRepo.save(
+//                        TimeSlot.builder()
+//                                .serviceCenter(sc1)
+//                                .timeSlotStatus(closeTimeSlot)
+//                                .name("Evening Slot")
+//                                .startTime(LocalTime.of(18, 0))  // 6:00 PM
+//                                .endTime(LocalTime.of(21, 0))    // 9:00 PM
+//                                .build()
+//                );
+//
+//                TimeSlot timeSlot4 = timeSlotRepo.save(
+//                        TimeSlot.builder()
+//                                .serviceCenter(sc1)
+//                                .timeSlotStatus(openTimeSlot)
+//                                .name("Late Morning Slot")
+//                                .startTime(LocalTime.of(10, 0))  // 10:00 AM
+//                                .endTime(LocalTime.of(13, 0))    // 1:00 PM
+//                                .build()
+//                );
+//
+//                TimeSlot timeSlot5 = timeSlotRepo.save(
+//                        TimeSlot.builder()
+//                                .serviceCenter(sc1)
+//                                .timeSlotStatus(openTimeSlot)
+//                                .name("Early Evening Slot")
+//                                .startTime(LocalTime.of(16, 0))  // 4:00 PM
+//                                .endTime(LocalTime.of(19, 0))    // 7:00 PM
+//                                .build()
+//                );
+//
+//                TimeSlot timeSlot6 = timeSlotRepo.save(
+//                        TimeSlot.builder()
+//                                .serviceCenter(sc2)
+//                                .timeSlotStatus(openTimeSlot)
+//                                .name("Morning Slot")
+//                                .startTime(LocalTime.of(8, 0))  // 8:00 AM
+//                                .endTime(LocalTime.of(11, 0))   // 11:00 AM
+//                                .build()
+//                );
+//
+//                TimeSlot timeSlot7 = timeSlotRepo.save(
+//                        TimeSlot.builder()
+//                                .serviceCenter(sc2)
+//                                .timeSlotStatus(openTimeSlot)
+//                                .name("Afternoon Slot")
+//                                .startTime(LocalTime.of(12, 0))  // 12:00 PM
+//                                .endTime(LocalTime.of(15, 0))    // 3:00 PM
+//                                .build()
+//                );
+//
+//                TimeSlot timeSlot8 = timeSlotRepo.save(
+//                        TimeSlot.builder()
+//                                .serviceCenter(sc2)
+//                                .timeSlotStatus(openTimeSlot)
+//                                .name("Morning Slot")
+//                                .startTime(LocalTime.of(7, 0))  // 7:00 AM
+//                                .endTime(LocalTime.of(10, 0))   // 10:00 AM
+//                                .build()
+//                );
+//
+//                TimeSlot timeSlot9 = timeSlotRepo.save(
+//                        TimeSlot.builder()
+//                                .serviceCenter(sc2)
+//                                .timeSlotStatus(openTimeSlot)
+//                                .name("Evening Slot")
+//                                .startTime(LocalTime.of(17, 0))  // 5:00 PM
+//                                .endTime(LocalTime.of(20, 0))    // 8:00 PM
+//                                .build()
+//                );
+//
 //                // init service report-----------------------------------------------------//
 //                ServiceReport report1 = serviceReportRepo.save(
 //                        ServiceReport.builder()
