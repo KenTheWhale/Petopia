@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class UpdateUserProfileResponse {
+    private String status;
+    private String message;
     private String address;
     private String gender;
     private String phone;
-    private String status;
-    private String message;
 }

@@ -15,8 +15,6 @@ public interface UserService {
 
     PetListResponse getPetList();
 
-    CreateUserProfileResponse createUserProfile(CreateUserProfileRequest request);
-
     UpdateUserProfileResponse updateUserProfile(UpdateUserProfileRequest request);
 
     CreateAppointmentResponse createAppointment(CreateAppointmentRequest request, String type);

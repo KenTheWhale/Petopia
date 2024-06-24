@@ -14,6 +14,7 @@ import com.petopia.petopia.models.response_models.*;
 import com.petopia.petopia.repositories.AccountRepo;
 import com.petopia.petopia.repositories.AccountStatusRepo;
 import com.petopia.petopia.repositories.TokenRepo;
+import com.petopia.petopia.repositories.UserRepo;
 import com.petopia.petopia.services.AuthenticationService;
 import com.petopia.petopia.services.JWTService;
 import com.petopia.petopia.services.TokenService;
@@ -55,6 +56,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final JavaMailSender mailSender;
 
     private static final long OTP_VALID_DURATION = 5 * 60 * 1000;
+    private final UserRepo userRepo;
 
 
     @Override
@@ -186,15 +188,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return Pattern.compile(regex1).matcher(mail).matches() || Pattern.compile(regex2).matcher(mail).matches();
     }
 
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        String regex = "^[0-9]{10}$";
+
+        return Pattern.compile(regex).matcher(phoneNumber).matches();
+    }
+
+
     @Override
     public CreateAccountResponse Register(CreateAccountRequest request) {
         Optional<Account> optionalAccount = accountRepo.findByEmail(request.getEmail());
-        if (optionalAccount.isPresent()) {
-            return CreateAccountResponse.builder()
-                    .status("409")
-                    .message("Email đã tồn tại")
-                    .build();
-        }
 
         if (!checkIfMailIsValid(request.getEmail())) {
             return CreateAccountResponse.builder()
@@ -203,8 +206,38 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .build();
         }
 
-        AccountStatus accountStatus = accountStatusRepo.findByStatus(Const.ACCOUNT_STATUS_ACTIVE);
+        if (optionalAccount.isPresent()) {
+            return CreateAccountResponse.builder()
+                    .status("409")
+                    .message("Email đã tồn tại")
+                    .build();
+        }
+        if(!isValidPhoneNumber(request.getPhoneNumber())){
+            return CreateAccountResponse.builder()
+                    .status("400")
+                    .message("Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại có 10 chữ số")
+                    .build();
+        }
 
+        User optionalUser = userRepo.findUserByPhone(request.getPhoneNumber());
+        if (optionalUser != null) {
+            return CreateAccountResponse.builder()
+                    .status("409")
+                    .message("Số điện thoại đã tồn tại")
+                    .build();
+        }
+
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            return CreateAccountResponse
+                    .builder()
+                    .status("400")
+                    .message("Mật khẩu xác nhận không đúng vui lòng thử lại")
+                    .build();
+        }
+
+
+
+        AccountStatus accountStatus = accountStatusRepo.findByStatus(Const.ACCOUNT_STATUS_ACTIVE);
 
         Account newAccount = Account.builder()
                 .name(request.getName())
@@ -217,6 +250,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .build();
 
         accountRepo.save(newAccount);
+
+        User user = User.builder()
+                .account(newAccount)
+                .address("")
+                .phone(request.getPhoneNumber())
+                .realName("")
+                .gender("")
+                .build();
+
+        userRepo.save(user);
 
         return CreateAccountResponse.builder()
                 .status("200")

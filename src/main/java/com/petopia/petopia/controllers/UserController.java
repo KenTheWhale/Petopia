@@ -80,11 +80,6 @@ public class UserController {
         return userService.loadServicePage("service");
     }
 
-    @PostMapping("/create-user-profile")
-    public CreateUserProfileResponse createUserProfile(
-            @RequestBody CreateUserProfileRequest request) {
-         return userService.createUserProfile(request);
-    }
     @PostMapping("/profile-update")
     public UpdateUserProfileResponse updateUserProfile( @RequestBody UpdateUserProfileRequest request) {
         return userService.updateUserProfile(request);

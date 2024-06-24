@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -778,43 +779,38 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    @Override
-    public CreateUserProfileResponse createUserProfile(CreateUserProfileRequest request) {
-        Account account = accountService.getCurrentLoggedAccount();
-        if (account.getUser() != null) {
-            return CreateUserProfileResponse.builder()
-                    .status("409")
-                    .message("Hồ sơ người dùng cho tài khoản này đã tồn tại")
-                    .build();
-        }
-        User user = userRepo.save(
-                User
-                        .builder()
-                        .gender(request.getGender())
-                        .realName(request.getRealName() == null ? "" : request.getRealName())
-                        .address(request.getAddress())
-                        .phone(request.getPhone())
-                        .account(account)
-                        .build()
-        );
 
-        return CreateUserProfileResponse.builder()
-                .address(user.getAddress())
-                .gender(user.getGender())
-                .phone(user.getPhone())
-                .status("200")
-                .message("Tạo hồ sơ người dùng thành công")
-                .build();
-    }
 
     @Override
     public UpdateUserProfileResponse updateUserProfile(UpdateUserProfileRequest request) {
         Account account = accountService.getCurrentLoggedAccount();
+        List<User> userList = userRepo.findAll();
 
         User user = account.getUser();
+        if(!isValidPhoneNumber(request.getPhone())){
+            return UpdateUserProfileResponse.builder()
+                    .status("400")
+                    .message("Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại có 10 chữ số")
+                    .build();
+        }
+        if (userRepo.existsByPhoneAndIdNot(request.getPhone(), user.getId())) {
+            return UpdateUserProfileResponse.builder()
+                    .status("400")
+                    .message("Số điện thoại đã tồn tại. Vui lòng sử dụng số điện thoại khác.")
+                    .build();
+        }
+
+
+        if (request.getAvatar() != null) {
+            user.getAccount().setAvatar(request.getAvatar());
+        } else {
+            user.getAccount().setAvatar(account.getAvatar());
+        }
+
         user.setAddress(request.getAddress());
         user.setGender(request.getGender());
         user.setPhone(request.getPhone());
+        user.setRealName(request.getRealName());
         userRepo.save(user);
 
         return UpdateUserProfileResponse
@@ -825,8 +821,8 @@ public class UserServiceImpl implements UserService {
                 .status("200")
                 .message("Cập nhật hồ sơ người dùng thành công")
                 .build();
-
     }
+
     @Override
     public ViewProductPageResponse viewProductPageResponse() {
         String status = "";
@@ -1073,5 +1069,11 @@ public class UserServiceImpl implements UserService {
 
     private boolean checkIfShopActiveOrClose(Shop shop) {
         return shop.getShopStatus().getStatus().equals(Const.SHOP_STATUS_ACTIVE) || shop.getShopStatus().getStatus().equals(Const.SHOP_STATUS_CLOSED);
+    }
+
+    private boolean isValidPhoneNumber(String phoneNumber) {
+        String regex = "^[0-9]{10}$";
+
+        return Pattern.compile(regex).matcher(phoneNumber).matches();
     }
 }

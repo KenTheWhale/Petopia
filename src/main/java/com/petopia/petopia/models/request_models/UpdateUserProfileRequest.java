@@ -1,7 +1,6 @@
 package com.petopia.petopia.models.request_models;
 
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 
 @Data
 @AllArgsConstructor
@@ -9,7 +8,9 @@ import lombok.experimental.FieldDefaults;
 @Builder
 
 public class UpdateUserProfileRequest {
+    private String avatar;
     private String address;
     private String gender;
     private String phone;
+    private String realName;
 }

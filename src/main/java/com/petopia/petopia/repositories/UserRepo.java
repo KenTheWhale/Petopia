@@ -10,6 +10,9 @@ import java.util.Optional;
 public interface UserRepo extends JpaRepository<User, Integer> {
     Optional<User> findByAccountId(int accountId);
 
+    User findUserByPhone(String phone);
+
+    boolean existsByPhoneAndIdNot(String phone, int id);
 
     //find user by id
     @Query("SELECT u FROM User u WHERE u.id = :id")
