@@ -188,12 +188,14 @@ public class UserController {
 
     @GetMapping("/product/page")
     @PreAuthorize("hasAuthority('user:read')")
+    @Operation(description = Const.CREATOR_HUY)
     public ViewProductPageResponse viewProductPageResponse(){
         return userService.viewProductPageResponse();
     }
 
     @PostMapping("/product/detail")
     @PreAuthorize("hasAuthority('user:read')")
+    @Operation(description = Const.CREATOR_HUY)
     public ViewProductDetailResponse viewProductDetailResponse(@RequestBody ViewProductDetailRequest request) {
         return userService.viewProductDetail(request);
     }

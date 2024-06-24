@@ -37,6 +37,7 @@ public class ServiceCenterManagerController {
 
     @GetMapping("/requesting-appointment-list")
     @PreAuthorize("hasAuthority('scm:read')")
+    @Operation(description = Const.CREATOR_TRIEU)
     public RequestingAppointmentResponse getRequestingAppointmentList(){
         return scmService.viewRequestingAppointment();
     }
