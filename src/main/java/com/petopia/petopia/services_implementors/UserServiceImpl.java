@@ -275,7 +275,7 @@ public class UserServiceImpl implements UserService {
         if (pet == null) {
             return CreateAppointmentResponse.builder()
                     .status("400")
-                    .message("Không tìm thấy thú cưng với tên này")
+                    .message("Không tìm thấy thú cưng với id này")
                     .build();
         }
 
