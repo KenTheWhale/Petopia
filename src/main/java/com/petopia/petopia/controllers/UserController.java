@@ -97,12 +97,6 @@ public class UserController {
         return userService.loadServicePage("service");
     }
 
-    @PostMapping("/create-user-profile")
-    @PreAuthorize("hasAuthority('user:create')")
-    @Operation(description = Const.CREATOR_HUY)
-    public CreateUserProfileResponse createUserProfile(@RequestBody CreateUserProfileRequest request) {
-         return userService.createUserProfile(request);
-    }
     @PostMapping("/profile-update")
     @PreAuthorize("hasAuthority('user:update')")
     @Operation(description = Const.CREATOR_HUY)
