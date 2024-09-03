@@ -61,14 +61,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         Token accessToken = tokenService.createNewAccessToken(account);
                         tokenService.createNewRefreshToken(account);
 
-                        String address = "";
-
-                        switch (account.getRole()){
-                            case USER: address = account.getUser().getAddress(); break;
-                            case SHOP_OWNER: address = account.getShop().getAddress(); break;
-                            case SERVICE_CENTER_MANAGER: address = account.getServiceCenter().getAddress(); break;
-                            case SERVICE_PROVIDER: address = account.getServiceProvider().getServiceCenter().getAddress(); break;
-                        }
+                        String address = switch (account.getRole()) {
+                            case USER -> account.getUser().getAddress();
+                            case SHOP_OWNER -> account.getShop().getAddress();
+                            case SERVICE_CENTER_MANAGER -> account.getServiceCenter().getAddress();
+                            case SERVICE_PROVIDER -> account.getServiceProvider().getServiceCenter().getAddress();
+                            default -> "";
+                        };
 
                         return LoginResponse.builder()
                                 .status("200")
